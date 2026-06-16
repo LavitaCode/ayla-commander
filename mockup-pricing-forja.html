@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forja — Planos & Preços</title>
+  <link rel="icon" type="image/svg+xml" href="forja-logo.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #020617;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #e2e8f0;
+      padding: 3rem 1.5rem 5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 2.5rem;
+    }
+    .header { text-align: center; max-width: 640px; }
+    .brand { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
+    .brand img { width: 38px; height: 38px; }
+    .brand-name { font-size: 1.1rem; font-weight: 800; color: #f1f5f9; }
+    .h1 { font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: -.02em; line-height: 1.15; }
+    .h1 .ember { background: linear-gradient(135deg,#fbbf24,#f97316); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .sub { font-size: .9rem; color: #64748b; margin-top: .85rem; line-height: 1.6; }
+
+    /* TOGGLE billing */
+    .billing-toggle { display: flex; align-items: center; gap: .8rem; background: #0f172a; border: 1px solid #1e293b; border-radius: 999px; padding: .35rem; }
+    .bt-opt { font-size: .78rem; font-weight: 600; padding: .45rem 1.1rem; border-radius: 999px; cursor: pointer; color: #64748b; }
+    .bt-opt.active { background: #1e293b; color: #f1f5f9; }
+    .bt-save { font-size: .6rem; background: #052e16; color: #4ade80; padding: .15rem .45rem; border-radius: .3rem; font-weight: 700; }
+
+    /* PLANS GRID */
+    .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 1080px; width: 100%; }
+    @media (max-width: 920px) { .plans { grid-template-columns: 1fr; max-width: 420px; } }
+
+    .plan {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 1.25rem;
+      padding: 1.75rem 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;
+      position: relative;
+    }
+    .plan.pro {
+      border-color: #ea580c;
+      box-shadow: 0 0 0 1px #ea580c, 0 0 40px #f9731622;
+      background: linear-gradient(180deg, #1a1206 0%, #0f172a 40%);
+    }
+    .plan-badge {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg,#f97316,#ea580c); color: #fff;
+      font-size: .6rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+      padding: .3rem .8rem; border-radius: 999px; white-space: nowrap;
+    }
+
+    .plan-head {}
+    .plan-name { font-size: 1.1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: .5rem; }
+    .plan-tier-icon { width: 24px; height: 24px; border-radius: .4rem; display: flex; align-items: center; justify-content: center; font-size: .8rem; }
+    .plan-for { font-size: .72rem; color: #64748b; margin-top: .35rem; }
+
+    .plan-price { display: flex; align-items: baseline; gap: .3rem; }
+    .pp-currency { font-size: 1rem; font-weight: 700; color: #94a3b8; }
+    .pp-value { font-size: 2.6rem; font-weight: 800; color: #f8fafc; letter-spacing: -.03em; line-height: 1; }
+    .pp-period { font-size: .72rem; color: #475569; }
+    .pp-note { font-size: .65rem; color: #475569; margin-top: .4rem; }
+
+    .plan-cta {
+      padding: .75rem; border-radius: .65rem; font-size: .82rem; font-weight: 700;
+      text-align: center; cursor: pointer; border: none; text-decoration: none; display: block;
+    }
+    .cta-free { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
+    .cta-pro { background: linear-gradient(135deg,#f97316,#ea580c); color: #fff; box-shadow: 0 0 20px #f9731640; }
+    .cta-team { background: #1e293b; color: #f1f5f9; border: 1px solid #475569; }
+
+    .feat-list { display: flex; flex-direction: column; gap: .65rem; }
+    .feat-group-title { font-size: .6rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .08em; margin-top: .3rem; }
+    .feat { display: flex; gap: .55rem; align-items: flex-start; font-size: .76rem; color: #cbd5e1; line-height: 1.45; }
+    .feat .ic { flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .6rem; font-weight: 800; margin-top: .1rem; }
+    .ic.yes { background: #052e16; color: #4ade80; }
+    .ic.ember { background: #431407; color: #fb923c; }
+    .ic.no { background: #1e293b; color: #475569; }
+    .feat.off { color: #475569; }
+    .feat strong { color: #f1f5f9; }
+    .feat .hl-ember { color: #fb923c; font-weight: 700; }
+    .feat .hl-cyan { color: #22d3ee; font-weight: 700; }
+
+    /* USAGE WINDOW explainer */
+    .window-box {
+      max-width: 1080px; width: 100%;
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem;
+      padding: 1.5rem 1.75rem;
+    }
+    .wb-title { font-size: .95rem; font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: .5rem; margin-bottom: .35rem; }
+    .wb-sub { font-size: .76rem; color: #64748b; line-height: 1.6; margin-bottom: 1.25rem; }
+    .wb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 920px) { .wb-grid { grid-template-columns: 1fr; } }
+    .wb-card { background: #020617; border: 1px solid #1e293b; border-radius: .75rem; padding: 1rem 1.1rem; }
+    .wb-card-name { font-size: .72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .65rem; }
+    .wb-bar-row { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
+    .wb-bar-label { font-size: .65rem; color: #64748b; min-width: 56px; }
+    .wb-bar-track { flex: 1; height: 7px; background: #1e293b; border-radius: 4px; overflow: hidden; }
+    .wb-bar-fill { height: 100%; border-radius: 4px; }
+    .wb-meta { font-size: .65rem; color: #475569; margin-top: .5rem; line-height: 1.5; }
+    .wb-meta strong { color: #94a3b8; }
+
+    /* MODEL ROUTING note */
+    .routing { max-width: 1080px; width: 100%; background: linear-gradient(135deg, #0a1a2e, #0f172a); border: 1px solid #1e3a5f; border-radius: 1rem; padding: 1.35rem 1.65rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+    .routing-ic { font-size: 1.5rem; flex-shrink: 0; }
+    .routing-title { font-size: .85rem; font-weight: 700; color: #7dd3fc; margin-bottom: .3rem; }
+    .routing-text { font-size: .76rem; color: #94a3b8; line-height: 1.65; }
+    .routing-text strong { color: #cbd5e1; }
+    .chip { display: inline-block; font-size: .6rem; font-weight: 700; padding: .1rem .4rem; border-radius: .25rem; }
+    .chip.qwen { background: #0f2a1a; color: #34d399; }
+    .chip.sonnet { background: #1e3a5f; color: #7dd3fc; }
+    .chip.opus { background: #2e1065; color: #c4b5fd; }
+
+    /* FAQ */
+    .faq { max-width: 720px; width: 100%; display: flex; flex-direction: column; gap: .8rem; }
+    .faq-title { font-size: 1rem; font-weight: 700; color: #f1f5f9; text-align: center; margin-bottom: .4rem; }
+    .faq-item { background: #0f172a; border: 1px solid #1e293b; border-radius: .75rem; padding: 1rem 1.25rem; }
+    .faq-q { font-size: .8rem; font-weight: 700; color: #e2e8f0; margin-bottom: .35rem; }
+    .faq-a { font-size: .74rem; color: #64748b; line-height: 1.6; }
+
+    .foot-note { font-size: .68rem; color: #334155; text-align: center; max-width: 600px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="brand"><img src="forja-logo.svg" alt="Forja"><span class="brand-name">Forja</span></div>
+    <div class="h1">Comece grátis.<br><span class="ember">Forje sem limites</span> quando precisar.</div>
+    <div class="sub">Converse com 15 agentes de IA de graça. Quando quiser que eles <strong style="color:#cbd5e1;">executem código de verdade</strong> — War Room, revisão e merge de PR — você sobe pro Pro.</div>
+  </div>
+
+  <!-- BILLING TOGGLE -->
+  <div class="billing-toggle">
+    <span class="bt-opt active">Mensal</span>
+    <span class="bt-opt">Anual <span class="bt-save">−2 meses</span></span>
+  </div>
+
+  <!-- PLANS -->
+  <div class="plans">
+
+    <!-- FREE -->
+    <div class="plan">
+      <div class="plan-head">
+        <div class="plan-name"><span class="plan-tier-icon" style="background:#0f2a1a;color:#34d399;">💬</span> Free</div>
+        <div class="plan-for">Pra conhecer os agentes e usar como copiloto de conversa</div>
+      </div>
+      <div>
+        <div class="plan-price"><span class="pp-currency">R$</span><span class="pp-value">0</span><span class="pp-period">/ sempre</span></div>
+        <div class="pp-note">Sem cartão. Pra sempre grátis.</div>
+      </div>
+      <a class="plan-cta cta-free">Criar conta grátis</a>
+      <div class="feat-list">
+        <div class="feat-group-title">Conversa com agentes</div>
+        <div class="feat"><span class="ic yes">✓</span><div>IRC com os <strong>15 agentes</strong> (Ayla, Afrodite, Hermes, Atena…)</div></div>
+        <div class="feat"><span class="ic yes">✓</span><div>Roteamento inteligente: <span class="hl-cyan">~15 msg/dia no Sonnet</span> + <span class="hl-ember">20-25 no Qwen</span>, conforme o contexto</div></div>
+        <div class="feat"><span class="ic yes">✓</span><div>Cota <strong>reseta todo dia</strong></div></div>
+        <div class="feat"><span class="ic yes">✓</span><div>Canais públicos + <strong>1 canal privado</strong></div></div>
+        <div class="feat-group-title">Engenharia</div>
+        <div class="feat off"><span class="ic no">—</span><div>War Room, Reviews e execução de código</div></div>
+        <div class="feat off"><span class="ic no">—</span><div>Claude Opus</div></div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan pro">
+      <div class="plan-badge">★ Mais popular</div>
+      <div class="plan-head">
+        <div class="plan-name"><span class="plan-tier-icon" style="background:#431407;color:#fb923c;">⚡</span> Pro</div>
+        <div class="plan-for">Pro dev que quer os agentes forjando código de verdade</div>
+      </div>
+      <div>
+        <div class="plan-price"><span class="pp-currency">R$</span><span class="pp-value">69</span><span class="pp-period">/ mês</span></div>
+        <div class="pp-note">Por usuário · cancele quando quiser</div>
+      </div>
+      <a class="plan-cta cta-pro">Assinar o Pro</a>
+      <div class="feat-list">
+        <div class="feat-group-title">Tudo do Free, mais:</div>
+        <div class="feat"><span class="ic ember">✓</span><div><strong>War Room completo</strong> — despache demandas, agentes orquestram</div></div>
+        <div class="feat"><span class="ic ember">✓</span><div><strong>Reviews + Code Panel</strong> — aprove/rejeite PR pelo celular</div></div>
+        <div class="feat"><span class="ic ember">✓</span><div>Agentes <strong>executam código de verdade</strong> (RED→GREEN→PR)</div></div>
+        <div class="feat"><span class="ic ember">✓</span><div><span class="hl-cyan">Claude Sonnet</span> + <span class="hl-ember">Claude Opus</span> liberados</div></div>
+        <div class="feat-group-title">Limite de uso</div>
+        <div class="feat"><span class="ic yes">✓</span><div>Janela de <strong>uso a cada 5h</strong> (estilo Claude) — reseta sozinha</div></div>
+        <div class="feat"><span class="ic yes">✓</span><div>Canais privados ilimitados</div></div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="plan">
+      <div class="plan-head">
+        <div class="plan-name"><span class="plan-tier-icon" style="background:#2e1065;color:#c4b5fd;">🏛️</span> Team</div>
+        <div class="plan-for">Pra times e startups — agentes no contexto da empresa</div>
+      </div>
+      <div>
+        <div class="plan-price"><span class="pp-currency">R$</span><span class="pp-value">99</span><span class="pp-period">/ assento / mês</span></div>
+        <div class="pp-note">Mínimo <strong style="color:#94a3b8;">3 assentos</strong> · faturamento por time</div>
+      </div>
+      <a class="plan-cta cta-team">Falar com vendas</a>
+      <div class="feat-list">
+        <div class="feat-group-title">Tudo do Pro, mais:</div>
+        <div class="feat"><span class="ic ember">✓</span><div><strong>Multi-usuário</strong> com papéis ROOT / DEV / USER</div></div>
+        <div class="feat"><span class="ic ember">✓</span><div>Agentes <strong>treinados no contexto da empresa</strong></div></div>
+        <div class="feat"><span class="ic ember">✓</span><div><strong>Pool de uso compartilhado</strong> — janelas maiores por time</div></div>
+        <div class="feat"><span class="ic ember">✓</span><div>Multi-repositório + #canais técnicos (deploys, reviews)</div></div>
+        <div class="feat-group-title">Governança</div>
+        <div class="feat"><span class="ic yes">✓</span><div>SSO + auditoria de ações dos agentes</div></div>
+        <div class="feat"><span class="ic yes">✓</span><div>Suporte prioritário</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- USAGE WINDOW EXPLAINER -->
+  <div class="window-box">
+    <div class="wb-title">⏱️ Como funciona o limite de uso</div>
+    <div class="wb-sub">
+      Como a Anthropic faz com o Claude: você paga a mensalidade fixa e usa dentro de uma <strong>janela de tempo</strong>.
+      Ao atingir o teto, o agente pausa e avisa quando volta — <strong>sem fatura surpresa</strong>. Opus consome a janela mais rápido que Sonnet.
+    </div>
+    <div class="wb-grid">
+      <div class="wb-card">
+        <div class="wb-card-name">Free · diário</div>
+        <div class="wb-bar-row"><span class="wb-bar-label">Sonnet</span><div class="wb-bar-track"><div class="wb-bar-fill" style="width:40%;background:#22d3ee;"></div></div></div>
+        <div class="wb-bar-row"><span class="wb-bar-label">Qwen</span><div class="wb-bar-track"><div class="wb-bar-fill" style="width:65%;background:#34d399;"></div></div></div>
+        <div class="wb-meta">~15 msg Sonnet + 20-25 Qwen/dia. <strong>Reseta toda meia-noite.</strong></div>
+      </div>
+      <div class="wb-card" style="border-color:#431407;">
+        <div class="wb-card-name" style="color:#fb923c;">Pro · janela 5h</div>
+        <div class="wb-bar-row"><span class="wb-bar-label">Sonnet</span><div class="wb-bar-track"><div class="wb-bar-fill" style="width:85%;background:#22d3ee;"></div></div></div>
+        <div class="wb-bar-row"><span class="wb-bar-label">Opus</span><div class="wb-bar-track"><div class="wb-bar-fill" style="width:45%;background:#c4b5fd;"></div></div></div>
+        <div class="wb-meta">Janela renova a cada <strong>5h</strong>. Opus "gasta" ~2x mais rápido que Sonnet.</div>
+      </div>
+      <div class="wb-card" style="border-color:#2e1065;">
+        <div class="wb-card-name" style="color:#c4b5fd;">Team · pool</div>
+        <div class="wb-bar-row"><span class="wb-bar-label">Pool</span><div class="wb-bar-track"><div class="wb-bar-fill" style="width:70%;background:linear-gradient(90deg,#22d3ee,#c4b5fd);"></div></div></div>
+        <div class="wb-meta">Janela compartilhada entre os assentos. <strong>Mais assentos = pool maior.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODEL ROUTING -->
+  <div class="routing">
+    <div class="routing-ic">🧠</div>
+    <div>
+      <div class="routing-title">Roteamento inteligente de modelo</div>
+      <div class="routing-text">
+        A Forja escolhe o modelo certo pra cada mensagem. <strong>Papo casual e perguntas simples</strong> vão pro <span class="chip qwen">Qwen</span> (rápido e econômico).
+        <strong>Raciocínio técnico, arquitetura e código</strong> sobem pro <span class="chip sonnet">Claude Sonnet</span>. No Pro, o <span class="chip opus">Claude Opus</span> entra nas tarefas mais pesadas.
+        Você não escolhe modelo — a Forja faz isso por você, otimizando custo e qualidade a cada turno.
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <div class="faq-title">Perguntas frequentes</div>
+    <div class="faq-item">
+      <div class="faq-q">O que acontece quando atinjo o limite?</div>
+      <div class="faq-a">O agente pausa e te diz quando a janela renova (no Free, à meia-noite; no Pro, a cada 5h). Nada é cobrado a mais — é só esperar o reset ou subir de plano.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">O Free é grátis de verdade?</div>
+      <div class="faq-a">Sim, pra sempre e sem cartão. Você conversa com todos os 15 agentes. O que o Free não faz é executar código (War Room, Reviews) — isso é do Pro pra cima.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Quantas pessoas precisam pra ser um Team?</div>
+      <div class="faq-a">A partir de 3 assentos. Abaixo disso, cada pessoa usa o Pro individual. O Team adiciona papéis, agentes treinados no seu contexto e pool de uso compartilhado.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Posso escolher qual modelo de IA usar?</div>
+      <div class="faq-a">A Forja roteia automaticamente: Qwen pro casual, Sonnet pro técnico, Opus (no Pro) pras tarefas pesadas. Isso garante o melhor custo-benefício sem você se preocupar.</div>
+    </div>
+  </div>
+
+  <div class="foot-note">
+    Valores em reais (R$), placeholders para validação — sujeitos a ajuste. Forja · LavitaCode.
+  </div>
+
+</body>
+</html>
