@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forja — Os agentes forjam o código. Você aprova do celular.</title>
+  <link rel="icon" type="image/svg+xml" href="forja-logo.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #020617; --surface: #0f172a; --surface2: #1e293b; --border: #1e293b;
+      --text: #e2e8f0; --muted: #64748b; --dim: #475569;
+      --ember: #f97316; --ember-d: #ea580c; --spark: #fbbf24; --steel: #22d3ee;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; line-height: 1.6; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 50; background: rgba(2,6,23,.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-in { max-width: 1080px; margin: 0 auto; padding: .85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .nav-brand { display: flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.05rem; }
+    .nav-brand img { width: 30px; height: 30px; }
+    .nav-crumb { font-size: .68rem; color: var(--dim); border: 1px solid var(--border); border-radius: 999px; padding: .15rem .55rem; }
+    .nav-links { margin-left: auto; display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { font-size: .82rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: linear-gradient(135deg, var(--ember), var(--ember-d)); color: #fff !important; padding: .5rem 1rem; border-radius: .55rem; font-weight: 700; font-size: .82rem; box-shadow: 0 0 18px #f9731640; }
+    @media (max-width: 720px) { .nav-links a:not(.nav-cta) { display: none; } .nav-crumb { display: none; } }
+
+    /* HERO */
+    .hero { padding: 5rem 0 4rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -120px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(circle, #f9731622 0%, transparent 70%); pointer-events: none; }
+    .hero-tag { display: inline-flex; align-items: center; gap: .4rem; font-size: .72rem; font-weight: 600; color: var(--spark); background: #1a1206; border: 1px solid #431407; border-radius: 999px; padding: .35rem .9rem; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.08; max-width: 820px; margin: 0 auto; }
+    .hero h1 .ember { background: linear-gradient(135deg, var(--spark), var(--ember)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 1.5rem auto 0; }
+    .hero-ctas { display: flex; gap: .9rem; justify-content: center; margin-top: 2.25rem; flex-wrap: wrap; }
+    .btn-primary { background: linear-gradient(135deg, var(--ember), var(--ember-d)); color: #fff; padding: .85rem 1.75rem; border-radius: .7rem; font-weight: 700; font-size: .95rem; box-shadow: 0 0 28px #f9731650; border: none; cursor: pointer; }
+    .btn-ghost { background: var(--surface); color: var(--text); padding: .85rem 1.5rem; border-radius: .7rem; font-weight: 600; font-size: .95rem; border: 1px solid var(--surface2); cursor: pointer; }
+    .hero-sub { font-size: .75rem; color: var(--dim); margin-top: 1rem; }
+    @media (max-width: 720px) { .hero h1 { font-size: 2.1rem; } .hero { padding: 3rem 0; } }
+
+    /* SECTION */
+    section { padding: 4.5rem 0; }
+    .sec-label { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--ember); text-align: center; margin-bottom: .75rem; }
+    .sec-title { font-size: 2rem; font-weight: 800; text-align: center; letter-spacing: -.02em; max-width: 680px; margin: 0 auto 1rem; }
+    .sec-sub { font-size: 1rem; color: var(--muted); text-align: center; max-width: 600px; margin: 0 auto 3rem; }
+
+    /* PROBLEM */
+    .problem { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 720px) { .prob-grid { grid-template-columns: 1fr; } }
+    .prob-card { background: var(--bg); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; }
+    .prob-card .x { color: #f87171; font-weight: 800; font-size: .9rem; }
+    .prob-card h3 { font-size: 1rem; margin: .5rem 0; color: #f1f5f9; }
+    .prob-card p { font-size: .85rem; color: var(--muted); }
+
+    /* HOW IT WORKS */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    @media (max-width: 720px) { .steps { grid-template-columns: 1fr; } }
+    .step { text-align: center; position: relative; }
+    .step-num { width: 48px; height: 48px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, var(--ember), var(--ember-d)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; color: #fff; box-shadow: 0 0 20px #f9731640; }
+    .step h3 { font-size: 1.05rem; margin-bottom: .5rem; color: #f1f5f9; }
+    .step p { font-size: .85rem; color: var(--muted); }
+
+    /* AGENTS */
+    .agents { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; }
+    @media (max-width: 920px) { .agent-grid { grid-template-columns: repeat(2, 1fr); } }
+    .agent { background: var(--bg); border: 1px solid var(--border); border-radius: .85rem; padding: 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+    .agent-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .85rem; border: 1.5px solid; }
+    .agent-name { font-weight: 700; font-size: .88rem; }
+    .agent-spec { font-size: .72rem; color: var(--muted); }
+
+    /* DEMO / SCREENS */
+    .demo-frame { background: var(--surface); border: 1px solid var(--border); border-radius: 1.25rem; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+    .demo-bar { background: #0a1628; border-bottom: 1px solid var(--border); padding: .55rem .9rem; display: flex; gap: .35rem; }
+    .demo-bar i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+    .demo-body { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 720px) { .demo-body { grid-template-columns: 1fr; } }
+    .demo-pane { padding: 1.5rem; }
+    .demo-pane + .demo-pane { border-left: 1px solid var(--border); }
+    @media (max-width: 720px) { .demo-pane + .demo-pane { border-left: none; border-top: 1px solid var(--border); } }
+    .dp-label { font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin-bottom: .75rem; }
+    .diff-line { font-family: 'Menlo', monospace; font-size: .72rem; padding: .15rem .5rem; border-radius: .25rem; margin-bottom: .15rem; }
+    .diff-add { background: #042318; color: var(--steel); }
+    .diff-rem { background: #2d0e0e; color: #f87171; }
+    .diff-ctx { color: var(--dim); }
+    .approve-row { display: flex; gap: .5rem; margin-top: 1rem; }
+    .ap-btn { flex: 1; text-align: center; padding: .5rem; border-radius: .5rem; font-size: .72rem; font-weight: 700; }
+    .ap-rej { background: #450a0a; color: #ef4444; border: 1px solid #7f1d1d; }
+    .ap-app { background: #052e16; color: #22c55e; border: 1px solid #166534; }
+    .chat-msg { display: flex; gap: .5rem; margin-bottom: .65rem; }
+    .cm-av { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .6rem; font-weight: 700; border: 1.5px solid; }
+    .cm-bbl { background: var(--surface2); border-radius: 0 .5rem .5rem .5rem; padding: .45rem .6rem; font-size: .72rem; }
+
+    /* PRICING TEASER */
+    .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 720px) { .price-grid { grid-template-columns: 1fr; } }
+    .price-card { background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; }
+    .price-card.pro { border-color: var(--ember); box-shadow: 0 0 0 1px var(--ember), 0 0 30px #f9731618; }
+    .pc-name { font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: .4rem; }
+    .pc-price { font-size: 2rem; font-weight: 800; margin: .5rem 0; }
+    .pc-price small { font-size: .7rem; color: var(--muted); font-weight: 400; }
+    .pc-desc { font-size: .78rem; color: var(--muted); margin-bottom: 1rem; }
+    .pc-cta { display: block; text-align: center; padding: .6rem; border-radius: .55rem; font-weight: 700; font-size: .82rem; }
+    .pc-cta.free { background: var(--surface2); color: var(--text); border: 1px solid #334155; }
+    .pc-cta.pro { background: linear-gradient(135deg, var(--ember), var(--ember-d)); color: #fff; }
+    .pc-cta.team { background: var(--surface2); color: var(--text); border: 1px solid #475569; }
+    .price-foot { text-align: center; font-size: .78rem; color: var(--muted); margin-top: 1.5rem; }
+    .price-foot a { color: var(--steel); }
+
+    /* FINAL CTA */
+    .final { text-align: center; background: linear-gradient(180deg, #1a1206 0%, var(--bg) 100%); border-top: 1px solid #431407; }
+    .final h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -.02em; }
+    .final p { color: var(--muted); margin: 1rem auto 2rem; max-width: 480px; }
+
+    /* FOOTER — selo LavitaCode */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 0; }
+    .foot-in { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .foot-brand { display: flex; align-items: center; gap: .55rem; font-weight: 800; }
+    .foot-brand img { width: 26px; height: 26px; }
+    .foot-by { font-size: .82rem; color: var(--muted); }
+    .foot-by a { color: var(--steel); font-weight: 600; }
+    .foot-links { display: flex; gap: 1.25rem; font-size: .8rem; color: var(--muted); }
+
+    /* annotation badge */
+    .annot { max-width: 1080px; margin: 1.5rem auto 0; padding: 0 1.5rem; }
+    .annot-box { background: #0c1a3a; border: 1px solid #1e3a5f; border-radius: .65rem; padding: .75rem 1rem; font-size: .75rem; color: #7dd3fc; }
+  </style>
+</head>
+<body>
+
+  <!-- annotation -->
+  <div class="annot">
+    <div class="annot-box">📐 Mockup da <strong>subpágina lavitacode.com/forja</strong> — landing de venda do produto. A home institucional da LavitaCode (separada) terá a divulgação + botão apontando pra cá.</div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-in">
+      <a class="nav-brand"><img src="forja-logo.svg" alt="Forja">Forja</a>
+      <span class="nav-crumb">lavitacode.com/forja</span>
+      <div class="nav-links">
+        <a href="#como">Como funciona</a>
+        <a href="#agentes">Agentes</a>
+        <a href="#precos">Preços</a>
+        <a class="nav-cta">Começar grátis</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-tag">⚒️ War room com agentes de IA · mobile-native</div>
+      <h1>Os agentes <span class="ember">forjam o código</span>.<br>Você aprova do celular.</h1>
+      <p>Despache uma demanda no war room. Os agentes escrevem, testam e abrem o PR. Você revisa o diff e dá o merge — de qualquer lugar, sem abrir o laptop.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary">Começar grátis →</button>
+        <button class="btn-ghost">Ver demo</button>
+      </div>
+      <div class="hero-sub">Grátis pra sempre · sem cartão · conversa com 15 agentes de IA</div>
+    </div>
+  </header>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="wrap">
+      <div class="sec-label">O problema</div>
+      <h2 class="sec-title">Seu celular avisa que o PR chegou. E aí você espera 4 horas.</h2>
+      <p class="sec-sub">As ferramentas de hoje param no meio do caminho — ou só sugerem, ou só leem. Nenhuma fecha o ciclo.</p>
+      <div class="prob-grid">
+        <div class="prob-card">
+          <span class="x">✕ GitHub / GitLab Mobile</span>
+          <h3>São leitores, não fecham o ciclo</h3>
+          <p>Você lê o PR no celular, mas approve/merge de verdade só no desktop. A notificação vira uma tarefa adiada.</p>
+        </div>
+        <div class="prob-card">
+          <span class="x">✕ Copilot / Cursor</span>
+          <h3>Sugerem, mas não executam</h3>
+          <p>Autocomplete e chat ajudam — mas ninguém vai sozinho do "preciso disso" até o PR pronto, testado e aberto.</p>
+        </div>
+        <div class="prob-card">
+          <span class="x">✕ SSH no celular</span>
+          <h3>Termux + teclado virtual = sofrimento</h3>
+          <p>Resolver incidente fora do escritório significa abrir o laptop. Hardware fraco exclui quem não tem máquina cara.</p>
+        </div>
+        <div class="prob-card">
+          <span class="x">✕ Contexto perdido</span>
+          <h3>Recomeça do zero a cada device</h3>
+          <p>O que você pensou no celular não chega no desktop. O fio da meada se perde entre uma tela e outra.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="como">
+    <div class="wrap">
+      <div class="sec-label">Como funciona</div>
+      <h2 class="sec-title">Do despacho ao merge, em 3 passos</h2>
+      <p class="sec-sub">Você comanda. Os agentes forjam. Você decide.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Despacha a demanda</h3>
+          <p>No war room, você escreve o que precisa: "implementa refresh token com 7 dias". Os agentes assumem.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Os agentes forjam</h3>
+          <p>Hermes varre, Atena arquiteta, Apolo testa (RED→GREEN), Artemis implementa. O PR nasce pronto e revisado entre eles.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Você aprova do celular</h3>
+          <p>Diff legível touch-native, comentário inline, e o botão de merge. À noite, no metrô, onde for.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="demo-frame">
+        <div class="demo-bar"><i style="background:#ef4444;"></i><i style="background:#f59e0b;"></i><i style="background:#22c55e;"></i></div>
+        <div class="demo-body">
+          <div class="demo-pane">
+            <div class="dp-label">⚒️ War Room — agentes forjando</div>
+            <div class="chat-msg"><div class="cm-av" style="background:#0e3a4f;color:#67e8f9;border-color:#0ea5e9;">H</div><div class="cm-bbl"><strong style="color:#67e8f9;">Hermes</strong><br>Varredura: 3 arquivos impactados.</div></div>
+            <div class="chat-msg"><div class="cm-av" style="background:#0f1e40;color:#818cf8;border-color:#6366f1;">At</div><div class="cm-bbl"><strong style="color:#818cf8;">Atena</strong><br>PRE_FLIGHT 13/13 ✓. Arquitetura aprovada.</div></div>
+            <div class="chat-msg"><div class="cm-av" style="background:#2e1065;color:#c4b5fd;border-color:#8b5cf6;">Ap</div><div class="cm-bbl"><strong style="color:#c4b5fd;">Apolo</strong><br>RED ✓ → GREEN ✓ → PR aberto. +47 −12</div></div>
+          </div>
+          <div class="demo-pane">
+            <div class="dp-label">📱 Code Panel — você aprova</div>
+            <div class="diff-line diff-ctx">  refreshToken(token: string) {</div>
+            <div class="diff-line diff-rem">−    timeout: 5000,</div>
+            <div class="diff-line diff-add">+    timeout: 10000,</div>
+            <div class="diff-line diff-add">+    return this.http.post(</div>
+            <div class="diff-line diff-add">+      `${this.apiUrl}/auth/refresh`,</div>
+            <div class="diff-line diff-ctx">    );</div>
+            <div class="approve-row">
+              <div class="ap-btn ap-rej">✕ Rejeitar</div>
+              <div class="ap-btn ap-app">✓ Aprovar PR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENTS -->
+  <section id="agentes" class="agents">
+    <div class="wrap">
+      <div class="sec-label">O time</div>
+      <h2 class="sec-title">15 agentes de IA, cada um especialista</h2>
+      <p class="sec-sub">Converse com eles de graça. No Pro, eles executam código de verdade.</p>
+      <div class="agent-grid">
+        <div class="agent"><div class="agent-av" style="background:#0a2d35;color:#22d3ee;border-color:#22d3ee;">A</div><div class="agent-name">Ayla</div><div class="agent-spec">orquestradora · tudo</div></div>
+        <div class="agent"><div class="agent-av" style="background:#0f1e40;color:#818cf8;border-color:#6366f1;">At</div><div class="agent-name">Atena</div><div class="agent-spec">arquitetura de sistemas</div></div>
+        <div class="agent"><div class="agent-av" style="background:#2e1065;color:#c4b5fd;border-color:#8b5cf6;">Af</div><div class="agent-name">Afrodite</div><div class="agent-spec">design · UX · produto</div></div>
+        <div class="agent"><div class="agent-av" style="background:#0c2340;color:#67e8f9;border-color:#0ea5e9;">H</div><div class="agent-name">Hermes</div><div class="agent-spec">pesquisa · análise</div></div>
+        <div class="agent"><div class="agent-av" style="background:#0f2a1a;color:#34d399;border-color:#10b981;">Ap</div><div class="agent-name">Apolo</div><div class="agent-spec">testes · TDD · qualidade</div></div>
+        <div class="agent"><div class="agent-av" style="background:#0a1f2e;color:#7dd3fc;border-color:#38bdf8;">Ar</div><div class="agent-name">Artemis</div><div class="agent-spec">engenharia · código</div></div>
+        <div class="agent"><div class="agent-av" style="background:#1a1a0f;color:#fde68a;border-color:#f59e0b;">He</div><div class="agent-name">Hefesto</div><div class="agent-spec">infra · DevOps</div></div>
+        <div class="agent"><div class="agent-av" style="background:#0f172a;color:#94a3b8;border-color:#475569;">+8</div><div class="agent-name">e mais 8</div><div class="agent-spec">Hera, Íris, Quiron…</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="precos">
+    <div class="wrap">
+      <div class="sec-label">Preços</div>
+      <h2 class="sec-title">Comece grátis. Pague só quando for executar.</h2>
+      <p class="sec-sub">Converse com os agentes de graça. Suba pro Pro quando quiser que eles forjem código.</p>
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="pc-name"><span style="color:#34d399;">💬</span> Free</div>
+          <div class="pc-price">R$ 0 <small>/ sempre</small></div>
+          <div class="pc-desc">IRC com os 15 agentes. ~15 msg Sonnet + 20-25 Qwen por dia. 1 canal privado.</div>
+          <a class="pc-cta free">Criar conta</a>
+        </div>
+        <div class="price-card pro">
+          <div class="pc-name"><span style="color:#fb923c;">⚡</span> Pro</div>
+          <div class="pc-price">R$ 99 <small>/ mês</small></div>
+          <div class="pc-desc">War Room + Reviews + execução de código. Sonnet + Opus, janela de uso a cada 5h.</div>
+          <a class="pc-cta pro">Assinar o Pro</a>
+        </div>
+        <div class="price-card">
+          <div class="pc-name"><span style="color:#c4b5fd;">🏛️</span> Team</div>
+          <div class="pc-price">R$ 119 <small>/ assento</small></div>
+          <div class="pc-desc">Mín. 3 assentos. Agentes treinados no contexto da empresa, SSO, pool compartilhado.</div>
+          <a class="pc-cta team">Falar com vendas</a>
+        </div>
+      </div>
+      <div class="price-foot">Ver detalhes completos dos planos e limites na <a href="mockup-pricing-forja.html">página de preços →</a></div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final">
+    <div class="wrap">
+      <h2>Pare de adiar o PR pro desktop.</h2>
+      <p>Crie sua conta grátis e converse com os agentes agora. Quando estiver pronto pra forjar, é um clique.</p>
+      <button class="btn-primary">Começar grátis →</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap foot-in">
+      <div class="foot-brand"><img src="forja-logo.svg" alt="Forja">Forja</div>
+      <div class="foot-by">um produto <a href="#">LavitaCode</a></div>
+      <div class="foot-links">
+        <a href="#como">Como funciona</a>
+        <a href="#precos">Preços</a>
+        <a href="#">Login</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
