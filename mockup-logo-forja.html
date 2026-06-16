@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forja — Direções de Logo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #020617;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #e2e8f0;
+      padding: 3rem 1.5rem 5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 2.5rem;
+    }
+    .page-header { text-align: center; }
+    .page-title { font-size: 1.4rem; font-weight: 800; color: #f8fafc; letter-spacing: -.02em; }
+    .page-title .ember { background: linear-gradient(135deg,#fbbf24,#f97316); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .page-sub { font-size: .68rem; color: #475569; text-transform: uppercase; letter-spacing: .12em; margin-top: .4rem; }
+
+    /* PALETTE STRIP */
+    .palette { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; max-width: 900px; }
+    .swatch { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
+    .chip { width: 56px; height: 56px; border-radius: .6rem; box-shadow: 0 0 0 1px #1e293b; }
+    .chip-name { font-size: .55rem; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+    .chip-hex { font-size: .55rem; color: #334155; font-family: monospace; }
+
+    /* CARDS ROW */
+    .cards { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; max-width: 1200px; }
+    .card {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 1.25rem;
+      width: 360px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      display: flex; flex-direction: column;
+    }
+    .card-letter { font-size: .7rem; font-weight: 800; color: #f97316; letter-spacing: .1em; }
+    .card-top { padding: 1rem 1.25rem .5rem; display: flex; align-items: center; justify-content: space-between; }
+    .card-name { font-size: .85rem; font-weight: 700; color: #f1f5f9; }
+    .card-rec { font-size: .55rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: .2rem .5rem; border-radius: .3rem; }
+    .card-rec.primary { background: #431407; color: #fb923c; }
+    .card-rec.secondary { background: #1e293b; color: #64748b; }
+
+    /* HERO — logo grande sobre fundo aço */
+    .hero {
+      background: radial-gradient(circle at 50% 40%, #1a2438 0%, #0a1220 70%);
+      padding: 2.5rem 1rem; display: flex; align-items: center; justify-content: center;
+      min-height: 200px; border-top: 1px solid #1e293b; border-bottom: 1px solid #1e293b;
+    }
+
+    .card-desc { padding: 1rem 1.25rem; font-size: .72rem; color: #94a3b8; line-height: 1.6; }
+    .card-desc strong { color: #cbd5e1; }
+
+    /* CONTEXT STRIP — logo em usos reais */
+    .uses { padding: .85rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: .7rem; }
+    .uses-label { font-size: .55rem; color: #334155; text-transform: uppercase; letter-spacing: .08em; }
+    .use-row { display: flex; align-items: center; gap: 1rem; }
+    /* favicon */
+    .fav { width: 28px; height: 28px; border-radius: .35rem; background: #0a1220; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #1e293b; flex-shrink: 0; }
+    /* app icon */
+    .appicon { width: 48px; height: 48px; border-radius: .8rem; background: linear-gradient(135deg,#0f172a,#020617); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #1e293b, 0 4px 12px rgba(0,0,0,.5); flex-shrink: 0; }
+    /* wordmark inline */
+    .wordmark { display: flex; align-items: center; gap: .5rem; }
+    .wordmark-text { font-size: 1rem; font-weight: 800; color: #f1f5f9; letter-spacing: -.01em; }
+    .use-cap { font-size: .55rem; color: #475569; }
+
+    .note { max-width: 760px; text-align: center; font-size: .72rem; color: #64748b; line-height: 1.7; }
+    .note strong { color: #fb923c; }
+
+    @keyframes flicker { 0%,100% { opacity: 1; } 50% { opacity: .75; } }
+    .spark { animation: flicker 2.5s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="page-title"><span class="ember">Forja</span> — Direções de Logo</div>
+    <div class="page-sub">Brasa sobre aço · onde o código é forjado</div>
+  </div>
+
+  <!-- PALETTE -->
+  <div class="palette">
+    <div class="swatch"><div class="chip" style="background:#0f172a;"></div><div class="chip-name">Aço profundo</div><div class="chip-hex">#0f172a</div></div>
+    <div class="swatch"><div class="chip" style="background:#1e293b;"></div><div class="chip-name">Ferro frio</div><div class="chip-hex">#1e293b</div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#f97316,#fb923c);"></div><div class="chip-name">Brasa</div><div class="chip-hex">#f97316</div></div>
+    <div class="swatch"><div class="chip" style="background:#fbbf24;"></div><div class="chip-name">Faísca</div><div class="chip-hex">#fbbf24</div></div>
+    <div class="swatch"><div class="chip" style="background:#22d3ee;"></div><div class="chip-name">Metal temperado</div><div class="chip-hex">#22d3ee</div></div>
+    <div class="swatch"><div class="chip" style="background:#fca5a5;"></div><div class="chip-name">Aço aquecido</div><div class="chip-hex">#fca5a5</div></div>
+  </div>
+
+  <div class="cards">
+
+    <!-- ============ OPÇÃO A — BIGORNA ============ -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO A</div>
+          <div class="card-name">Bigorna + Faísca</div>
+        </div>
+        <span class="card-rec secondary">Ícone / Mascote</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="emberA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+            <linearGradient id="steelA" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#94a3b8"/>
+              <stop offset="100%" stop-color="#475569"/>
+            </linearGradient>
+            <radialGradient id="glowA" cx="50%" cy="30%" r="60%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".5"/>
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- glow -->
+          <circle cx="60" cy="42" r="42" fill="url(#glowA)"/>
+          <!-- faíscas -->
+          <g class="spark" fill="url(#emberA)">
+            <circle cx="78" cy="22" r="3"/>
+            <circle cx="88" cy="32" r="2"/>
+            <circle cx="70" cy="14" r="2"/>
+            <circle cx="84" cy="16" r="1.5"/>
+          </g>
+          <!-- bigorna -->
+          <g>
+            <!-- corpo superior -->
+            <path d="M28 50 H92 L86 62 H64 L62 72 H58 L56 62 H34 Z" fill="url(#steelA)"/>
+            <!-- bico -->
+            <path d="M92 50 L108 53 L100 60 L86 58 Z" fill="url(#steelA)"/>
+            <!-- pé -->
+            <path d="M50 72 H70 L74 92 H46 Z" fill="url(#steelA)"/>
+            <!-- base -->
+            <rect x="40" y="92" width="40" height="8" rx="2" fill="#334155"/>
+            <!-- brilho de brasa no topo da bigorna -->
+            <path d="M28 50 H92 L90 54 H30 Z" fill="url(#emberA)" opacity=".9"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-desc">
+        Silhueta de bigorna com faíscas saltando. <strong>Literal e instantâneo</strong> — qualquer um entende "aqui se forja". Excelente como ícone de app e favicon. Risco: pode soar artesanal demais se mal executado.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><path d="M28 50 H92 L86 62 H64 L62 72 H58 L56 62 H34 Z M92 50 L108 53 L100 60 L86 58 Z M50 72 H70 L74 92 H46 Z" fill="#94a3b8"/><path d="M28 50 H92 L90 54 H30 Z" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">favicon 16–32px</span>
+          <div class="appicon">
+            <svg width="30" height="30" viewBox="0 0 120 120"><path d="M28 50 H92 L86 62 H64 L62 72 H58 L56 62 H34 Z M92 50 L108 53 L100 60 L86 58 Z M50 72 H70 L74 92 H46 Z" fill="#94a3b8"/><circle cx="80" cy="24" r="3" fill="#fbbf24"/><path d="M28 50 H92 L90 54 H30 Z" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="24" height="24" viewBox="0 0 120 120"><path d="M28 50 H92 L86 62 H64 L62 72 H58 L56 62 H34 Z M92 50 L108 53 L100 60 L86 58 Z M50 72 H70 L74 92 H46 Z" fill="#94a3b8"/><path d="M28 50 H92 L90 54 H30 Z" fill="#f97316"/></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ OPÇÃO B — MONOGRAMA F ============ -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO B</div>
+          <div class="card-name">Monograma "F" forjado</div>
+        </div>
+        <span class="card-rec primary">★ Principal</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="emberB" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="55%" stop-color="#f97316"/>
+              <stop offset="100%" stop-color="#9a3412"/>
+            </linearGradient>
+            <linearGradient id="steelB" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#cbd5e1"/>
+              <stop offset="100%" stop-color="#64748b"/>
+            </linearGradient>
+            <radialGradient id="glowB" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".35"/>
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect x="14" y="14" width="92" height="92" rx="22" fill="#0a1220" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="60" cy="60" r="40" fill="url(#glowB)"/>
+          <!-- F construído como metal dobrado -->
+          <g>
+            <!-- haste vertical -->
+            <rect x="40" y="34" width="14" height="52" rx="3" fill="url(#steelB)"/>
+            <!-- braço superior (incandescente) -->
+            <rect x="40" y="34" width="42" height="14" rx="3" fill="url(#emberB)"/>
+            <!-- braço do meio (incandescente, faísca) -->
+            <rect x="40" y="54" width="30" height="13" rx="3" fill="url(#emberB)"/>
+            <!-- brilho de aresta -->
+            <rect x="40" y="34" width="14" height="3" rx="1.5" fill="#fbbf24" opacity=".8"/>
+          </g>
+          <!-- faíscas -->
+          <g class="spark" fill="#fbbf24">
+            <circle cx="86" cy="40" r="2"/>
+            <circle cx="74" cy="60" r="1.8"/>
+            <circle cx="90" cy="50" r="1.3"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-desc">
+        Letra <strong>F</strong> construída como metal dobrado — hastes de aço, braços incandescentes (gradiente brasa). O contraste frio/quente já carrega a paleta inteira. <strong>Escala de favicon a outdoor</strong>, vira marca rápido. Recomendado como logo principal.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><rect x="40" y="34" width="14" height="52" rx="3" fill="#cbd5e1"/><rect x="40" y="34" width="42" height="14" rx="3" fill="#f97316"/><rect x="40" y="54" width="30" height="13" rx="3" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">favicon 16–32px</span>
+          <div class="appicon">
+            <svg width="34" height="34" viewBox="0 0 120 120"><rect x="40" y="34" width="14" height="52" rx="3" fill="#cbd5e1"/><rect x="40" y="34" width="42" height="14" rx="3" fill="#f97316"/><rect x="40" y="54" width="30" height="13" rx="3" fill="#f97316"/><circle cx="86" cy="40" r="2.5" fill="#fbbf24"/></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><rect x="40" y="34" width="14" height="52" rx="3" fill="#cbd5e1"/><rect x="40" y="34" width="42" height="14" rx="3" fill="#f97316"/><rect x="40" y="54" width="30" height="13" rx="3" fill="#f97316"/></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ OPÇÃO C — MARTELO + ARCO ============ -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO C</div>
+          <div class="card-name">Martelo + arco de faísca</div>
+        </div>
+        <span class="card-rec secondary">Dinâmico / Motion</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="emberC" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+            <linearGradient id="steelC" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#cbd5e1"/>
+              <stop offset="100%" stop-color="#64748b"/>
+            </linearGradient>
+            <radialGradient id="glowC" cx="35%" cy="70%" r="55%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".45"/>
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="44" cy="78" r="40" fill="url(#glowC)"/>
+          <!-- arco de faíscas -->
+          <path d="M30 84 Q60 30 100 36" stroke="url(#emberC)" stroke-width="3" stroke-linecap="round" fill="none" stroke-dasharray="2 6" class="spark"/>
+          <g class="spark" fill="#fbbf24">
+            <circle cx="100" cy="36" r="3.5"/>
+            <circle cx="92" cy="30" r="2"/>
+            <circle cx="106" cy="44" r="2"/>
+          </g>
+          <!-- martelo (rotacionado, batendo) -->
+          <g transform="rotate(-32 50 70)">
+            <!-- cabo -->
+            <rect x="46" y="60" width="9" height="44" rx="4" fill="url(#steelC)"/>
+            <!-- cabeça -->
+            <rect x="30" y="48" width="42" height="20" rx="5" fill="url(#steelC)"/>
+            <rect x="62" y="48" width="10" height="20" rx="3" fill="#475569"/>
+            <!-- brilho na cabeça -->
+            <rect x="30" y="48" width="42" height="4" rx="2" fill="#e2e8f0" opacity=".6"/>
+          </g>
+          <!-- ponto de impacto incandescente -->
+          <ellipse cx="40" cy="98" rx="16" ry="4" fill="url(#emberC)" opacity=".85"/>
+        </svg>
+      </div>
+      <div class="card-desc">
+        Martelo em movimento com arco de faíscas no impacto. <strong>Dinâmico</strong> — feito pra animar: o arco brilha no loading, as faíscas piscam. Transmite ação/impacto. Risco: mais complexo, perde detalhe em tamanhos pequenos.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><g transform="rotate(-32 50 70)"><rect x="46" y="60" width="9" height="44" rx="4" fill="#cbd5e1"/><rect x="30" y="48" width="42" height="20" rx="5" fill="#cbd5e1"/></g><circle cx="100" cy="36" r="6" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">favicon 16–32px</span>
+          <div class="appicon">
+            <svg width="32" height="32" viewBox="0 0 120 120"><path d="M30 84 Q60 30 100 36" stroke="#f97316" stroke-width="4" stroke-linecap="round" fill="none" stroke-dasharray="2 6"/><g transform="rotate(-32 50 70)"><rect x="46" y="60" width="9" height="44" rx="4" fill="#cbd5e1"/><rect x="30" y="48" width="42" height="20" rx="5" fill="#cbd5e1"/></g><circle cx="100" cy="36" r="4" fill="#fbbf24"/></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><path d="M30 84 Q60 30 100 36" stroke="#f97316" stroke-width="4" stroke-linecap="round" fill="none" stroke-dasharray="2 6"/><g transform="rotate(-32 50 70)"><rect x="46" y="60" width="9" height="44" rx="4" fill="#cbd5e1"/><rect x="30" y="48" width="42" height="20" rx="5" fill="#cbd5e1"/></g><circle cx="100" cy="36" r="4" fill="#fbbf24"/></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    Recomendação: <strong>Opção B (monograma F)</strong> como logo principal — escala bem de favicon a outdoor e o gradiente brasa-sobre-aço já comunica a marca. <strong>Opção A (bigorna)</strong> como ícone secundário/mascote. As 3 usam a mesma paleta Forja, compatível com a V2 (cyan do diff mantido como "metal temperado").
+  </div>
+
+</body>
+</html>
