@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forja — Logo · Rodada 2</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #020617;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #e2e8f0;
+      padding: 3rem 1.5rem 5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 2.5rem;
+    }
+    .page-header { text-align: center; }
+    .page-title { font-size: 1.4rem; font-weight: 800; color: #f8fafc; letter-spacing: -.02em; }
+    .page-title .ember { background: linear-gradient(135deg,#fbbf24,#f97316); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .page-sub { font-size: .68rem; color: #475569; text-transform: uppercase; letter-spacing: .12em; margin-top: .4rem; }
+    .back { font-size: .65rem; color: #38bdf8; text-decoration: none; }
+
+    .group-label { font-size: .6rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #475569; max-width: 1200px; width: 100%; display: flex; align-items: center; gap: .75rem; }
+    .group-label::after { content: ''; flex: 1; height: 1px; background: #1e293b; }
+
+    .cards { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; max-width: 1200px; }
+    .card {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 1.25rem;
+      width: 360px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      display: flex; flex-direction: column;
+    }
+    .card-letter { font-size: .7rem; font-weight: 800; color: #f97316; letter-spacing: .1em; }
+    .card-top { padding: 1rem 1.25rem .5rem; display: flex; align-items: center; justify-content: space-between; }
+    .card-name { font-size: .85rem; font-weight: 700; color: #f1f5f9; }
+    .card-rec { font-size: .55rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: .2rem .5rem; border-radius: .3rem; }
+    .card-rec.primary { background: #431407; color: #fb923c; }
+    .card-rec.secondary { background: #1e293b; color: #64748b; }
+
+    .hero {
+      background: radial-gradient(circle at 50% 40%, #1a2438 0%, #0a1220 70%);
+      padding: 2.5rem 1rem; display: flex; align-items: center; justify-content: center;
+      min-height: 200px; border-top: 1px solid #1e293b; border-bottom: 1px solid #1e293b;
+    }
+    .card-desc { padding: 1rem 1.25rem; font-size: .72rem; color: #94a3b8; line-height: 1.6; }
+    .card-desc strong { color: #cbd5e1; }
+
+    .uses { padding: .85rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: .7rem; }
+    .uses-label { font-size: .55rem; color: #334155; text-transform: uppercase; letter-spacing: .08em; }
+    .use-row { display: flex; align-items: center; gap: 1rem; }
+    .fav { width: 28px; height: 28px; border-radius: .35rem; background: #0a1220; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #1e293b; flex-shrink: 0; }
+    .appicon { width: 48px; height: 48px; border-radius: .8rem; background: linear-gradient(135deg,#0f172a,#020617); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #1e293b, 0 4px 12px rgba(0,0,0,.5); flex-shrink: 0; }
+    .wordmark { display: flex; align-items: center; gap: .5rem; }
+    .wordmark-text { font-size: 1rem; font-weight: 800; color: #f1f5f9; letter-spacing: -.01em; }
+    .use-cap { font-size: .55rem; color: #475569; }
+
+    @keyframes flicker { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
+    .spark { animation: flicker 2.5s ease-in-out infinite; }
+    @keyframes flicker2 { 0%,100% { opacity: .9; } 40% { opacity: .55; } }
+    .spark2 { animation: flicker2 1.8s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="page-title"><span class="ember">Forja</span> — Logo · Rodada 2</div>
+    <div class="page-sub">+2 variações de martelo · alternativa para o monograma F</div>
+    <a class="back" href="mockup-logo-forja.html">← ver rodada 1 (bigorna / F / martelo)</a>
+  </div>
+
+  <!-- ===================== MARTELO ===================== -->
+  <div class="group-label">Martelo — 2 novas variações</div>
+  <div class="cards">
+
+    <!-- OPÇÃO D — MARTELO + BIGORNA (emblema) -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO D</div>
+          <div class="card-name">Martelo & bigorna cruzados</div>
+        </div>
+        <span class="card-rec secondary">Emblema / Selo</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="emberD" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+            <linearGradient id="steelD" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#cbd5e1"/><stop offset="100%" stop-color="#475569"/>
+            </linearGradient>
+            <radialGradient id="glowD" cx="50%" cy="55%" r="55%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".4"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- anel/selo -->
+          <circle cx="60" cy="60" r="46" fill="#0a1220" stroke="url(#emberD)" stroke-width="2"/>
+          <circle cx="60" cy="60" r="46" fill="url(#glowD)"/>
+          <circle cx="60" cy="60" r="39" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <!-- martelo (\) -->
+          <g transform="rotate(45 60 60)">
+            <rect x="56" y="38" width="8" height="46" rx="3" fill="url(#steelD)"/>
+            <rect x="44" y="30" width="32" height="15" rx="4" fill="url(#steelD)"/>
+            <rect x="44" y="30" width="32" height="4" rx="2" fill="#e2e8f0" opacity=".5"/>
+          </g>
+          <!-- bigorna (/) -->
+          <g transform="rotate(-45 60 60)">
+            <path d="M44 64 H76 L73 70 H64 L63 75 H61 L60 70 H47 Z" fill="url(#steelD)"/>
+            <path d="M76 64 L86 66 L81 70 L73 68 Z" fill="url(#steelD)"/>
+            <rect x="54" y="75" width="14" height="6" rx="2" fill="#334155"/>
+            <path d="M44 64 H76 L75 66 H45 Z" fill="url(#emberD)"/>
+          </g>
+          <!-- faíscas no topo -->
+          <g class="spark" fill="#fbbf24">
+            <circle cx="60" cy="22" r="2.5"/><circle cx="50" cy="26" r="1.5"/><circle cx="70" cy="26" r="1.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-desc">
+        Martelo e bigorna <strong>cruzados dentro de um selo</strong> — linguagem de brasão/guilda de artesãos. Transmite ofício, tradição, "feito com rigor". Conecta com a estética Olimpo. Ótimo para selo de qualidade ("Forjado na Forja"). Risco: denso em favicon pequeno.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#f97316" stroke-width="4"/><g transform="rotate(45 60 60)"><rect x="56" y="38" width="8" height="46" rx="3" fill="#cbd5e1"/><rect x="44" y="30" width="32" height="15" rx="4" fill="#cbd5e1"/></g></svg>
+          </div>
+          <span class="use-cap">favicon</span>
+          <div class="appicon">
+            <svg width="34" height="34" viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#f97316" stroke-width="3"/><g transform="rotate(45 60 60)"><rect x="56" y="38" width="8" height="46" rx="3" fill="#cbd5e1"/><rect x="44" y="30" width="32" height="15" rx="4" fill="#cbd5e1"/></g><g transform="rotate(-45 60 60)"><path d="M44 64 H76 L73 70 H64 L63 75 H61 L60 70 H47 Z" fill="#94a3b8"/></g></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#f97316" stroke-width="3"/><g transform="rotate(45 60 60)"><rect x="56" y="38" width="8" height="46" rx="3" fill="#cbd5e1"/><rect x="44" y="30" width="32" height="15" rx="4" fill="#cbd5e1"/></g></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPÇÃO E — MARTELO QUE VIRA F (negativo) -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO E</div>
+          <div class="card-name">Martelo-F (espaço negativo)</div>
+        </div>
+        <span class="card-rec primary">★ Forte</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="emberE" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/><stop offset="55%" stop-color="#f97316"/><stop offset="100%" stop-color="#9a3412"/>
+            </linearGradient>
+            <linearGradient id="steelE" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#64748b"/>
+            </linearGradient>
+            <radialGradient id="glowE" cx="50%" cy="55%" r="50%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".4"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect x="14" y="14" width="92" height="92" rx="22" fill="#0a1220" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="60" cy="62" r="38" fill="url(#glowE)"/>
+          <!-- cabo do martelo = haste do F -->
+          <rect x="44" y="36" width="13" height="52" rx="3" fill="url(#steelE)"/>
+          <!-- cabeça do martelo = braço superior do F (incandescente) -->
+          <rect x="44" y="36" width="40" height="15" rx="3" fill="url(#emberE)"/>
+          <rect x="78" y="36" width="6" height="15" rx="2" fill="#9a3412"/>
+          <!-- braço do meio do F -->
+          <rect x="44" y="57" width="26" height="12" rx="3" fill="url(#emberE)"/>
+          <!-- brilho de têmpera -->
+          <rect x="44" y="36" width="13" height="3" rx="1.5" fill="#fde68a" opacity=".85"/>
+          <!-- faíscas saindo da "batida" -->
+          <g class="spark2" fill="#fbbf24">
+            <circle cx="88" cy="44" r="2.2"/><circle cx="76" cy="62" r="1.8"/><circle cx="92" cy="54" r="1.4"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-desc">
+        A <strong>cabeça do martelo É o braço do "F"</strong> — duas leituras na mesma forma (martelo + inicial). Inteligente, memorável, e ainda escala como o monograma. Une o conceito de ofício (martelo) com a marca (F). Forte candidato a logo principal.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><rect x="44" y="36" width="13" height="52" rx="3" fill="#cbd5e1"/><rect x="44" y="36" width="40" height="15" rx="3" fill="#f97316"/><rect x="44" y="57" width="26" height="12" rx="3" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">favicon</span>
+          <div class="appicon">
+            <svg width="34" height="34" viewBox="0 0 120 120"><rect x="44" y="36" width="13" height="52" rx="3" fill="#cbd5e1"/><rect x="44" y="36" width="40" height="15" rx="3" fill="#f97316"/><rect x="78" y="36" width="6" height="15" rx="2" fill="#9a3412"/><rect x="44" y="57" width="26" height="12" rx="3" fill="#f97316"/><circle cx="88" cy="44" r="2.5" fill="#fbbf24"/></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><rect x="44" y="36" width="13" height="52" rx="3" fill="#cbd5e1"/><rect x="44" y="36" width="40" height="15" rx="3" fill="#f97316"/><rect x="44" y="57" width="26" height="12" rx="3" fill="#f97316"/></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== MONOGRAMA ALTERNATIVO ===================== -->
+  <div class="group-label">Monograma F — alternativa diferente à rodada 1</div>
+  <div class="cards">
+
+    <!-- OPÇÃO B2 — F COMO METAL INCANDESCENTE NO CADINHO -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO B2</div>
+          <div class="card-name">"F" recortado em chapa de aço</div>
+        </div>
+        <span class="card-rec primary">★ Alt principal</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="plateB2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#334155"/><stop offset="100%" stop-color="#1e293b"/>
+            </linearGradient>
+            <linearGradient id="emberB2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fde68a"/><stop offset="40%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+            <radialGradient id="glowB2" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".55"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="blurB2"><feGaussianBlur stdDeviation="2.5"/></filter>
+          </defs>
+          <!-- chapa de aço (placa quadrada com cantos chanfrados) -->
+          <rect x="20" y="20" width="80" height="80" rx="14" fill="url(#plateB2)" stroke="#475569" stroke-width="1.5"/>
+          <!-- rebites nos cantos -->
+          <circle cx="30" cy="30" r="2.2" fill="#0f172a"/><circle cx="90" cy="30" r="2.2" fill="#0f172a"/>
+          <circle cx="30" cy="90" r="2.2" fill="#0f172a"/><circle cx="90" cy="90" r="2.2" fill="#0f172a"/>
+          <!-- glow do recorte vazando luz -->
+          <circle cx="60" cy="60" r="34" fill="url(#glowB2)"/>
+          <!-- F recortado, com brasa vazando por trás (efeito "metal cortado a laser quente") -->
+          <g filter="url(#blurB2)" opacity=".9">
+            <path d="M44 38 H80 V50 H56 V58 H74 V69 H56 V84 H44 Z" fill="url(#emberB2)"/>
+          </g>
+          <path d="M44 38 H80 V50 H56 V58 H74 V69 H56 V84 H44 Z" fill="url(#emberB2)"/>
+          <!-- brilho de aresta superior -->
+          <path d="M44 38 H80 V41 H44 Z" fill="#fff7e6" opacity=".7"/>
+          <!-- faíscas -->
+          <g class="spark2" fill="#fde68a">
+            <circle cx="82" cy="44" r="1.8"/><circle cx="78" cy="64" r="1.4"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-desc">
+        O "F" é <strong>recortado numa chapa de aço</strong> com a brasa vazando luz por trás — como metal cortado a laser ainda quente. Os rebites nos cantos reforçam a indústria/ofício. Mais "produto de engenharia" que o F dobrado da rodada 1. O glow cria profundidade premium.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><rect x="20" y="20" width="80" height="80" rx="14" fill="#1e293b"/><path d="M44 38 H80 V50 H56 V58 H74 V69 H56 V84 H44 Z" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">favicon</span>
+          <div class="appicon">
+            <svg width="34" height="34" viewBox="0 0 120 120"><rect x="20" y="20" width="80" height="80" rx="14" fill="#1e293b" stroke="#475569" stroke-width="2"/><circle cx="30" cy="30" r="2.5" fill="#0f172a"/><circle cx="90" cy="30" r="2.5" fill="#0f172a"/><circle cx="30" cy="90" r="2.5" fill="#0f172a"/><circle cx="90" cy="90" r="2.5" fill="#0f172a"/><path d="M44 38 H80 V50 H56 V58 H74 V69 H56 V84 H44 Z" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><rect x="20" y="20" width="80" height="80" rx="14" fill="#1e293b"/><path d="M44 38 H80 V50 H56 V58 H74 V69 H56 V84 H44 Z" fill="#f97316"/></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
