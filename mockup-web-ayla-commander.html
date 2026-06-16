@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayla Commander — Web App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #020617;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #e2e8f0;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 2.5rem 1.5rem 4rem; gap: 2rem; min-height: 100vh;
+    }
+    .page-header { text-align: center; }
+    .page-title { font-size: 1.2rem; font-weight: 800; color: #f8fafc; margin-bottom: .3rem; }
+    .page-sub { font-size: .68rem; color: #334155; text-transform: uppercase; letter-spacing: .1em; }
+
+    /* BROWSER CHROME */
+    .browser {
+      width: 100%; max-width: 1440px;
+      background: #0f172a;
+      border-radius: 1rem;
+      box-shadow: 0 0 0 1px #1e293b, 0 32px 80px rgba(0,0,0,.8);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .browser-bar {
+      background: #0a1628; border-bottom: 1px solid #1e293b;
+      padding: .55rem 1rem; display: flex; align-items: center; gap: .75rem; flex-shrink: 0;
+    }
+    .browser-dots { display: flex; gap: .35rem; }
+    .bd { width: 10px; height: 10px; border-radius: 50%; }
+    .bd.r { background: #ef4444; } .bd.y { background: #f59e0b; } .bd.g { background: #22c55e; }
+    .browser-url {
+      flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: .4rem;
+      padding: .3rem .75rem; font-size: .72rem; color: #64748b; max-width: 480px; margin: 0 auto;
+    }
+    .browser-url span { color: #38bdf8; }
+
+    /* APP LAYOUT */
+    .app { display: flex; height: 820px; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px; flex-shrink: 0;
+      background: #0a1628; border-right: 1px solid #1e293b;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-brand {
+      padding: 1rem .9rem .75rem;
+      border-bottom: 1px solid #1e293b;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .brand-icon { width: 28px; height: 28px; background: linear-gradient(135deg,#2563eb,#7c3aed); border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
+    .brand-name { font-size: .85rem; font-weight: 800; color: #f1f5f9; }
+    .brand-tag { font-size: .52rem; color: #334155; margin-top: .05rem; }
+
+    .nav-section { padding: .6rem .6rem .2rem; }
+    .nav-section-title { font-size: .55rem; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: .1em; padding: 0 .4rem; margin-bottom: .3rem; }
+    .nav-item {
+      display: flex; align-items: center; gap: .55rem;
+      padding: .5rem .65rem; border-radius: .5rem; cursor: pointer;
+      font-size: .75rem; color: #475569; transition: all .15s;
+      position: relative;
+    }
+    .nav-item:hover { background: #1e293b; color: #94a3b8; }
+    .nav-item.active { background: #1e3a5f; color: #38bdf8; }
+    .nav-item i { font-size: .9rem; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; background: #2563eb; color: #fff; font-size: .5rem; font-weight: 800; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 .25rem; display: flex; align-items: center; justify-content: center; }
+    .nav-badge.amber { background: #d97706; }
+    .nav-badge.red { background: #dc2626; }
+
+    /* FAB NA SIDEBAR */
+    .sidebar-fab {
+      margin: .75rem .7rem;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff; border: none; border-radius: .6rem;
+      padding: .65rem; font-size: .78rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: .45rem;
+      cursor: pointer; box-shadow: 0 0 16px #3b82f640;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto; padding: .75rem; border-top: 1px solid #1e293b;
+      display: flex; align-items: center; gap: .55rem;
+    }
+    .user-av { width: 28px; height: 28px; border-radius: 50%; background: #052e16; border: 1.5px solid #22c55e; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #4ade80; flex-shrink: 0; }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: .72rem; font-weight: 600; color: #e2e8f0; }
+    .user-role { font-size: .55rem; color: #22c55e; }
+
+    /* MAIN AREA — 4 layouts de tela */
+    .screens { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; }
+    .screen-row { display: flex; flex: 1; overflow: hidden; }
+
+    /* HOME SCREEN */
+    .home-main {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .topbar {
+      padding: .7rem 1.2rem; border-bottom: 1px solid #1e293b;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .topbar-title { font-size: .95rem; font-weight: 700; color: #f1f5f9; }
+    .topbar-actions { display: flex; gap: .5rem; }
+    .tba { background: #1e293b; border: 1px solid #334155; border-radius: .4rem; padding: .3rem .65rem; font-size: .68rem; color: #94a3b8; cursor: pointer; }
+    .tba.primary { background: #1e3a5f; border-color: #1d4ed8; color: #38bdf8; }
+
+    .home-content { flex: 1; overflow: auto; padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: .9rem; }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+    .stat-card { background: #1e293b; border: 1px solid #334155; border-radius: .65rem; padding: .85rem 1rem; }
+    .stat-val { font-size: 1.6rem; font-weight: 800; }
+    .stat-val.c { color: #22d3ee; } .stat-val.a { color: #f59e0b; } .stat-val.g { color: #22c55e; } .stat-val.p { color: #c4b5fd; }
+    .stat-lbl { font-size: .62rem; color: #475569; margin-top: .2rem; text-transform: uppercase; }
+    .stat-trend { font-size: .6rem; color: #22c55e; margin-top: .3rem; }
+
+    /* TABLE */
+    .table-card { background: #1e293b; border: 1px solid #334155; border-radius: .65rem; overflow: hidden; }
+    .table-hdr { padding: .7rem 1rem; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+    .table-title { font-size: .75rem; font-weight: 600; color: #f1f5f9; }
+    .table-head { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: .5rem; padding: .45rem 1rem; background: #0f172a; border-bottom: 1px solid #1e293b; font-size: .6rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: .05em; }
+    .table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: .5rem; padding: .55rem 1rem; border-bottom: 1px solid #1e293b; align-items: center; }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: #162032; }
+    .tr-name { font-size: .72rem; color: #e2e8f0; font-family: 'Menlo','Courier New',monospace; }
+    .tr-meta { font-size: .62rem; color: #64748b; }
+    .tr-agent { font-size: .62rem; color: #7dd3fc; background: #1e3a5f; padding: .15rem .4rem; border-radius: .25rem; display: inline-block; }
+    .tr-diff-a { font-size: .65rem; color: #22d3ee; font-family: monospace; }
+    .tr-diff-r { font-size: .65rem; color: #f87171; font-family: monospace; }
+    .tag { font-size: .55rem; padding: .15rem .4rem; border-radius: .25rem; font-weight: 700; display: inline-block; }
+    .tag.run  { background: #451a03; color: #fb923c; }
+    .tag.rev  { background: #1e3a5f; color: #7dd3fc; }
+    .tag.done { background: #052e16; color: #4ade80; }
+    .tr-btn { background: #1e3a5f; border: 1px solid #1d4ed8; color: #38bdf8; font-size: .6rem; font-weight: 700; padding: .25rem .55rem; border-radius: .35rem; cursor: pointer; white-space: nowrap; }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      width: 300px; flex-shrink: 0;
+      background: #0a1628; border-left: 1px solid #1e293b;
+      display: flex; flex-direction: column;
+    }
+    .rp-hdr { padding: .7rem .9rem; border-bottom: 1px solid #1e293b; font-size: .78rem; font-weight: 600; color: #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+    .rp-content { flex: 1; overflow: auto; padding: .75rem .9rem; display: flex; flex-direction: column; gap: .65rem; }
+
+    /* WAR ROOM MINI */
+    .wr-msg { display: flex; gap: .45rem; }
+    .wr-av { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .58rem; font-weight: 700; flex-shrink: 0; }
+    .wr-bbl { background: #1e293b; border-radius: 0 .55rem .55rem .55rem; padding: .45rem .55rem; flex: 1; }
+    .wr-bbl.me { background: #1e3a5f; }
+    .wr-sender { font-size: .55rem; font-weight: 700; margin-bottom: .15rem; text-transform: uppercase; letter-spacing: .04em; }
+    .wr-text { font-size: .65rem; color: #cbd5e1; line-height: 1.45; }
+    .wr-action-tag { background: #0a1628; border: 1px solid #1e293b; border-radius: .3rem; padding: .3rem .45rem; margin-top: .3rem; font-size: .58rem; color: #64748b; }
+    .demand-banner { background: #1e3a5f; border: 1px solid #1d4ed8; border-radius: .45rem; padding: .5rem .65rem; font-size: .62rem; color: #bfdbfe; }
+    .rp-input { display: flex; gap: .4rem; padding: .65rem .9rem; border-top: 1px solid #1e293b; }
+    .rp-in { flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: .5rem; padding: .45rem .65rem; font-size: .68rem; color: #64748b; }
+    .rp-snd { width: 30px; height: 30px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: .75rem; border: none; flex-shrink: 0; cursor: pointer; }
+
+    /* REVIEWS SCREEN */
+    .reviews-main { flex: 1; display: flex; overflow: hidden; }
+    .reviews-list { width: 380px; flex-shrink: 0; border-right: 1px solid #1e293b; display: flex; flex-direction: column; }
+    .rl-hdr { padding: .7rem 1rem; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .rl-title { font-size: .85rem; font-weight: 700; color: #f1f5f9; }
+    .rl-item { padding: .75rem 1rem; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background .15s; }
+    .rl-item:hover { background: #162032; }
+    .rl-item.selected { background: #1e3a5f; border-left: 3px solid #3b82f6; }
+    .rl-name { font-size: .72rem; font-weight: 600; color: #f1f5f9; font-family: 'Menlo','Courier New',monospace; margin-bottom: .3rem; }
+    .rl-meta { display: flex; gap: .4rem; align-items: center; margin-bottom: .3rem; }
+    .rl-agent { font-size: .58rem; color: #7dd3fc; background: #1e3a5f; padding: .12rem .35rem; border-radius: .2rem; }
+    .rl-age { font-size: .58rem; color: #475569; }
+    .rl-diff { display: flex; gap: .4rem; }
+    .rl-add { font-size: .62rem; color: #22d3ee; font-family: monospace; }
+    .rl-del { font-size: .62rem; color: #f87171; font-family: monospace; }
+
+    /* DIFF PANEL */
+    .diff-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .diff-topbar { padding: .6rem 1rem; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
+    .diff-pr-title { font-size: .82rem; font-weight: 600; color: #f1f5f9; font-family: 'Menlo','Courier New',monospace; flex: 1; }
+    .diff-file-tabs { display: flex; gap: 0; border-bottom: 1px solid #1e293b; padding: 0 1rem; flex-shrink: 0; overflow-x: auto; }
+    .dft { padding: .5rem .85rem; font-size: .68rem; color: #475569; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-family: 'Menlo','Courier New',monospace; }
+    .dft.active { color: #38bdf8; border-bottom-color: #3b82f6; }
+    .diff-scroll { flex: 1; overflow: auto; font-family: 'Menlo','Courier New',monospace; font-size: .72rem; line-height: 1.55rem; }
+    .dchunk { padding: .15rem 1rem; font-size: .62rem; background: #0d2240; color: #38bdf8; }
+    .dl { display: flex; }
+    .ln { color: #334155; text-align: right; padding: 0 .5rem; min-width: 36px; flex-shrink: 0; user-select: none; font-size: .62rem; }
+    .lc { flex: 1; padding: 0 .6rem; white-space: pre; display: flex; justify-content: space-between; align-items: center; }
+    .dl.rem { background: #2d0e0e; } .dl.rem .lc { color: #f87171; }
+    .dl.add { background: #042318; } .dl.add .lc { color: #22d3ee; }
+    .dl.ctx { background: #0f172a; } .dl.ctx .lc { color: #64748b; }
+    .cbtn { background: #1e3a5f; border: none; color: #38bdf8; padding: .1rem .4rem; border-radius: .2rem; font-size: .55rem; cursor: pointer; flex-shrink: 0; margin-left: .4rem; opacity: 0; }
+    .dl:hover .cbtn { opacity: 1; }
+    .diff-footer { border-top: 1px solid #1e293b; padding: .75rem 1rem; display: flex; gap: .65rem; align-items: center; flex-shrink: 0; background: #0a1628; }
+    .df-comment { flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: .45rem; padding: .45rem .75rem; font-size: .7rem; color: #334155; }
+    .df-btn { padding: .5rem 1.1rem; border-radius: .45rem; border: none; font-size: .72rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: .35rem; }
+    .df-rej { background: #450a0a; color: #ef4444; border: 1px solid #7f1d1d; }
+    .df-app { background: #052e16; color: #22c55e; border: 1px solid #166534; box-shadow: 0 0 8px #22c55e22; }
+
+    /* CHAT SCREEN */
+    .chat-main { flex: 1; display: flex; overflow: hidden; }
+    .chat-sidebar { width: 260px; flex-shrink: 0; border-right: 1px solid #1e293b; display: flex; flex-direction: column; background: #0a1628; }
+    .cs-hdr { padding: .65rem .85rem; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .cs-title { font-size: .78rem; font-weight: 700; color: #f1f5f9; }
+    .cs-actions { display: flex; gap: .3rem; }
+    .cs-btn { background: none; border: none; color: #475569; font-size: .85rem; cursor: pointer; padding: .2rem; }
+    .cs-btn.new { background: #1e3a5f; border-radius: .3rem; color: #38bdf8; padding: .2rem .4rem; font-size: .65rem; }
+    .cs-search { padding: .45rem .7rem; border-bottom: 1px solid #1e293b; flex-shrink: 0; }
+    .cs-search-input { width: 100%; background: #1e293b; border: 1px solid #1e3a5f; border-radius: .4rem; padding: .38rem .6rem; font-size: .68rem; color: #94a3b8; display: flex; align-items: center; gap: .35rem; }
+    .cs-section { padding: .4rem .7rem .15rem; font-size: .55rem; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: .08em; }
+    .cs-item { display: flex; align-items: center; gap: .5rem; padding: .45rem .7rem; cursor: pointer; border-radius: .35rem; margin: 0 .3rem; }
+    .cs-item:hover { background: #1e293b; }
+    .cs-item.active { background: #1e3a5f; }
+    .cs-av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .6rem; font-weight: 700; border: 1.5px solid; flex-shrink: 0; }
+    .cs-name { font-size: .7rem; color: #e2e8f0; flex: 1; }
+    .cs-unread { background: #2563eb; color: #fff; font-size: .5rem; font-weight: 800; min-width: 14px; height: 14px; border-radius: 7px; padding: 0 .2rem; display: flex; align-items: center; justify-content: center; }
+    .cs-hash { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: .85rem; color: #475569; flex-shrink: 0; }
+
+    .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .ca-hdr { padding: .65rem 1rem; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: .6rem; flex-shrink: 0; }
+    .ca-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; border: 1.5px solid; flex-shrink: 0; }
+    .ca-name { font-size: .82rem; font-weight: 700; color: #f1f5f9; }
+    .ca-status { font-size: .6rem; color: #22c55e; }
+    .ca-msgs { flex: 1; overflow: auto; padding: .75rem 1rem; display: flex; flex-direction: column; gap: .6rem; }
+    .ca-msg { display: flex; gap: .55rem; }
+    .ca-msg.me { flex-direction: row-reverse; }
+    .ca-bbl { background: #1e293b; border-radius: 0 .65rem .65rem .65rem; padding: .5rem .7rem; max-width: 480px; }
+    .ca-bbl.me { background: #1e3a5f; border-radius: .65rem 0 .65rem .65rem; }
+    .ca-sender { font-size: .6rem; font-weight: 700; margin-bottom: .2rem; }
+    .ca-text { font-size: .72rem; color: #cbd5e1; line-height: 1.5; }
+    .ca-time { font-size: .55rem; color: #334155; margin-top: .2rem; }
+    .ca-input-row { display: flex; gap: .5rem; padding: .75rem 1rem; border-top: 1px solid #1e293b; flex-shrink: 0; }
+    .ca-in { flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: .55rem; padding: .5rem .85rem; font-size: .75rem; color: #64748b; }
+    .ca-snd { width: 34px; height: 34px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: .82rem; border: none; flex-shrink: 0; cursor: pointer; }
+
+    /* SCREEN LABELS */
+    .screen-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid #1e293b;
+      padding: 0 1.5rem; flex-shrink: 0; background: #0a1628;
+    }
+    .st { padding: .6rem .9rem; font-size: .7rem; color: #475569; cursor: pointer; border-bottom: 2px solid transparent; }
+    .st.active { color: #38bdf8; border-bottom-color: #3b82f6; }
+
+    /* LEGEND */
+    .legend { max-width: 1440px; width: 100%; background: #0f172a; border: 1px solid #1e293b; border-radius: .75rem; padding: 1rem 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: .65rem; }
+    .li { font-size: .65rem; color: #475569; display: flex; gap: .45rem; }
+    .li-tab { font-weight: 700; color: #64748b; min-width: 80px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-title">Ayla Commander — Web App</div>
+  <div class="page-sub">Layout desktop · sidebar + painel duplo · mesma Opção C</div>
+</div>
+
+<!-- ======== HOME ======== -->
+<div class="browser">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="bd r"></div><div class="bd y"></div><div class="bd g"></div></div>
+    <div class="browser-url"><span>app.aylacommander.io</span>/home</div>
+  </div>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div><div class="brand-name">Ayla Commander</div><div class="brand-tag">war room · PRs · agents</div></div>
+      </div>
+      <button class="sidebar-fab">+ Nova Demanda</button>
+      <div class="nav-section">
+        <div class="nav-section-title">Produto</div>
+        <div class="nav-item active"><span>🏠</span> Home<span class="nav-badge amber">3</span></div>
+        <div class="nav-item"><span>🔍</span> Reviews<span class="nav-badge">2</span></div>
+        <div class="nav-item"><span>⚔️</span> War Room<span class="nav-badge red">ao vivo</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Comunicação</div>
+        <div class="nav-item"><span>💬</span> Chat<span class="nav-badge">2</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Sistema</div>
+        <div class="nav-item"><span>📊</span> Relatórios</div>
+        <div class="nav-item"><span>👸</span> Ayla</div>
+        <div class="nav-item"><span>⚙️</span> Config</div>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="user-av">R</div>
+        <div class="user-info"><div class="user-name">Rafael</div><div class="user-role">● ROOT</div></div>
+      </div>
+    </div>
+
+    <!-- HOME MAIN -->
+    <div class="home-main">
+      <div class="topbar">
+        <div class="topbar-title">🏠 Home — Cockpit</div>
+        <div class="topbar-actions">
+          <button class="tba">Filtrar</button>
+          <button class="tba primary">↗ Ver todos PRs</button>
+        </div>
+      </div>
+      <div class="home-content">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-val c">3</div><div class="stat-lbl">Em execução</div><div class="stat-trend">↑ 1 desde ontem</div></div>
+          <div class="stat-card"><div class="stat-val a">2</div><div class="stat-lbl">Aguardando review</div><div class="stat-trend">→ igual ontem</div></div>
+          <div class="stat-card"><div class="stat-val g">11</div><div class="stat-lbl">Merged hoje</div><div class="stat-trend">↑ 4 vs média</div></div>
+          <div class="stat-card"><div class="stat-val p">6</div><div class="stat-lbl">Agentes online</div><div class="stat-trend">● todos saudáveis</div></div>
+        </div>
+        <div class="table-card">
+          <div class="table-hdr"><span class="table-title">⏳ PRs aguardando review</span><button class="tba primary">Ver Reviews →</button></div>
+          <div class="table-head"><span>Branch</span><span>Agente</span><span>Arquivos</span><span>Diff</span><span>Ação</span></div>
+          <div class="table-row">
+            <div><div class="tr-name">feat/jwt-refresh</div><div class="tr-meta">há 3 min</div></div>
+            <span class="tr-agent">⚡ Apolo</span>
+            <span class="tr-meta">3 arquivos</span>
+            <div><span class="tr-diff-a">+47</span> <span class="tr-diff-r">-12</span></div>
+            <button class="tr-btn">🔍 Ver diff</button>
+          </div>
+          <div class="table-row">
+            <div><div class="tr-name">fix/auth-timeout</div><div class="tr-meta">há 12 min</div></div>
+            <span class="tr-agent">🏹 Artemis</span>
+            <span class="tr-meta">1 arquivo</span>
+            <div><span class="tr-diff-a">+8</span> <span class="tr-diff-r">-3</span></div>
+            <button class="tr-btn">🔍 Ver diff</button>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-hdr"><span class="table-title">⚡ Execuções ativas</span></div>
+          <div class="table-head"><span>Branch</span><span>Agentes</span><span>Fase</span><span>Iniciado</span><span>Status</span></div>
+          <div class="table-row">
+            <div><div class="tr-name">feat/neon-migration</div><div class="tr-meta">war room ativo</div></div>
+            <span class="tr-meta">Atena + Apolo</span>
+            <span class="tr-meta">Running</span>
+            <span class="tr-meta">há 8 min</span>
+            <span class="tag run">Rodando</span>
+          </div>
+          <div class="table-row">
+            <div><div class="tr-name">chore/cleanup-branches</div><div class="tr-meta">war room ativo</div></div>
+            <span class="tr-meta">Hermes</span>
+            <span class="tr-meta">PRE_FLIGHT</span>
+            <span class="tr-meta">há 2 min</span>
+            <span class="tag run">Rodando</span>
+          </div>
+          <div class="table-row">
+            <div><div class="tr-name">fix/cors-sse</div><div class="tr-meta">concluído</div></div>
+            <span class="tr-meta">Artemis</span>
+            <span class="tr-meta">Done</span>
+            <span class="tr-meta">há 45 min</span>
+            <span class="tag done">Done</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL — WAR ROOM MINI -->
+    <div class="right-panel">
+      <div class="rp-hdr">⚔️ War Room <span style="font-size:.55rem;color:#22c55e;">● AO VIVO</span></div>
+      <div class="rp-content">
+        <div class="demand-banner">🎯 <strong>DEMANDA:</strong> implementar refresh token com expiração de 7 dias</div>
+        <div class="wr-msg">
+          <div class="wr-av" style="background:#0e3a4f;color:#67e8f9;">H</div>
+          <div class="wr-bbl"><div class="wr-sender" style="color:#67e8f9;">Hermes</div><div class="wr-text">Varredura: 3 arquivos impactados.</div></div>
+        </div>
+        <div class="wr-msg">
+          <div class="wr-av" style="background:#0a2d35;color:#22d3ee;">At</div>
+          <div class="wr-bbl"><div class="wr-sender" style="color:#22d3ee;">Atena</div><div class="wr-text">PRE_FLIGHT 13/13 ✓. Arquitetura aprovada.</div></div>
+        </div>
+        <div class="wr-msg">
+          <div class="wr-av" style="background:#2e1065;color:#c4b5fd;">Ap</div>
+          <div class="wr-bbl"><div class="wr-sender" style="color:#c4b5fd;">Apolo</div><div class="wr-text">RED ✓ → GREEN ✓ → PR aberto. +47 -12.</div><div class="wr-action-tag">feat/jwt-refresh · <span style="color:#22d3ee;">→ Reviews</span></div></div>
+        </div>
+        <div class="wr-msg" style="flex-direction:row-reverse;">
+          <div class="wr-bbl me"><div class="wr-sender" style="color:#bfdbfe;text-align:right;">Rafael</div><div class="wr-text">Pode executar. TTL 7 dias.</div></div>
+        </div>
+      </div>
+      <div class="rp-input">
+        <div class="rp-in">Digite demanda ou comentário...</div>
+        <button class="rp-snd">↑</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======== REVIEWS + CODE PANEL ======== -->
+<div class="browser">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="bd r"></div><div class="bd y"></div><div class="bd g"></div></div>
+    <div class="browser-url"><span>app.aylacommander.io</span>/reviews</div>
+  </div>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div><div class="brand-name">Ayla Commander</div><div class="brand-tag">war room · PRs · agents</div></div>
+      </div>
+      <button class="sidebar-fab">+ Nova Demanda</button>
+      <div class="nav-section">
+        <div class="nav-section-title">Produto</div>
+        <div class="nav-item"><span>🏠</span> Home</div>
+        <div class="nav-item active"><span>🔍</span> Reviews<span class="nav-badge">2</span></div>
+        <div class="nav-item"><span>⚔️</span> War Room</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Comunicação</div>
+        <div class="nav-item"><span>💬</span> Chat<span class="nav-badge">2</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Sistema</div>
+        <div class="nav-item"><span>📊</span> Relatórios</div>
+        <div class="nav-item"><span>👸</span> Ayla</div>
+        <div class="nav-item"><span>⚙️</span> Config</div>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="user-av">R</div>
+        <div class="user-info"><div class="user-name">Rafael</div><div class="user-role">● ROOT</div></div>
+      </div>
+    </div>
+
+    <!-- REVIEWS SPLIT VIEW -->
+    <div class="reviews-main">
+
+      <!-- LISTA -->
+      <div class="reviews-list">
+        <div class="rl-hdr"><span class="rl-title">🔍 Reviews</span><span class="tag rev">2 pendentes</span></div>
+        <div class="rl-item selected">
+          <div class="rl-name">feat/jwt-refresh</div>
+          <div class="rl-meta"><span class="rl-agent">⚡ Apolo</span><span class="rl-age">há 3 min</span></div>
+          <div class="rl-diff"><span class="rl-add">+47 inserções</span><span class="rl-del">-12 deleções</span></div>
+        </div>
+        <div class="rl-item">
+          <div class="rl-name">fix/auth-timeout</div>
+          <div class="rl-meta"><span class="rl-agent">🏹 Artemis</span><span class="rl-age">há 12 min</span></div>
+          <div class="rl-diff"><span class="rl-add">+8 inserções</span><span class="rl-del">-3 deleções</span></div>
+        </div>
+        <div class="rl-item" style="opacity:.35;">
+          <div class="rl-name">chore/cleanup</div>
+          <div style="font-size:.62rem;color:#22c55e;font-weight:700;margin-top:.2rem;">✅ Mergeado</div>
+        </div>
+      </div>
+
+      <!-- DIFF PANEL -->
+      <div class="diff-panel">
+        <div class="diff-topbar">
+          <span class="diff-pr-title">feat/jwt-refresh</span>
+          <span class="tag rev">3 arquivos</span>
+          <span class="rl-add" style="font-size:.65rem;">+47</span>
+          <span class="rl-del" style="font-size:.65rem;">-12</span>
+        </div>
+        <div class="diff-file-tabs">
+          <div class="dft active">auth.service.ts</div>
+          <div class="dft">jwt-refresh.interceptor.ts</div>
+          <div class="dft">auth.model.ts</div>
+        </div>
+        <div class="diff-scroll">
+          <div class="dchunk">@@ -42,8 +42,33 @@ export class AuthService {</div>
+          <div class="dl ctx"><span class="ln">42</span><span class="lc"><span>  private apiUrl = env.apiUrl;</span></span></div>
+          <div class="dl ctx"><span class="ln">43</span><span class="lc"><span></span></span></div>
+          <div class="dl rem"><span class="ln">44</span><span class="lc"><span>-  timeout: 5000,</span><button class="cbtn">💬</button></span></div>
+          <div class="dl add"><span class="ln">44</span><span class="lc"><span>+  timeout: 10000,</span><button class="cbtn">💬</button></span></div>
+          <div class="dl ctx"><span class="ln">45</span><span class="lc"><span>  });</span></span></div>
+          <div class="dl ctx"><span class="ln">46</span><span class="lc"><span></span></span></div>
+          <div class="dl ctx"><span class="ln">47</span><span class="lc"><span>  login(creds: LoginDto) {</span></span></div>
+          <div class="dl ctx"><span class="ln">48</span><span class="lc"><span>    return this.http.post(</span></span></div>
+          <div class="dl ctx"><span class="ln">49</span><span class="lc"><span>      `${this.apiUrl}/auth/login`,</span></span></div>
+          <div class="dl ctx"><span class="ln">50</span><span class="lc"><span>      creds);</span></span></div>
+          <div class="dl ctx"><span class="ln">51</span><span class="lc"><span>  }</span></span></div>
+          <div class="dl ctx"><span class="ln">52</span><span class="lc"><span></span></span></div>
+          <div class="dl add"><span class="ln">53</span><span class="lc"><span>+  refreshToken(token: string) {</span><button class="cbtn">💬</button></span></div>
+          <div class="dl add"><span class="ln">54</span><span class="lc"><span>+    return this.http.post(</span><button class="cbtn">💬</button></span></div>
+          <div class="dl add"><span class="ln">55</span><span class="lc"><span>+      `${this.apiUrl}/auth/refresh`,</span><button class="cbtn">💬</button></span></div>
+          <div class="dl add"><span class="ln">56</span><span class="lc"><span>+      { refreshToken: token }</span><button class="cbtn">💬</button></span></div>
+          <div class="dl add"><span class="ln">57</span><span class="lc"><span>+    );</span><button class="cbtn">💬</button></span></div>
+          <div class="dl add"><span class="ln">58</span><span class="lc"><span>+  }</span><button class="cbtn">💬</button></span></div>
+          <div class="dl ctx"><span class="ln">59</span><span class="lc"><span></span></span></div>
+          <div class="dl ctx"><span class="ln">60</span><span class="lc"><span>  logout(): void {</span></span></div>
+          <div class="dl ctx"><span class="ln">61</span><span class="lc"><span>    this.token.clear();</span></span></div>
+          <div class="dl ctx"><span class="ln">62</span><span class="lc"><span>  }</span></span></div>
+        </div>
+        <div class="diff-footer">
+          <div class="df-comment">Adicionar comentário ao PR...</div>
+          <button class="df-btn df-rej">❌ Rejeitar</button>
+          <button class="df-btn df-app">✅ Aprovar PR</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ======== CHAT ======== -->
+<div class="browser">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="bd r"></div><div class="bd y"></div><div class="bd g"></div></div>
+    <div class="browser-url"><span>app.aylacommander.io</span>/chat</div>
+  </div>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div><div class="brand-name">Ayla Commander</div><div class="brand-tag">war room · PRs · agents</div></div>
+      </div>
+      <button class="sidebar-fab">+ Nova Demanda</button>
+      <div class="nav-section">
+        <div class="nav-section-title">Produto</div>
+        <div class="nav-item"><span>🏠</span> Home</div>
+        <div class="nav-item"><span>🔍</span> Reviews<span class="nav-badge">2</span></div>
+        <div class="nav-item"><span>⚔️</span> War Room</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Comunicação</div>
+        <div class="nav-item active"><span>💬</span> Chat<span class="nav-badge">2</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Sistema</div>
+        <div class="nav-item"><span>📊</span> Relatórios</div>
+        <div class="nav-item"><span>👸</span> Ayla</div>
+        <div class="nav-item"><span>⚙️</span> Config</div>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="user-av">R</div>
+        <div class="user-info"><div class="user-name">Rafael</div><div class="user-role">● ROOT</div></div>
+      </div>
+    </div>
+
+    <!-- CHAT SPLIT -->
+    <div class="chat-main">
+
+      <!-- CHAT SIDEBAR -->
+      <div class="chat-sidebar">
+        <div class="cs-hdr">
+          <span class="cs-title">💬 Chat</span>
+          <div class="cs-actions">
+            <button class="cs-btn">🔍</button>
+            <button class="cs-btn new">✏️ Nova</button>
+          </div>
+        </div>
+        <div class="cs-search">
+          <div class="cs-search-input"><span style="font-size:.7rem;">🔍</span> Buscar @nick ou #canal...</div>
+        </div>
+        <div class="cs-section">Direto</div>
+        <div class="cs-item active">
+          <div class="cs-av" style="background:#0a2d35;color:#22d3ee;border-color:#22d3ee;">M</div>
+          <span class="cs-name">Mari</span>
+          <span class="cs-unread">2</span>
+        </div>
+        <div class="cs-item">
+          <div class="cs-av" style="background:#2e1065;color:#c4b5fd;border-color:#8b5cf6;">P</div>
+          <span class="cs-name">Pietro</span>
+        </div>
+        <div class="cs-item">
+          <div class="cs-av" style="background:#052e16;color:#4ade80;border-color:#22c55e;">K</div>
+          <span class="cs-name">Kelly</span>
+        </div>
+        <div class="cs-section">Canais</div>
+        <div class="cs-item">
+          <div class="cs-hash">#</div>
+          <span class="cs-name">#geral</span>
+        </div>
+        <div class="cs-item">
+          <div class="cs-hash">#</div>
+          <span class="cs-name">#deploys</span>
+        </div>
+        <div class="cs-item">
+          <div class="cs-hash">#</div>
+          <span class="cs-name">#reviews</span>
+        </div>
+      </div>
+
+      <!-- CHAT AREA -->
+      <div class="chat-area">
+        <div class="ca-hdr">
+          <div class="ca-av" style="background:#0a2d35;color:#22d3ee;border-color:#22d3ee;">M</div>
+          <div><div class="ca-name">Mari</div><div class="ca-status">● online</div></div>
+        </div>
+        <div class="ca-msgs">
+          <div class="ca-msg">
+            <div class="ca-av" style="width:28px;height:28px;background:#0a2d35;color:#22d3ee;border-color:#22d3ee;border:1.5px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0;">M</div>
+            <div class="ca-bbl"><div class="ca-sender" style="color:#22d3ee;">Mari</div><div class="ca-text">oi, você viu o PR da autenticação? o diff ficou bem limpo</div><div class="ca-time">9:38</div></div>
+          </div>
+          <div class="ca-msg me">
+            <div class="ca-bbl me"><div class="ca-sender" style="color:#bfdbfe;text-align:right;">Rafael</div><div class="ca-text">vi sim, vou aprovar agora</div><div class="ca-time" style="text-align:right;">9:39</div></div>
+          </div>
+          <div class="ca-msg">
+            <div class="ca-av" style="width:28px;height:28px;background:#0a2d35;color:#22d3ee;border-color:#22d3ee;border:1.5px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0;">M</div>
+            <div class="ca-bbl"><div class="ca-sender" style="color:#22d3ee;">Mari</div><div class="ca-text">👍 obrigada</div><div class="ca-time">9:40</div></div>
+          </div>
+        </div>
+        <div class="ca-input-row">
+          <div class="ca-in">Mensagem para Mari...</div>
+          <button class="ca-snd">↑</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="li"><span class="li-tab">Sidebar</span>Navegação fixa à esquerda. "Nova Demanda" sempre visível no topo. Sistema (Relatórios/Ayla/Config) no final — não some.</div>
+  <div class="li"><span class="li-tab">Home</span>Stats em grid 4 colunas + tabelas de PRs e execuções. War Room mini no painel direito — sempre ao vivo.</div>
+  <div class="li"><span class="li-tab">Reviews</span>Split view: lista de PRs à esquerda, diff completo à direita com abas por arquivo. Comentário inline com hover.</div>
+  <div class="li"><span class="li-tab">Chat</span>Split view: lista de DMs/canais + busca + botão "✏️ Nova" à esquerda, conversa à direita. Escala para qualquer tamanho de empresa.</div>
+</div>
+
+</body>
+</html>
