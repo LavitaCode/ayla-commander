@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Value Proposition Canvas — Olimpo App</title>
+    <title>Forja — Value Proposition Canvas</title>
+    <link rel="icon" type="image/svg+xml" href="forja-logo.svg">
     <style>
         :root {
-            --bg-primary: #131316;
-            --bg-card: #1a1a1f;
-            --bg-card-hover: #222229;
-            --border-subtle: #2a2a32;
-            --text-primary: #e8e8ea;
-            --text-secondary: #9d9da6;
-            --accent-iris: #8b7aff;
-            --accent-ayla: #ff6b9d;
-            --accent-apolo: #00d9ff;
-            --accent-quiron: #ffb347;
+            --bg-primary: #020617;
+            --bg-card: #0f172a;
+            --bg-card-hover: #162032;
+            --border-subtle: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #64748b;
+            --ember: #f97316;        /* brasa */
+            --ember-light: #fb923c;
+            --spark: #fbbf24;        /* faísca */
+            --steel: #22d3ee;        /* metal temperado (V2 cyan) */
             --priority-critical: #ef4444;
             --priority-high: #f97316;
             --priority-medium: #facc15;
@@ -23,19 +24,23 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             padding: 2rem;
             line-height: 1.6;
         }
         .canvas-container { max-width: 1600px; margin: 0 auto; }
-        .canvas-header { text-align: center; margin-bottom: 3rem; }
+        .canvas-header { text-align: center; margin-bottom: 2.5rem; }
+        .brand { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.25rem; }
+        .brand img { width: 40px; height: 40px; }
+        .brand-name { font-size: 1.15rem; font-weight: 800; color: #f1f5f9; }
         .canvas-header h1 {
             font-size: 2.2rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-iris), var(--accent-ayla), var(--accent-apolo));
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--spark), var(--ember));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -45,11 +50,11 @@
             display: inline-block;
             margin-top: 0.75rem;
             padding: 0.35rem 1rem;
-            background: #1a1a1f;
+            background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 999px;
             font-size: 0.85rem;
-            color: var(--accent-quiron);
+            color: var(--ember-light);
         }
         .canvas-grid {
             display: grid;
@@ -64,8 +69,8 @@
             border-radius: 16px;
             padding: 1.75rem;
         }
-        .panel-customer { border-top: 3px solid var(--accent-ayla); }
-        .panel-product  { border-top: 3px solid var(--accent-apolo); }
+        .panel-customer { border-top: 3px solid var(--ember); }
+        .panel-product  { border-top: 3px solid var(--steel); }
         .panel-title {
             font-size: 1.3rem;
             font-weight: 700;
@@ -74,8 +79,8 @@
             align-items: center;
             gap: 0.6rem;
         }
-        .panel-customer .panel-title { color: var(--accent-ayla); }
-        .panel-product  .panel-title { color: var(--accent-apolo); }
+        .panel-customer .panel-title { color: var(--ember-light); }
+        .panel-product  .panel-title { color: var(--steel); }
         .section { margin-bottom: 1.75rem; }
         .section:last-child { margin-bottom: 0; }
         .section-title {
@@ -97,7 +102,7 @@
         }
         .card:hover {
             background: var(--bg-card-hover);
-            border-color: var(--accent-iris);
+            border-color: var(--ember);
             transform: translateX(3px);
         }
         .card-icon {
@@ -132,23 +137,24 @@
         .fit-circle {
             width: 130px; height: 130px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-ayla), var(--accent-apolo));
+            background: linear-gradient(135deg, var(--ember), var(--spark));
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 40px rgba(139,122,255,0.35);
+            box-shadow: 0 0 40px rgba(249,115,22,0.4);
             animation: pulse 3s ease-in-out infinite;
             text-align: center;
             padding: 1rem;
+            color: #1a1206;
         }
         @keyframes pulse {
-            0%,100% { transform: scale(1);    box-shadow: 0 0 40px rgba(139,122,255,0.35); }
-            50%      { transform: scale(1.05); box-shadow: 0 0 60px rgba(139,122,255,0.55); }
+            0%,100% { transform: scale(1);    box-shadow: 0 0 40px rgba(249,115,22,0.4); }
+            50%      { transform: scale(1.05); box-shadow: 0 0 60px rgba(251,191,36,0.6); }
         }
         .fit-label      { font-size: 1.4rem; font-weight: 800; letter-spacing: 0.1em; }
-        .fit-sublabel   { font-size: 0.65rem; opacity: 0.9; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
-        .fit-arrow      { font-size: 1.8rem; color: var(--accent-iris); animation: bounce 2s ease-in-out infinite; }
+        .fit-sublabel   { font-size: 0.62rem; opacity: 0.85; letter-spacing: 0.03em; text-transform: uppercase; margin-top: 2px; }
+        .fit-arrow      { font-size: 1.8rem; color: var(--ember); animation: bounce 2s ease-in-out infinite; }
         @keyframes bounce {
             0%,100% { transform: translateY(0); }
             50%      { transform: translateY(-6px); }
@@ -156,7 +162,7 @@
 
         /* POSICIONAMENTO */
         .positioning-bar {
-            background: var(--bg-card);
+            background: linear-gradient(180deg, #1a1206 0%, var(--bg-card) 45%);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
             padding: 1.5rem 2rem;
@@ -177,7 +183,7 @@
             line-height: 1.5;
         }
         .positioning-statement em {
-            color: var(--accent-iris);
+            color: var(--ember-light);
             font-style: normal;
         }
         .positioning-variants {
@@ -196,6 +202,22 @@
             color: var(--text-secondary);
         }
 
+        /* TIER STRIP (modelo freemium) */
+        .tier-strip {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .tier {
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 12px; padding: 1.1rem 1.25rem;
+        }
+        .tier.pro { border-color: var(--ember); box-shadow: 0 0 0 1px var(--ember), 0 0 24px rgba(249,115,22,0.13); }
+        .tier-name { font-size: .9rem; font-weight: 800; display: flex; align-items: center; gap: .45rem; margin-bottom: .3rem; }
+        .tier-price { font-size: 1.1rem; font-weight: 800; color: #f1f5f9; }
+        .tier-price small { font-size: .65rem; color: var(--text-secondary); font-weight: 400; }
+        .tier-desc { font-size: .72rem; color: var(--text-secondary); margin-top: .4rem; line-height: 1.5; }
+        .tier-desc strong { color: #cbd5e1; }
+
         /* LEGEND */
         .legend {
             display: flex;
@@ -213,6 +235,7 @@
         @media (max-width: 1100px) {
             .canvas-grid { grid-template-columns: 1fr; }
             .fit-indicator { flex-direction: row; justify-content: center; }
+            .tier-strip { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -220,22 +243,42 @@
 <div class="canvas-container">
 
     <div class="canvas-header">
-        <h1>Value Proposition Canvas — Olimpo App</h1>
-        <p>Alinhamento entre as necessidades do dev mobile e a proposta de valor do produto</p>
-        <span class="subtitle-tag">🏛️ War room assíncrono · IRC + 12 agentes IA · Ciclo completo de PR no celular</span>
+        <div class="brand"><img src="forja-logo.svg" alt="Forja"><span class="brand-name">Forja</span></div>
+        <h1>Value Proposition Canvas</h1>
+        <p>Alinhamento entre as necessidades do dev e a proposta de valor do Forja</p>
+        <span class="subtitle-tag">⚒️ War room com agentes IA · IRC com 15 agentes · ciclo completo de PR no celular</span>
     </div>
 
     <!-- POSICIONAMENTO -->
     <div class="positioning-bar">
         <h2>Posicionamento (Hermes + Quiron + Íris)</h2>
         <div class="positioning-statement">
-            "<em>Agentes de IA escrevem código, você aprova do celular</em> —
+            "<em>Os agentes forjam o código, você aprova do celular</em> —
             war room assíncrono que fecha o ciclo completo de PR sem depender de desktop."
         </div>
         <div class="positioning-variants">
-            <span class="variant-chip">🎯 Para: devs, tech leads, founders técnicos</span>
-            <span class="variant-chip">🏆 Categoria: asynch-first mobile-native DevOps orchestration</span>
+            <span class="variant-chip">🎯 Para: devs, tech leads, founders técnicos + curiosos no free</span>
+            <span class="variant-chip">🏆 Categoria: war room mobile-native com agentes IA que executam</span>
             <span class="variant-chip">🔑 Gap: nenhum concorrente fecha o ciclo de PR em mobile</span>
+        </div>
+    </div>
+
+    <!-- MODELO FREEMIUM (definições) -->
+    <div class="tier-strip">
+        <div class="tier">
+            <div class="tier-name"><span style="color:#34d399;">💬</span> Free</div>
+            <div class="tier-price">R$ 0 <small>/ sempre</small></div>
+            <div class="tier-desc">IRC com os <strong>15 agentes</strong>. Roteamento: ~15 msg Sonnet + 20-25 Qwen/dia. Difunde o produto e <strong>treina os agentes</strong>.</div>
+        </div>
+        <div class="tier pro">
+            <div class="tier-name"><span style="color:#fb923c;">⚡</span> Pro</div>
+            <div class="tier-price">R$ 99 <small>/ mês</small></div>
+            <div class="tier-desc">War Room + Reviews + <strong>execução de código</strong>. Sonnet + Opus, janela de uso a cada 5h (estilo Anthropic).</div>
+        </div>
+        <div class="tier">
+            <div class="tier-name"><span style="color:#c4b5fd;">🏛️</span> Team</div>
+            <div class="tier-price">R$ 99-119 <small>/ assento · mín. 3</small></div>
+            <div class="tier-desc">Multi-usuário, papéis, <strong>agentes treinados no contexto da empresa</strong>, SSO, pool de uso compartilhado.</div>
         </div>
     </div>
 
@@ -260,13 +303,13 @@
                         <span class="card-priority priority-critical"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🔄</span>
-                        <span class="card-text">Manter contexto de trabalho entre devices (celular → tablet → desktop)</span>
+                        <span class="card-icon">🤖</span>
+                        <span class="card-text">Despachar demandas e orquestrar agentes que executam o trabalho (não só sugerem)</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🤖</span>
-                        <span class="card-text">Orquestrar DevOps pipeline (deploy, rollback, logs) sem terminal SSH</span>
+                        <span class="card-icon">💡</span>
+                        <span class="card-text">Tirar dúvidas técnicas com especialistas — arquitetura, design, testes — sob demanda</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
@@ -292,7 +335,7 @@
                     </div>
                     <div class="card">
                         <span class="card-icon">🧠</span>
-                        <span class="card-text">Contexto se perde entre devices — recomeça do zero no desktop</span>
+                        <span class="card-text">Copilot/Cursor só sugerem — ninguém EXECUTA o ciclo RED→GREEN→PR sozinho</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
@@ -301,8 +344,8 @@
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🔌</span>
-                        <span class="card-text">SSH no celular é sofrimento — Termux + teclado virtual = improdutivo</span>
+                        <span class="card-icon">💸</span>
+                        <span class="card-text">Ferramentas de IA caras ($20+) pra quem só quer experimentar ou aprender</span>
                         <span class="card-priority priority-medium"></span>
                     </div>
                 </div>
@@ -323,12 +366,12 @@
                     </div>
                     <div class="card">
                         <span class="card-icon">🧬</span>
-                        <span class="card-text">IA que entende o projeto — não é autocomplete genérico, é par técnico</span>
+                        <span class="card-text">Agentes que entendem o projeto — não é autocomplete genérico, é time técnico</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🏅</span>
-                        <span class="card-text">Identidade técnica desacoplada de hardware — ser dev ≠ ter M3 Max</span>
+                        <span class="card-icon">🚪</span>
+                        <span class="card-text">Entrada grátis — conhecer e confiar nos agentes antes de pagar</span>
                         <span class="card-priority priority-medium"></span>
                     </div>
                 </div>
@@ -347,34 +390,34 @@
 
         <!-- PRODUTO -->
         <div class="panel panel-product">
-            <div class="panel-title">🏛️ Proposta de Valor</div>
+            <div class="panel-title">⚒️ Proposta de Valor — Forja</div>
 
             <div class="section">
                 <div class="section-title">🛠️ Products & Services</div>
                 <div class="card-list">
                     <div class="card">
                         <span class="card-icon">📡</span>
-                        <span class="card-text">IRC mobile-native — canais, DMs, presença ao vivo, touch-first</span>
+                        <span class="card-text">IRC mobile-native — canais, DMs, presença ao vivo, touch-first (free tier)</span>
                         <span class="card-priority priority-critical"></span>
                     </div>
                     <div class="card">
                         <span class="card-icon">🤖</span>
-                        <span class="card-text">12 agentes IA especializados com cognição, memória e personalidade própria</span>
+                        <span class="card-text">15 agentes IA especializados com cognição, memória e personalidade própria</span>
                         <span class="card-priority priority-critical"></span>
                     </div>
                     <div class="card">
                         <span class="card-icon">✅</span>
-                        <span class="card-text">Ciclo completo de PR: diff completo → comment → approve → merge no celular</span>
+                        <span class="card-text">Ciclo completo de PR: diff → comment → approve → merge no celular (Pro)</span>
                         <span class="card-priority priority-critical"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🚀</span>
-                        <span class="card-text">DevOps orchestration mobile — deploy, rollback, logs via botões, sem SSH</span>
+                        <span class="card-icon">⚒️</span>
+                        <span class="card-text">War Room — despacha demanda, agentes forjam o código (RED→GREEN→PR) (Pro)</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🔁</span>
-                        <span class="card-text">Contexto persistente cross-device — continua onde parou, qualquer device</span>
+                        <span class="card-icon">🧠</span>
+                        <span class="card-text">Roteamento inteligente de modelo: Qwen (casual) → Sonnet (técnico) → Opus (pesado)</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
@@ -399,14 +442,19 @@
                         <span class="card-priority priority-critical"></span>
                     </div>
                     <div class="card">
-                        <span class="card-icon">🔗</span>
-                        <span class="card-text">Estado sincronizado — abre no celular, continua no tablet sem perder fio</span>
+                        <span class="card-icon">🔨</span>
+                        <span class="card-text">Agentes EXECUTAM, não só sugerem — vão do despacho ao PR pronto</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
                         <span class="card-icon">☁️</span>
                         <span class="card-text">Processamento server-side — hardware fraco vira vantagem, não barreira</span>
                         <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🆓</span>
+                        <span class="card-text">Free tier generoso — experimenta e aprende sem cartão; paga só quando vai executar</span>
+                        <span class="card-priority priority-medium"></span>
                     </div>
                 </div>
             </div>
@@ -421,7 +469,7 @@
                     </div>
                     <div class="card">
                         <span class="card-icon">🧬</span>
-                        <span class="card-text">Agentes com contexto do codebase — revisam com conhecimento real do projeto</span>
+                        <span class="card-text">Agentes com contexto do codebase — revisam e codam com conhecimento real do projeto</span>
                         <span class="card-priority priority-high"></span>
                     </div>
                     <div class="card">
