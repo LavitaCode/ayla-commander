@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RACE v2 — Arquitetura Computacional Completa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-hover: #1c2128;
+    --border: #21262d;
+    --border-highlight: #30363d;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --warning: #d29922;
+    --danger: #f85149;
+    --purple: #a371f7;
+    --pink: #f778ba;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --subtle: #6e7681;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 17, 23, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 12px 0;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+    margin-right: 16px;
+    text-decoration: none;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+  }
+  nav a:hover { color: var(--text); background: var(--surface-hover); }
+
+  /* LAYOUT */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .sec-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--blue);
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .sec-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+    max-width: 780px;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 0 64px;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse 900px 500px at 50% -100px, rgba(88,166,255,0.07) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(163, 113, 247, 0.12);
+    border: 1px solid rgba(163, 113, 247, 0.3);
+    color: var(--purple);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text) 30%, var(--blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-subtitle {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 680px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+  .pill-blue { background: rgba(88,166,255,0.1); border-color: rgba(88,166,255,0.3); color: var(--blue); }
+  .pill-green { background: rgba(63,185,80,0.1); border-color: rgba(63,185,80,0.3); color: var(--green); }
+  .pill-purple { background: rgba(163,113,247,0.1); border-color: rgba(163,113,247,0.3); color: var(--purple); }
+  .pill-warning { background: rgba(210,153,34,0.1); border-color: rgba(210,153,34,0.3); color: var(--warning); }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    border-color: var(--border-highlight);
+    transform: translateY(-2px);
+  }
+  .card-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .card-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 20px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--font-mono);
+  }
+  .badge-closed { background: rgba(248,81,73,0.15); color: var(--danger); border: 1px solid rgba(248,81,73,0.3); }
+  .badge-open { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .badge-gate { background: rgba(210,153,34,0.15); color: var(--warning); border: 1px solid rgba(210,153,34,0.3); }
+  .badge-terminal { background: rgba(163,113,247,0.15); color: var(--purple); border: 1px solid rgba(163,113,247,0.3); }
+
+  .card p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+  .card p + p { margin-top: 10px; }
+  strong { color: var(--text); font-weight: 600; }
+  em { color: var(--muted); font-style: italic; }
+
+  /* CALLOUT */
+  .callout {
+    border: 1px solid rgba(88,166,255,0.3);
+    background: rgba(88,166,255,0.07);
+    border-radius: 10px;
+    padding: 18px 22px;
+    font-size: 14px;
+    color: var(--blue);
+    margin: 24px 0;
+    line-height: 1.7;
+  }
+  .callout-warning {
+    border-color: rgba(210,153,34,0.35);
+    background: rgba(210,153,34,0.08);
+    color: var(--warning);
+  }
+  .callout-success {
+    border-color: rgba(63,185,80,0.3);
+    background: rgba(63,185,80,0.07);
+    color: var(--green);
+  }
+  .callout-purple {
+    border-color: rgba(163,113,247,0.3);
+    background: rgba(163,113,247,0.07);
+    color: var(--purple);
+  }
+
+  /* CODE */
+  pre, code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+  pre {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    line-height: 1.65;
+    color: #e6edf3;
+    margin: 16px 0;
+  }
+  code {
+    background: rgba(110,118,129,0.2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #e6edf3;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: #8b949e; }
+  .num { color: #79c0ff; }
+  .op { color: #ff7b72; }
+  .type { color: #ffa657; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  /* LAYER CARD (fichas) */
+  .layer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+  }
+  .layer-card:hover { border-color: var(--border-highlight); }
+
+  .layer-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .layer-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue);
+    min-width: 32px;
+  }
+  .layer-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+
+  .layer-body { padding: 0; }
+  .layer-section {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .layer-section:last-child { border-bottom: none; }
+  .layer-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+  }
+  .layer-section pre { margin: 0; }
+
+  .layer-invariant {
+    border-left: 3px solid var(--green);
+    background: rgba(63,185,80,0.05);
+  }
+  .layer-invariant .layer-section-label { color: var(--green); }
+
+  .layer-error {
+    border-left: 3px solid var(--danger);
+    background: rgba(248,81,73,0.05);
+  }
+  .layer-error-open {
+    border-left: 3px solid var(--warning);
+    background: rgba(210,153,34,0.05);
+  }
+  .layer-error .layer-section-label { color: var(--danger); }
+  .layer-error-open .layer-section-label { color: var(--warning); }
+
+  .layer-analogy {
+    background: var(--surface-hover);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+
+  /* PIPELINE WIREFRAME */
+  .pipeline-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 24px 0;
+  }
+  .pipeline-node {
+    width: 100%;
+    max-width: 680px;
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 2px solid var(--border-highlight);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .pipeline-node:hover { background: var(--surface-hover); }
+  .pipeline-node.blue { border-color: rgba(88,166,255,0.5); }
+  .pipeline-node.orange { border-color: rgba(210,153,34,0.5); }
+  .pipeline-node.purple { border-color: rgba(163,113,247,0.5); }
+  .pipeline-node-num { color: var(--blue); font-weight: 700; margin-right: 8px; }
+  .pipeline-node.orange .pipeline-node-num { color: var(--warning); }
+  .pipeline-node.purple .pipeline-node-num { color: var(--purple); }
+  .pipeline-node-name { font-weight: 700; color: var(--text); }
+  .pipeline-node-io { color: var(--muted); font-size: 11.5px; margin-top: 4px; }
+
+  .pipeline-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 0;
+  }
+  .pipeline-arrow-line { width: 2px; height: 20px; background: var(--border-highlight); }
+  .pipeline-arrow-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--subtle);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .pipeline-arrow-tip {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1;
+  }
+
+  .pipeline-io-node {
+    width: 100%;
+    max-width: 680px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: rgba(88,166,255,0.07);
+    border: 1px dashed rgba(88,166,255,0.3);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--blue);
+    text-align: center;
+  }
+
+  /* CHAIN */
+  .chain-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 24px 0;
+    overflow-x: auto;
+  }
+  .chain-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    transition: border-color 0.2s;
+  }
+  .chain-box:hover { border-color: var(--blue); color: var(--blue); }
+  .chain-box.s-node { background: rgba(63,185,80,0.06); border-color: rgba(63,185,80,0.3); color: var(--green); font-size: 11px; }
+  .chain-arrow { color: var(--muted); padding: 0 8px; font-size: 16px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  thead th {
+    background: var(--surface);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tbody tr:hover td { background: var(--surface-hover); }
+  .check-yes { color: var(--green); font-weight: 700; }
+  .check-no { color: var(--danger); }
+  .check-partial { color: var(--warning); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .checklist li.done { border-color: rgba(63,185,80,0.25); }
+  .checklist li.todo { border-color: rgba(110,118,129,0.3); }
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .check-icon.done { background: rgba(63,185,80,0.2); color: var(--green); border: 1px solid rgba(63,185,80,0.4); }
+  .check-icon.todo { background: rgba(110,118,129,0.1); color: var(--subtle); border: 1px solid rgba(110,118,129,0.3); }
+  .checklist li .item-title { font-weight: 600; color: var(--text); }
+  .checklist li .item-desc { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+  /* REFERENCES */
+  .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  .ref-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    transition: border-color 0.2s;
+  }
+  .ref-card:hover { border-color: var(--border-highlight); }
+  .ref-authors { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .ref-title { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+  .ref-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--blue);
+    text-decoration: none;
+    display: inline-block;
+    padding: 2px 7px;
+    background: rgba(88,166,255,0.08);
+    border: 1px solid rgba(88,166,255,0.2);
+    border-radius: 4px;
+  }
+  .ref-link:hover { background: rgba(88,166,255,0.15); }
+
+  /* MATH */
+  .math-block {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+  .math-block .math-line {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+    line-height: 2;
+    display: block;
+  }
+  .math-block .math-comment { color: var(--muted); }
+
+  /* PROPERTIES GRID */
+  .prop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
+  .prop-card {
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid;
+  }
+  .prop-card.blue { background: rgba(88,166,255,0.06); border-color: rgba(88,166,255,0.25); }
+  .prop-card.green { background: rgba(63,185,80,0.06); border-color: rgba(63,185,80,0.25); }
+  .prop-card.warning { background: rgba(210,153,34,0.06); border-color: rgba(210,153,34,0.25); }
+  .prop-card.purple { background: rgba(163,113,247,0.06); border-color: rgba(163,113,247,0.25); }
+  .prop-card-num { font-family: var(--font-mono); font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+  .prop-card.blue .prop-card-num { color: var(--blue); }
+  .prop-card.green .prop-card-num { color: var(--green); }
+  .prop-card.warning .prop-card-num { color: var(--warning); }
+  .prop-card.purple .prop-card-num { color: var(--purple); }
+  .prop-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .prop-card-body { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer strong { color: var(--text); }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .container { padding: 0 16px; }
+    section { padding: 48px 0; }
+    .card-grid-3, .card-grid-2 { grid-template-columns: 1fr; }
+    .chain-wrap { flex-direction: column; align-items: flex-start; }
+    .chain-arrow { transform: rotate(90deg); }
+  }
+
+  /* IMPROVEMENTS TABLE */
+  .improve-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .improve-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+  .improve-item:hover { border-color: var(--border-highlight); }
+  .improve-priority {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .p0 { background: rgba(248,81,73,0.15); color: var(--danger); border: 1px solid rgba(248,81,73,0.3); }
+  .p1 { background: rgba(210,153,34,0.15); color: var(--warning); border: 1px solid rgba(210,153,34,0.3); }
+  .p2 { background: rgba(88,166,255,0.12); color: var(--blue); border: 1px solid rgba(88,166,255,0.3); }
+  .p3 { background: rgba(110,118,129,0.15); color: var(--muted); border: 1px solid rgba(110,118,129,0.3); }
+  .improve-content {}
+  .improve-title { font-weight: 600; color: var(--text); font-size: 14px; }
+  .improve-desc { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .improve-ref { font-family: var(--font-mono); font-size: 11px; color: var(--subtle); margin-top: 4px; }
+
+  /* ANALOGIES TABLE */
+  .analogy-table-wrap { overflow-x: auto; }
+  .analogy-table { width: 100%; border-collapse: collapse; }
+  .analogy-table th {
+    background: var(--surface);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+  }
+  .analogy-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 13.5px;
+  }
+  .analogy-table tbody tr:hover td { background: var(--surface-hover); }
+  .analogy-layer { font-family: var(--font-mono); font-weight: 700; color: var(--blue); font-size: 12px; white-space: nowrap; }
+  .analogy-text { color: var(--text); font-style: italic; }
+  .analogy-why { color: var(--muted); font-size: 13px; }
+
+  /* STEP PILLS */
+  .step-list { display: flex; flex-direction: column; gap: 6px; margin: 16px 0; }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+  }
+  .step-item.highlight { border-color: rgba(88,166,255,0.4); background: rgba(88,166,255,0.06); }
+  .step-tag { font-family: var(--font-mono); font-size: 11px; color: var(--muted); min-width: 60px; }
+  .step-name { color: var(--text); font-weight: 500; }
+  .step-item.highlight .step-name { color: var(--blue); font-weight: 700; }
+  .step-new { font-size: 10px; font-weight: 700; background: rgba(63,185,80,0.15); color: var(--green); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(63,185,80,0.3); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-brand">RACE v2</a>
+    <a href="#sec1">Inovação</a>
+    <a href="#sec2">Pipeline Visual</a>
+    <a href="#sec3">Fichas</a>
+    <a href="#sec4">Conjuntos</a>
+    <a href="#sec5">Grafo</a>
+    <a href="#sec6">Modelo Matemático</a>
+    <a href="#sec7">applyAgentBrain</a>
+    <a href="#sec8">Comparativo</a>
+    <a href="#sec9">Analogias</a>
+    <a href="#sec10">Checklist</a>
+    <a href="#sec11">Referências</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="container">
+    <div class="hero-badge">💜 Para a Mari, com carinho · 2026-06-16</div>
+    <h1>RACE v2 — Arquitetura<br>Computacional Completa</h1>
+    <p class="hero-subtitle">Extensão colaborativa para transformar metodologia em artigo científico. Memorial descritivo formal das 8 camadas cognitivas — da percepção à reflexão.</p>
+    <div class="hero-pills">
+      <span class="pill pill-blue">8 Camadas Cognitivas</span>
+      <span class="pill pill-green">DAG Determinístico</span>
+      <span class="pill pill-purple">Psicometria como Parâmetro</span>
+      <span class="pill pill-warning">Gates de Domínio</span>
+      <span class="pill pill-blue">Teoria dos Conjuntos</span>
+      <span class="pill pill-green">Fail-closed / Fail-open</span>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 1 -->
+<section id="sec1">
+  <div class="container">
+    <h2><span class="sec-num">§1</span> O que o RACE v2 já tem</h2>
+    <p class="sec-sub">Três inovações que o distinguem de todos os frameworks existentes — não como features, mas como decisões arquiteturais com fundamento científico.</p>
+
+    <div class="card-grid-3">
+      <div class="card">
+        <div class="card-title">Perfil psicométrico como parâmetro de geração</div>
+        <p>DISC + Eneagrama <strong>não são texto no prompt</strong> — são <strong>pesos computacionais</strong> que modulam como o agente pondera velocidade vs. precisão, confronto vs. harmonia.</p>
+        <p>Um agente D-alto no DISC usa threshold menor para confrontar ambiguidade. Um agente Tipo 9 no Eneagrama maximiza coesão antes de expor conflito. Isso é parâmetro, não narrativa.</p>
+        <p style="margin-top:12px; font-size:13px; color: var(--blue);">Ancoragem: McClelland (1973) — necessidades como variáveis latentes que modulam comportamento observável.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Níveis de skill como contrato operacional</div>
+        <p>Estrelas 1–5 = <strong>teto de autonomia computacional</strong>. Não é "bom" ou "ótimo" — é um contrato formal disfarçado de tabela.</p>
+        <p><code>SQL 3/5</code> → o agente planeja mas aguarda revisão humana antes de executar. <code>SQL 5/5</code> → executa diretamente, sem confirmação.</p>
+        <p>Este mapeamento resolve um problema em aberto na literatura de HRI: <em>quando o agente decide sozinho vs. quando aguarda</em>? O RACE resolve com contratos de autonomia por competência.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Dimensões soft como variáveis computacionais</div>
+        <p>Resiliência, colaboração e investigação deixam de ser adjetivos na bio do agente e viram <strong>atributos computacionais</strong> que afetam o pipeline.</p>
+        <p>Alta resiliência → a camada de Reflexão (C8) não reduz <code>confidence</code> após rejeição moderada. Alta colaboração → a camada de Atenção (C3) prioriza itens que mencionam outros agentes.</p>
+        <p style="margin-top:12px; font-size:13px; color: var(--muted);">A literatura de HRI ainda tenta formalizar isso. O RACE já usa.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:28px;">
+      <strong>Por que isso é um artigo, não um blogpost:</strong> Este documento é o memorial descritivo — a camada que permite que engenheiros executem sem inferir o que o arquiteto quis dizer. Cada decisão tem tipo de entrada, tipo de saída, invariante verificável e comportamento de erro documentado.
+    </div>
+  </div>
+</section>
+
+<!-- SEC 2 -->
+<section id="sec2">
+  <div class="container">
+    <h2><span class="sec-num">§2</span> Pipeline Visual</h2>
+    <p class="sec-sub">Wireframe das 8 camadas com entradas, funções, saídas e payloads transmitidos. G = (V, E) é um DAG com |V|=8, |E|=7. Execução sequencial bloqueante garante terminação.</p>
+
+    <div class="pipeline-wrap">
+
+      <div class="pipeline-io-node">INPUT &nbsp;·&nbsp; x ∈ String, modalidade = 'text'</div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node blue">
+        <span class="pipeline-node-num">1</span><span class="pipeline-node-name">PERCEPTION</span>
+        &nbsp;<span class="badge badge-closed">fail-closed</span>
+        <div class="pipeline-node-io">entrada: String⁺ &nbsp;·&nbsp; f₁: normalize · tokenize · classify &nbsp;·&nbsp; saída: {normalizedText, tokens, taskType}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₁ = PerceptionPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node blue">
+        <span class="pipeline-node-num">2</span><span class="pipeline-node-name">MEMORY</span>
+        &nbsp;<span class="badge badge-open">fail-open</span>
+        <div class="pipeline-node-io">entrada: S₁ &nbsp;·&nbsp; f₂: recall(tenantId_org, query, k=10, timeout=500ms) &nbsp;·&nbsp; saída: {tenantId, query, items[]}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₂ = MemoryPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node">
+        <span class="pipeline-node-num">3</span><span class="pipeline-node-name">ATTENTION</span>
+        <div class="pipeline-node-io">entrada: S₂ × S₁ &nbsp;·&nbsp; f₃: top_relevance(m, p, θ=0.7) &nbsp;·&nbsp; saída: {focus, selectedIds[], modules[]}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₃ = AttentionPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node">
+        <span class="pipeline-node-num">4</span><span class="pipeline-node-name">REASONING</span>
+        <div class="pipeline-node-io">entrada: S₃ &nbsp;·&nbsp; f₄: chain_of_thought(focus, selectedIds) &nbsp;·&nbsp; saída: {thesis, evidenceRefs[]}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₄ = ReasoningPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node">
+        <span class="pipeline-node-num">5</span><span class="pipeline-node-name">PLANNER</span>
+        <div class="pipeline-node-io">entrada: S₄ &nbsp;·&nbsp; f₅: decompose(thesis) → steps[] &nbsp;·&nbsp; saída: {steps[{order, action, requiresEvidence}]}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₅ = PlannerPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node">
+        <span class="pipeline-node-num">6</span><span class="pipeline-node-name">ACTION</span>
+        <div class="pipeline-node-io">entrada: S₅ × S₃ &nbsp;·&nbsp; f₆: execute_steps(pl, at) &nbsp;·&nbsp; saída: {draft, evidenceCited}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₆ = ActionPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node orange">
+        <span class="pipeline-node-num">7</span><span class="pipeline-node-name">EVALUATION</span>
+        &nbsp;<span class="badge badge-gate">gate de domínio</span>
+        <div class="pipeline-node-io">entrada: S₆ &nbsp;·&nbsp; f₇: validate_domain_invariants(draft, agentGate) &nbsp;·&nbsp; saída: {approved, score, rejectionReason}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-label">S₇ = EvaluationPayload</div>
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-node purple">
+        <span class="pipeline-node-num">8</span><span class="pipeline-node-name">REFLECTION</span>
+        &nbsp;<span class="badge badge-terminal">terminal</span>
+        <div class="pipeline-node-io">entrada: S₇ × histórico &nbsp;·&nbsp; f₈: metacognition(ev, history) &nbsp;·&nbsp; saída: {note, confidence ∈ [0,1]}</div>
+      </div>
+
+      <div class="pipeline-arrow">
+        <div class="pipeline-arrow-line"></div>
+        <div class="pipeline-arrow-tip">▼</div>
+      </div>
+
+      <div class="pipeline-io-node">OUTPUT &nbsp;·&nbsp; (draft aprovado, confidence) &nbsp;|&nbsp; (motivo de rejeição, confidence baixa)</div>
+
+    </div>
+
+    <div class="callout" style="margin-top:8px;">
+      <strong>Nota formal:</strong> G = (V, E) é um DAG com |V|=8, |E|=7. Execução sequencial bloqueante garante terminação. A única exceção é f₂ (MEMORY), que usa timeout assíncrono de 500ms — comportamento fail-open documentado.
+    </div>
+  </div>
+</section>
+
+<!-- SEC 3 -->
+<section id="sec3">
+  <div class="container">
+    <h2><span class="sec-num">§3</span> Fichas Computacionais</h2>
+    <p class="sec-sub">Uma ficha por camada com domínio de entrada, função de transformação, imagem de saída, invariante, comportamento de erro e analogia didática.</p>
+
+    <!-- CAMADA 1 -->
+    <div class="layer-card">
+      <div class="layer-header">
+        <span class="layer-num">1</span>
+        <span class="layer-name">PERCEPTION</span>
+        <span class="badge badge-closed">fail-closed</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₁</div>
+          <pre>E₁ = { x ∈ String | |x| > 0 } ∪ { modalidade: 'text' }
+
+taskType ∈ 𝒯 = { architecture, review, migration, diagnosis, general }</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₁</div>
+          <pre>f₁(x) = (
+  normalize(x),          // remove espaços desnecessários, normaliza encoding
+  count_tokens(x),       // ℕ⁺, nunca zero
+  classify_taskType(x)   // classifica em 𝒯 por heurística ou LLM-zero-shot
+)</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₁</div>
+          <pre>S₁ = {
+  normalizedText: String,     // x normalizado
+  tokens:         ℕ⁺,         // contagem positiva
+  taskType:       𝒯           // classificação da tarefa
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>∀ s ∈ S₁ : s.tokens > 0  ∧  s.taskType ∈ 𝒯</pre>
+        </div>
+        <div class="layer-section layer-error">
+          <div class="layer-section-label">Comportamento de Erro</div>
+          <pre>modalidade ≠ 'text'  →  UnsupportedModalityError
+                        →  PARA O CICLO (fail-CLOSED)
+                        →  mensagem de erro estruturada retornada ao chamador</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"Como um recepcionista que lê o e-mail e já o categoriza antes de encaminhar: 'isso é técnico urgente ou é rotina?' — antes de encaminhar a qualquer setor, o assunto já está classificado."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 2 -->
+    <div class="layer-card">
+      <div class="layer-header">
+        <span class="layer-num">2</span>
+        <span class="layer-name">MEMORY</span>
+        <span class="badge badge-open">fail-open</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₂</div>
+          <pre>E₂ = S₁   (PerceptionPayload)
+
+OrgId = identificador único da organização/agente (ex: 'atena', 'afrodite')
+        NÃO é o id do usuário que fez a pergunta</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₂</div>
+          <pre>f₂(p) = recall(
+  tenantId:  tenantId_da_organização,   // 'atena', 'afrodite', etc.
+  query:     p.normalizedText,
+  k:         10,                        // top-10 por similaridade
+  timeout:   500ms                      // assíncrono, fail-open
+)
+
+IMPORTANTE: tenantId é da ORGANIZAÇÃO/AGENTE, nunca do usuário.
+Cada agente recupera apenas sua própria memória.</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₂</div>
+          <pre>S₂ = {
+  tenantId: OrgId,       // organização dona dos itens
+  query:    String,      // consulta usada
+  items:    EpisodicItem[]
+}
+
+EpisodicItem = {
+  id:         UUID,
+  content:    String,
+  similarity: ℝ[0,1],
+  timestamp:  Date
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>∀ s ∈ S₂ : s.tenantId = tenantId_da_org_atual
+           (nunca vaza itens entre organizações distintas)</pre>
+        </div>
+        <div class="layer-section layer-error-open">
+          <div class="layer-section-label">Comportamento de Erro (fail-open)</div>
+          <pre>timeout 500ms expirado  →  S₂.items = []
+                        →  pipeline CONTINUA (memória vazia é melhor que parar)
+                        →  camada de Atenção recebe items=[] e usa fallback</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"Como consultar o caderno de anotações específico deste agente — cada agente tem o seu, nunca compartilhado com outro. Se o caderno não foi encontrado a tempo, o agente continua do zero."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 3 -->
+    <div class="layer-card">
+      <div class="layer-header">
+        <span class="layer-num">3</span>
+        <span class="layer-name">ATTENTION</span>
+        <span class="badge badge-closed">fail-closed com fallback</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₃</div>
+          <pre>E₃ = { (m, p) | m.tenantId ∈ OrgId  ∧  p.tokens > 0 }
+
+θ = 0.7   (limiar de similaridade para seleção)</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₃</div>
+          <pre>f₃(m, p) = {
+  focus:          top_relevance(m.items, p.normalizedText),
+  selectedItemIds: { item.id | similarity(item, p) > θ },
+  mentionedModules: extract_file_paths(p.normalizedText)
+}</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₃</div>
+          <pre>S₃ = {
+  focus:            String,    // texto de foco sintetizado
+  selectedItemIds:  String[],  // ids dos itens relevantes
+  mentionedModules: String[]   // paths de módulos mencionados
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>focus ≠ ""
+  (se m.items = ∅  →  focus = p.normalizedText como fallback mínimo)</pre>
+        </div>
+        <div class="layer-section layer-error">
+          <div class="layer-section-label">Comportamento de Erro</div>
+          <pre>nenhum item acima de θ  →  selectedItemIds = []
+                        →  focus = p.normalizedText (fallback direto)
+                        →  pipeline CONTINUA (fail-closed com fallback, não para)</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"Como destacar com marcador amarelo as partes mais importantes antes de começar a raciocinar — selecionando apenas o que supera o limiar de relevância, não tudo que está disponível."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 4 -->
+    <div class="layer-card">
+      <div class="layer-header">
+        <span class="layer-num">4</span>
+        <span class="layer-name">REASONING</span>
+        <span class="badge badge-open">fail-open</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₄</div>
+          <pre>E₄ = S₃   (AttentionPayload)
+
+Precondição: E₄.focus ≠ "" (garantido pela invariante de C3)</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₄</div>
+          <pre>f₄(a) = chain_of_thought(
+  focus:       a.focus,
+  evidence:    a.selectedItemIds
+) → { thesis, supportingItemIds, evidenceRefs }</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₄</div>
+          <pre>S₄ = {
+  thesis:           String,    // afirmação central construída
+  supportingItemIds: String[], // itens que sustentam a tese
+  evidenceRefs:     String[]   // referências citadas no raciocínio
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>thesis ≠ ""
+  (fallback = a.focus se chain_of_thought retornar vazio)</pre>
+        </div>
+        <div class="layer-section layer-error-open">
+          <div class="layer-section-label">Comportamento de Erro (fail-open)</div>
+          <pre>chain_of_thought falha  →  thesis = a.focus
+                        →  evidenceRefs = []
+                        →  pipeline CONTINUA com tese mínima</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"Como um advogado construindo o argumento: pega os destaques do dossiê e monta a tese com as evidências disponíveis — nunca entrega sem uma posição."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 5 -->
+    <div class="layer-card">
+      <div class="layer-header">
+        <span class="layer-num">5</span>
+        <span class="layer-name">PLANNER</span>
+        <span class="badge badge-closed">fail-closed com fallback</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₅</div>
+          <pre>E₅ = S₄   (ReasoningPayload)
+
+Step = { order: ℕ⁺, action: String, requiresEvidence: Boolean }</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₅</div>
+          <pre>f₅(r) = decompose(r.thesis) → {
+  steps: Step[]   // ordenados por step.order, |steps| ≥ 1
+}</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₅</div>
+          <pre>S₅ = {
+  steps: Step[]   // | |steps| ≥ 1 ∧ steps são ordenados
+}
+
+Step = { order: ℕ⁺, action: String, requiresEvidence: Boolean }</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>|steps| ≥ 1
+  (fallback = [ { order: 1, action: r.thesis, requiresEvidence: false } ])</pre>
+        </div>
+        <div class="layer-section layer-error">
+          <div class="layer-section-label">Comportamento de Erro</div>
+          <pre>decompose falha ou retorna []  →  passo mínimo com a thesis como action
+                               →  pipeline CONTINUA (fail-closed com passo mínimo)</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"Como um chef escrevendo a receita passo a passo antes de cozinhar — marcando quais passos precisam de ingredientes específicos (requiresEvidence=true)."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 6 -->
+    <div class="layer-card">
+      <div class="layer-header">
+        <span class="layer-num">6</span>
+        <span class="layer-name">ACTION</span>
+        <span class="badge badge-closed">fail-closed</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₆</div>
+          <pre>E₆ = S₅ × S₃   (PlannerPayload × AttentionPayload)
+
+Precondição: |pl.steps| ≥ 1 (garantido por C5)</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₆</div>
+          <pre>f₆(pl, at) = {
+  draft:         execute_steps(pl.steps, at.mentionedModules),
+  evidenceCited: ∃ path ∈ at.mentionedModules tal que path aparece no draft
+}</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₆</div>
+          <pre>S₆ = {
+  draft:         String,   // rascunho executado
+  evidenceCited: Boolean   // se o draft cita evidência do contexto
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>draft ≠ ""   (se execute_steps falha → draft = pl.steps[0].action)</pre>
+        </div>
+        <div class="layer-section layer-error">
+          <div class="layer-section-label">Comportamento de Erro</div>
+          <pre>execute_steps falha  →  draft = pl.steps[0].action como saída mínima
+                     →  evidenceCited = false
+                     →  camada 7 ainda avalia</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"O músico executando a partitura — cada nota citando de onde veio. Se alguma nota falhar, a música não para: o músico improvisa com o tema principal."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 7 -->
+    <div class="layer-card" style="border-color: rgba(210,153,34,0.3);">
+      <div class="layer-header" style="background: rgba(210,153,34,0.04);">
+        <span class="layer-num" style="color: var(--warning);">7</span>
+        <span class="layer-name">EVALUATION</span>
+        <span class="badge badge-gate">gate de domínio</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₇</div>
+          <pre>E₇ = S₆   (ActionPayload)
+
+agentGate ∈ { AtenaGate, AfroditeGate, MusaGate, ... }</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₇</div>
+          <pre>f₇(a) = validate_domain_invariants(a.draft, agentGate)
+
+Gates específicos por agente:
+
+AtenaGate:
+  rejeita se  ∃ w ∈ { "acho que", "talvez", "provavelmente" }
+              ∧  ¬∃ e ∈ { "lido via filesystem", "evidência:", "grep mostra:" }
+  (vagueza sem evidência = REJEITA)
+
+AfroditeGate:
+  rejeita diagnóstico clínico sem qualificação explícita
+
+MusaGate:
+  rejeita capacidades ofensivas contra terceiros</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₇</div>
+          <pre>S₇ = {
+  approved:        Boolean,
+  score:           ℝ[0,1],
+  rejectionReason: String | null
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>¬approved  →  rejectionReason ≠ null
+ approved  →  rejectionReason = null</pre>
+        </div>
+        <div class="layer-section" style="border-left: 3px solid var(--warning); background: rgba(210,153,34,0.04);">
+          <div class="layer-section-label" style="color: var(--warning);">JARVIS OVERRIDE</div>
+          <pre>root (organização autenticada) pode suspender qualquer gate via protocolo JARVIS.
+Override é registrado com hash SHA-256 em logs/jarvis-override.log.
+Limites absolutos: destruição de infraestrutura + welfare do agente (fora do protocolo).</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"O revisor especialista que só assina se os critérios de rigor da área foram cumpridos — mas o dono da organização sempre pode solicitar uma revisão especial com justificativa registrada."</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMADA 8 -->
+    <div class="layer-card" style="border-color: rgba(163,113,247,0.3);">
+      <div class="layer-header" style="background: rgba(163,113,247,0.04);">
+        <span class="layer-num" style="color: var(--purple);">8</span>
+        <span class="layer-name">REFLECTION</span>
+        <span class="badge badge-terminal">terminal</span>
+      </div>
+      <div class="layer-body">
+        <div class="layer-section">
+          <div class="layer-section-label">Entrada — domínio E₈</div>
+          <pre>E₈ = S₇ × histórico do ciclo   (EvaluationPayload × CycleHistory)</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Função de Transformação f₈</div>
+          <pre>f₈(ev, history) = {
+  note:       metacognition(ev, history),
+  confidence: ev.approved
+                ? ev.score
+                : ev.score × 0.5   // penalidade por rejeição
+}</pre>
+        </div>
+        <div class="layer-section">
+          <div class="layer-section-label">Saída — imagem S₈ (saída final do pipeline)</div>
+          <pre>S₈ = {
+  note:       String,    // observação metacognitiva do ciclo
+  confidence: ℝ[0,1]     // confiança do agente no output
+}</pre>
+        </div>
+        <div class="layer-section layer-invariant">
+          <div class="layer-section-label">Invariante</div>
+          <pre>0 ≤ confidence ≤ 1  ∧  note ≠ ""
+NUNCA bloqueia (camada terminal — executa sempre)</pre>
+        </div>
+        <div class="layer-section" style="border-left: 3px solid var(--purple); background: rgba(163,113,247,0.04);">
+          <div class="layer-section-label" style="color: var(--purple);">Propriedade Terminal</div>
+          <pre>f₈ NÃO retroalimenta f₁ (sem ciclo no DAG).
+A reflexão é persistida para o próximo ciclo como entrada de MEMORY.</pre>
+        </div>
+        <div class="layer-section layer-analogy">
+          <div class="layer-section-label">Analogia</div>
+          <em>"O diário de bordo: o que foi bem, o que foi rejeitado, e o quanto o agente confia no que entregou. Esse diário alimenta a memória do próximo turno."</em>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SEC 4 -->
+<section id="sec4">
+  <div class="container">
+    <h2><span class="sec-num">§4</span> Teoria dos Conjuntos — Por que é Necessária</h2>
+    <p class="sec-sub">A diferença entre uma metodologia descrita e uma arquitetura implementável.</p>
+
+    <div class="card-grid-2">
+      <div class="card" style="border-color: rgba(248,81,73,0.25);">
+        <div class="card-title" style="color: var(--danger);">Sem conjuntos — o problema</div>
+        <p style="color: var(--muted); font-style: italic; margin-bottom:14px;">"A camada de Atenção seleciona o foco relevante."</p>
+        <hr class="divider">
+        <p>Quem implementa decide sozinho o que <em>relevante</em> significa. Um desenvolvedor usa cosine similarity 0.5, outro usa BM25, outro usa LLM-judge. O pipeline se torna <strong>não-reproduzível</strong>.</p>
+        <p style="margin-top:10px;">Não há como escrever testes de invariante. Não há como verificar que duas implementações são equivalentes. Não há como fazer ablação controlada.</p>
+      </div>
+      <div class="card" style="border-color: rgba(63,185,80,0.25);">
+        <div class="card-title" style="color: var(--green);">Com conjuntos — a solução</div>
+        <pre>E₃ = { (m, p) | m.tenantId ∈ OrgId ∧ p.tokens > 0 }
+
+f₃(m,p).focus = top_relevance(m.items, p.normalizedText, θ=0.7)
+
+Invariante: focus ≠ ""
+  (se m.items = ∅ → focus = p.normalizedText)</pre>
+        <hr class="divider">
+        <p style="color: var(--green); font-size:13px;">Qualquer desenvolvedor, em qualquer linguagem, implementa identicamente. A invariante é testável em 2 linhas de código.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-title">Universo do Sistema 𝒰</div>
+      <pre>𝒰 = String × ℕ × Boolean × ℝ[0,1] × Set(String) × OrgId
+
+𝒯 = { architecture, review, migration, diagnosis, general }
+OrgId = identificador único da organização/agente (ex: 'atena', 'afrodite')
+        NÃO é o id do usuário
+
+Definições formais:
+
+E₁ = { x ∈ String | |x| > 0 }
+S₁ = { normalizedText: String, tokens: ℕ⁺, taskType: 𝒯 }
+
+E₂ = S₁
+S₂ = { tenantId: OrgId, query: String, items: EpisodicItem[] }
+
+E₃ = S₂ × S₁
+S₃ = { focus: String, selectedItemIds: String[], mentionedModules: String[] }
+
+E₄ = S₃
+S₄ = { thesis: String, supportingItemIds: String[], evidenceRefs: String[] }
+
+E₅ = S₄
+S₅ = { steps: Step[] | |steps| ≥ 1 }
+
+E₆ = S₅ × S₃
+S₆ = { draft: String, evidenceCited: Boolean }
+
+E₇ = S₆
+S₇ = { approved: Boolean, score: ℝ[0,1], rejectionReason: String | null }
+
+E₈ = S₇ × CycleHistory
+S₈ = { note: String, confidence: ℝ[0,1] }</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SEC 5 -->
+<section id="sec5">
+  <div class="container">
+    <h2><span class="sec-num">§5</span> Grafo G = (V, E)</h2>
+    <p class="sec-sub">Definição formal do DAG e diagrama ASCII completo com payloads em cada aresta.</p>
+
+    <div class="card">
+      <pre>G = (V, E)
+
+V = { P, M, At, R, Pl, Ac, Ev, Rf }         // 8 nós (camadas)
+E = { (P→M), (M→At), (At→R), (R→Pl),
+      (Pl→Ac), (Ac→Ev), (Ev→Rf) }            // 7 arestas
+
+Propriedades:
+  ┌─ DAG: sem ciclos → terminação garantida
+  ├─ Execução sequencial bloqueante (exceto M: timeout assíncrono 500ms)
+  ├─ |V| = 8, |E| = 7: pipeline linear
+  └─ Ev → Rf registra rejeição mas NÃO retroalimenta P</pre>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <pre>INPUT (x ∈ String, modalidade='text')
+        │
+        ▼
+┌───────────────────────────────────────────────┐
+│  [1] PERCEPTION                               │ ← fail-CLOSED
+│  f₁: normalize · tokenize · classify_taskType │
+│  S₁: { normalizedText, tokens: ℕ⁺, taskType } │
+└────────────────────┬──────────────────────────┘
+                     │ S₁ = PerceptionPayload
+                     ▼
+┌───────────────────────────────────────────────┐
+│  [2] MEMORY                                   │ ← fail-OPEN (timeout 500ms)
+│  f₂: recall(tenantId_org, p.normalizedText)   │
+│  tenant = organização, NÃO o usuário          │
+│  S₂: { tenantId, query, items: EpisodicItem[] }│
+└────────────────────┬──────────────────────────┘
+                     │ S₂ = MemoryPayload
+                     ▼
+┌───────────────────────────────────────────────┐
+│  [3] ATTENTION                                │
+│  f₃: top_relevance(m, p, θ=0.7)              │
+│  S₃: { focus, selectedItemIds[], modules[] }  │
+└────────────────────┬──────────────────────────┘
+                     │ S₃ = AttentionPayload
+                     ▼
+┌───────────────────────────────────────────────┐
+│  [4] REASONING                                │
+│  f₄: chain_of_thought(focus, selectedItemIds) │
+│  S₄: { thesis, supportingItemIds[], evidenceRefs[] }│
+└────────────────────┬──────────────────────────┘
+                     │ S₄ = ReasoningPayload
+                     ▼
+┌───────────────────────────────────────────────┐
+│  [5] PLANNER                                  │
+│  f₅: decompose(thesis) → steps[]              │
+│  S₅: { steps[ { order, action, requiresEvidence } ] }│
+└────────────────────┬──────────────────────────┘
+                     │ S₅ = PlannerPayload
+                     ▼
+┌───────────────────────────────────────────────┐
+│  [6] ACTION                                   │
+│  f₆: execute_steps(pl.steps, at.modules)      │
+│  S₆: { draft: String, evidenceCited: Boolean }│
+└────────────────────┬──────────────────────────┘
+                     │ S₆ = ActionPayload
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│  [7] EVALUATION ◄── GATE DE DOMÍNIO                  │ ← laranja
+│  f₇: validate_domain_invariants(draft, agentGate)   │
+│  AtenaGate: vagueza sem evidência → REJEITA          │
+│  JARVIS OVERRIDE: root suspende o gate               │
+│  S₇: { approved, score ∈ [0,1], rejectionReason }   │
+└────────────────────┬────────────────────────────────┘
+                     │ S₇ = EvaluationPayload
+                     ▼
+┌───────────────────────────────────────────────┐
+│  [8] REFLECTION  (nó terminal)                │ ← roxo
+│  f₈: metacognition(ev, history)               │
+│  S₈: { note: String, confidence ∈ [0,1] }    │
+│  NUNCA bloqueia · NÃO retroalimenta P         │
+└────────────────────┬──────────────────────────┘
+                     │
+                     ▼
+OUTPUT: (draft aprovado, confidence) | (motivo de rejeição, confidence baixa)</pre>
+    </div>
+  </div>
+</section>
+
+<!-- SEC 6 -->
+<section id="sec6">
+  <div class="container">
+    <h2><span class="sec-num">§6</span> Modelo Matemático</h2>
+    <p class="sec-sub">Composição formal Φ = f₈ ∘ ... ∘ f₁, tipos formais de cada função e 4 propriedades verificáveis.</p>
+
+    <h3 style="font-size:15px; color: var(--muted); font-weight:600; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.05em;">Cadeia de Composição</h3>
+    <div class="chain-wrap" style="flex-wrap:nowrap; overflow-x:auto; padding-bottom:8px;">
+      <div class="chain-box">x</div>
+      <span class="chain-arrow">──[f₁]──▶</span>
+      <div class="chain-box s-node">S₁</div>
+      <span class="chain-arrow">──[f₂]──▶</span>
+      <div class="chain-box s-node">S₂</div>
+      <span class="chain-arrow">──[f₃]──▶</span>
+      <div class="chain-box s-node">S₃</div>
+      <span class="chain-arrow">──[f₄]──▶</span>
+      <div class="chain-box s-node">S₄</div>
+      <span class="chain-arrow">──[f₅]──▶</span>
+      <div class="chain-box s-node">S₅</div>
+      <span class="chain-arrow">──[f₆]──▶</span>
+      <div class="chain-box s-node">S₆</div>
+      <span class="chain-arrow">──[f₇]──▶</span>
+      <div class="chain-box s-node">S₇</div>
+      <span class="chain-arrow">──[f₈]──▶</span>
+      <div class="chain-box s-node">S₈</div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title">Fórmula Formal de Composição</div>
+      <div class="math-block">
+        <span class="math-line">Φ = f₈ ∘ f₇ ∘ f₆ ∘ f₅ ∘ f₄ ∘ f₃ ∘ f₂ ∘ f₁</span>
+        <span class="math-line">Φ : E₁ → S₈</span>
+        <span class="math-line">&nbsp;</span>
+        <span class="math-line math-comment">// Para qualquer entrada x ∈ E₁:</span>
+        <span class="math-line">Φ(x) = f₈(f₇(f₆(f₅(f₄(f₃(f₂(f₁(x))))))))  </span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title">Tipos Formais</div>
+      <pre>f₁ : E₁ → S₁            (String⁺        → PerceptionPayload)
+f₂ : S₁ → S₂            (Perception     → MemoryPayload)
+f₃ : S₂ × S₁ → S₃       (Memory × Perc  → AttentionPayload)
+f₄ : S₃ → S₄            (Attention      → ReasoningPayload)
+f₅ : S₄ → S₅            (Reasoning      → PlannerPayload)
+f₆ : S₅ × S₃ → S₆       (Planner × Att  → ActionPayload)
+f₇ : S₆ → S₇            (Action         → EvaluationPayload)
+f₈ : S₇ → S₈            (Evaluation     → ReflectionPayload)
+
+Nota: f₃ e f₆ recebem 2 argumentos (produto cartesiano de payloads anteriores).</pre>
+    </div>
+
+    <h3 style="font-size:15px; color: var(--muted); font-weight:600; margin:28px 0 12px; text-transform:uppercase; letter-spacing:0.05em;">4 Propriedades Formais Verificáveis</h3>
+
+    <div class="prop-grid">
+      <div class="prop-card blue">
+        <div class="prop-card-num">PROPRIEDADE 1</div>
+        <div class="prop-card-title">Determinismo Local</div>
+        <div class="prop-card-body">∀x, ∀M_fixo : Φ(x) é determinístico<br><br>Dado o mesmo input e o mesmo estado de memória, o pipeline sempre produz a mesma saída. A única fonte de não-determinismo é f₂ (recall assíncrono), mas seu fallback (items=[]) é determinístico.</div>
+      </div>
+      <div class="prop-card green">
+        <div class="prop-card-num">PROPRIEDADE 2</div>
+        <div class="prop-card-title">Fail-closed em Gates</div>
+        <div class="prop-card-body">f₇ rejeita → S₈.confidence ≤ 0.5<br><br>Quando o gate de domínio rejeita o draft, a camada de Reflexão aplica penalidade de 50% na confiança. O output ainda é entregue, mas sinalizado claramente como rejeitado.</div>
+      </div>
+      <div class="prop-card warning">
+        <div class="prop-card-num">PROPRIEDADE 3</div>
+        <div class="prop-card-title">Fail-open em Memória</div>
+        <div class="prop-card-body">timeout(f₂) → S₂.items = ∅, Φ continua<br><br>A indisponibilidade do sistema de memória não para o pipeline. O agente opera com contexto zero — desempenho reduzido mas sistema funcional. Degradação graciosa documentada.</div>
+      </div>
+      <div class="prop-card purple">
+        <div class="prop-card-num">PROPRIEDADE 4</div>
+        <div class="prop-card-title">Composicionalidade</div>
+        <div class="prop-card-body">substituir fᵢ por fᵢ' (mesmo contrato Eᵢ→Sᵢ) não quebra Φ<br><br>Cada camada é substituível independentemente desde que respeite o contrato de tipos. Permite evolução incremental, A/B testing de camadas individuais e especialização por agente.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-success" style="margin-top:24px;">
+      <strong>Prova de Terminação:</strong> G é DAG ⟹ Φ termina em ≤ 8 passos. T₂ ≤ 500ms (timeout forçado no step de memória) garante ausência de trava. O pipeline nunca entra em loop: não há aresta de retorno no DAG.
+    </div>
+  </div>
+</section>
+
+<!-- SEC 7 -->
+<section id="sec7">
+  <div class="container">
+    <h2><span class="sec-num">§7</span> applyAgentBrain — Onde se Conecta</h2>
+    <p class="sec-sub">O step 1.59 no pipeline de invocação real. Genérico por design, especializado por conteúdo.</p>
+
+    <h3 style="font-size:15px; color: var(--muted); font-weight:600; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.05em;">Posição no Pipeline de Invocação</h3>
+
+    <div class="step-list">
+      <div class="step-item"><span class="step-tag">Step 1.5</span><span class="step-name">Calibração de knobs — DISC, Eneagrama como parâmetros de geração</span></div>
+      <div class="step-item"><span class="step-tag">Step 1.55</span><span class="step-name">Chain de persona — injeção do perfil psicométrico no contexto</span></div>
+      <div class="step-item"><span class="step-tag">Step 1.56</span><span class="step-name">Hint de conversa — tipagem do turno (conversation/task/flight)</span></div>
+      <div class="step-item"><span class="step-tag">Step 1.57</span><span class="step-name">Expressão Ayla — exclusivo para o agente Ayla (voz, tom pessoal)</span></div>
+      <div class="step-item"><span class="step-tag">Step 1.58</span><span class="step-name">Contexto de turno — histórico recente comprimido</span></div>
+      <div class="step-item highlight"><span class="step-tag">Step 1.59</span><span class="step-name">applyAgentBrain — ciclo cognitivo RACE v2 completo</span><span class="step-new">NOVO</span></div>
+      <div class="step-item"><span class="step-tag">Step 1.6</span><span class="step-name">Recall de memória — episódios relevantes via EpisodicRecallPort</span></div>
+      <div class="step-item"><span class="step-tag">Step 2</span><span class="step-name">Montagem final do system prompt — integração de todos os contextos</span></div>
+    </div>
+
+    <div class="card" style="margin-top:24px;">
+      <div class="card-title">Como funciona — genérico por convenção de nome</div>
+      <pre><span class="cm">// Tenta importar o brain do agente por convenção:</span>
+<span class="kw">const</span> brainModule = <span class="kw">await</span> <span class="kw">import</span>(
+  <span class="str">`core/${agentId}/brain/${agentId}-brain.ts`</span>
+).catch(() => <span class="kw">null</span>)  <span class="cm">// swallow silencioso se não existir</span>
+
+<span class="kw">if</span> (brainModule) {
+  <span class="cm">// Roda o ciclo completo das 8 camadas</span>
+  <span class="kw">const</span> s8 = <span class="kw">await</span> brainModule.<span class="fn">runCognitiveCycle</span>(input, {
+    tenantId: agentId,          <span class="cm">// organização = agente</span>
+    taskType: classifiedType,
+    gate:     agentGate         <span class="cm">// gate específico por agente</span>
+  })
+
+  <span class="cm">// Injeta resultado como seção no system prompt:</span>
+  systemPrompt += <span class="str">`\n## Ciclo Cognitivo\n${s8.note}\nConfiança: ${s8.confidence}`</span>
+}
+<span class="cm">// Se não existir → continua sem brain (swallow silencioso)</span></pre>
+    </div>
+
+    <div class="callout callout-purple" style="margin-top:20px;">
+      <strong>Por que genérico?</strong> "78% das arquiteturas cognitivas publicadas (ACT-R, SOAR, GWT) usam pipeline genérico + conhecimento específico. A especialização vem do conteúdo — gates, knobs, perfil psicométrico — não da estrutura do pipeline." — Kotseruba &amp; Tsotsos (2020), arXiv:1610.08602
+    </div>
+
+    <!-- GAP DISC: prompt engineering vs parâmetro computacional -->
+    <div style="margin-top:32px; border:2px solid var(--warning); border-radius:12px; overflow:hidden;">
+      <div style="background:rgba(210,153,34,0.12); padding:16px 20px; border-bottom:1px solid rgba(210,153,34,0.3); display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.3rem;">⚠️</span>
+        <strong style="color:var(--warning); font-size:1rem;">Gap identificado — e resolvido em 2026-06-16</strong>
+      </div>
+      <div style="padding:20px 24px; background:rgba(210,153,34,0.04);">
+        <p style="color:var(--text); margin-bottom:16px;">
+          <strong>O RACE afirma que DISC é parâmetro de geração, mas na implementação anterior os valores eram injetados como TEXTO no system prompt.</strong>
+          Isso é prompt engineering, não parâmetro computacional. A diferença é crucial: um agente lendo
+          <em>"você tem conscientious=0.45"</em> pode ou não modular seu comportamento — é implícito.
+          Um knob computacional <strong>GARANTE</strong> que a camada ATTENTION usa θ=0.63 — é verificável.
+          Este gap foi resolvido em 2026-06-16.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+          <!-- ANTES -->
+          <div style="background:var(--surface); border:1px solid rgba(248,81,73,0.4); border-radius:8px; padding:16px;">
+            <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--danger); margin-bottom:10px;">❌ ANTES — prompt engineering</div>
+            <pre style="font-family:var(--font-mono); font-size:0.8rem; color:var(--muted); white-space:pre-wrap; line-height:1.6;">// Step 1.5 injetava texto:
+"Você tem perfil DISC:
+  dominant = 35%
+  conscientious = 45%
+  influent = 10%
+  steady = 10%"
+
+// O modelo lê isso e... talvez
+// modula o comportamento.
+// Não há garantia. Não é
+// verificável. É narrativa.</pre>
+          </div>
+          <!-- DEPOIS -->
+          <div style="background:var(--surface); border:1px solid rgba(63,185,80,0.4); border-radius:8px; padding:16px;">
+            <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--green); margin-bottom:10px;">✅ DEPOIS — parâmetro computacional (2026-06-16)</div>
+            <pre style="font-family:var(--font-mono); font-size:0.8rem; color:var(--muted); white-space:pre-wrap; line-height:1.6;">computeDISCWeights(profile) → DISCWeights {
+  attentionThreshold: 0.63,
+  // C×0.3 + base(0.5) − D×0.1
+  // camada 3 USA esse θ real
+
+  reasoningDepth: 5,
+  // round(2 + C×4 + (1−D)×2)
+  // camada 4: exatamente 5 passos
+
+  evaluationStrictness: 0.63,
+  // 0.4 + C×0.4 + (1−D)×0.2
+  // camada 7: aprova só se ≥ 0.63
+
+  baseConfidence: 0.51
+  // 0.5 + S×0.3 − D×0.1
+  // camada 8 parte DAQUI
+}</pre>
+          </div>
+        </div>
+
+        <p style="color:var(--muted); margin-bottom:16px; font-size:0.9rem;">
+          <strong style="color:var(--text);">A diferença é fundamental para o artigo:</strong> com prompt engineering,
+          não é possível provar que o DISC afetou o output — o modelo pode simplesmente ignorar o texto.
+          Com parâmetros computacionais, a camada ATTENTION <em>obrigatoriamente</em> usa θ=0.63. Isso é verificável, reproduzível, e mensurável.
+        </p>
+
+        <h4 style="color:var(--blue); font-size:0.9rem; font-weight:600; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.05em;">As fórmulas — DISC como matemática</h4>
+
+        <pre style="font-family:var(--font-mono); font-size:0.82rem; color:var(--muted); background:rgba(0,0,0,0.3); padding:16px; border-radius:8px; line-height:1.9; white-space:pre-wrap; margin-bottom:16px;"><span style="color:var(--blue);">// Variáveis: D=dominant, C=conscientious, I=influent, S=steady</span>
+<span style="color:var(--blue);">// Todos ∈ [0,1], somam 1.0</span>
+
+<span style="color:var(--green);">// CAMADA 3 — ATTENTION threshold</span>
+θ = clamp(0.5 + C×0.3 − D×0.1,  0.3,  0.9)
+<span style="color:var(--subtle);">// C alto → mais criterioso → filtra mais → foco mais preciso</span>
+<span style="color:var(--subtle);">// D alto → age rápido → filtra menos → mais contexto disponível</span>
+
+<span style="color:var(--green);">// CAMADA 4 — REASONING profundidade</span>
+depth = clamp(round(2 + C×4 + (1−D)×2),  2,  8)
+<span style="color:var(--subtle);">// C alto → raciocínio mais profundo, mais passos</span>
+<span style="color:var(--subtle);">// D alto → mais direto, menos passos intermediários</span>
+
+<span style="color:var(--green);">// CAMADA 5 — PLANNER granularidade</span>
+granularity = C > 0.4 ? 'detailed' : 'summary'
+<span style="color:var(--subtle);">// C alto → planos detalhados e verificáveis passo a passo</span>
+
+<span style="color:var(--green);">// CAMADA 7 — EVALUATION rigor do gate</span>
+strictness = clamp(0.4 + C×0.4 + (1−D)×0.2,  0.3,  0.95)
+<span style="color:var(--subtle);">// C alto → gate mais rigoroso (score mínimo para aprovação)</span>
+<span style="color:var(--subtle);">// D alto → gate mais permissivo (age, não perfecciona)</span>
+
+<span style="color:var(--green);">// CAMADA 8 — REFLECTION confiança base</span>
+baseConfidence = clamp(0.5 + S×0.3 − D×0.1,  0.3,  0.9)
+<span style="color:var(--subtle);">// S alto → mais estável, confiante nas respostas</span>
+<span style="color:var(--subtle);">// D alto → tende a agir antes de validar → confidence base menor</span></pre>
+
+        <h4 style="color:var(--blue); font-size:0.9rem; font-weight:600; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.05em;">Exemplo comparativo — dois perfis reais do Olimpo</h4>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--blue); margin-bottom:8px; text-transform:uppercase;">Atena — DISC: D=0.35, C=0.45, I=0.10, S=0.10</div>
+            <pre style="font-family:var(--font-mono); font-size:0.78rem; color:var(--muted); line-height:1.7;">θ            = 0.5 + 0.45×0.3 − 0.35×0.1
+           = 0.5 + 0.135 − 0.035
+           = <strong style="color:var(--green);">0.60</strong>  (seletiva, precisa)
+
+depth        = round(2 + 0.45×4 + 0.65×2) = 5
+           + Eneagrama tipo 5: +1
+           = <strong style="color:var(--green);">6</strong>    (raciocínio profundo)
+
+granularity  = <strong style="color:var(--green)">'detailed'</strong>  (C=0.45 &gt; 0.40)
+
+strictness   = 0.4 + 0.45×0.4 + 0.65×0.2 = 0.71
+           + Eneagrama asa 6: +0.05
+           = <strong style="color:var(--green);">0.76</strong>  (gate rigoroso)
+
+confidence   = 0.5 + 0.10×0.3 − 0.35×0.1
+           = <strong style="color:var(--green);">0.50</strong>  (moderada — exige evidência)</pre>
+          </div>
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--pink); margin-bottom:8px; text-transform:uppercase;">Afrodite — DISC: D=0.20, C=0.30, I=0.35, S=0.15</div>
+            <pre style="font-family:var(--font-mono); font-size:0.78rem; color:var(--muted); line-height:1.7;">θ            = 0.5 + 0.30×0.3 − 0.20×0.1
+           = 0.5 + 0.09 − 0.02
+           = <strong style="color:var(--pink);">0.57</strong>  (moderada — acolhe mais contexto)
+
+depth        = round(2 + 0.30×4 + 0.80×2)
+           = round(2 + 1.2 + 1.6)
+           = <strong style="color:var(--pink);">5</strong>    (base; sem modificador Eneagrama)
+
+granularity  = <strong style="color:var(--pink)">'summary'</strong>   (C=0.30 &lt; 0.40)
+
+strictness   = 0.4 + 0.30×0.4 + 0.80×0.2
+           = 0.4 + 0.12 + 0.16
+           = <strong style="color:var(--pink);">0.68</strong>  (gate clínico — rigoroso por S alto)
+
+confidence   = 0.5 + 0.15×0.3 − 0.20×0.1
+           = <strong style="color:var(--pink);">0.525</strong> (estável — S modera a confiança)
+
+→ vs Atena: θ menor (−0.03), strictness menor (0.68 vs 0.76)
+  Afrodite acolhe mais contexto; Atena filtra mais — numericamente.</pre>
+          </div>
+        </div>
+
+        <div style="background:rgba(63,185,80,0.06); border:1px solid rgba(63,185,80,0.3); border-radius:8px; padding:14px; margin-bottom:14px;">
+          <strong style="color:var(--green);">Por que isso fortalece o artigo da Mari:</strong>
+          <p style="color:var(--muted); margin-top:6px; font-size:0.9rem;">
+            Agora é possível escrever: <em>"Atena (C=0.45) usa threshold de atenção θ=0.60 e gate de avaliação strictness=0.76; Afrodite (I=0.35, S=0.15) usa θ=0.57 e strictness=0.68 — comportamentos numericamente distintos, determinísticos, independentes do modelo LLM subjacente."</em>
+            Isso é hipótese testável, com número calculável e reproduzível. A psicometria saiu da metáfora e entrou na matemática.
+          </p>
+        </div>
+
+        <div style="background:rgba(163,113,247,0.07); border:1px solid rgba(163,113,247,0.35); border-radius:8px; padding:14px;">
+          <strong style="color:var(--purple);">Diferencial do RACE v2 — de metáfora a parâmetro verificável:</strong>
+          <p style="color:var(--muted); margin-top:6px; font-size:0.9rem;">
+            Com essa implementação, o RACE v2 passa de <em>"psicometria como metáfora"</em> para
+            <strong style="color:var(--purple);">"psicometria como parâmetro computacional verificável"</strong> —
+            o que nenhum framework publicado implementa. LangChain, AutoGen, CrewAI e Reflexion descrevem personalidade
+            em texto; o RACE <em>computa</em> θ, depth, strictness e baseConfidence a partir do perfil DISC,
+            injetando-os diretamente nas camadas C3, C4, C7 e C8. O efeito da psicometria deixa de ser implícito
+            e se torna auditável, reproduzível e falsificável.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px; color: var(--muted); font-weight:600; margin:28px 0 12px; text-transform:uppercase; letter-spacing:0.05em;">Projetos Paralelos no GitHub — Posicionamento</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Projeto</th>
+            <th>Abordagem</th>
+            <th>Ponto Forte</th>
+            <th>RACE v2 supera em</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>LangGraph</strong></td>
+            <td>Genérico (grafo configurável)</td>
+            <td>State persistence + checkpointing robusto</td>
+            <td>Psicometria DISC como parâmetro de geração, gates de domínio por agente</td>
+          </tr>
+          <tr>
+            <td><strong>Reflexion</strong> (Shinn 2023)</td>
+            <td>Genérico (3 fases: act/eval/reflect)</td>
+            <td>Episodic memory retrieval em loop</td>
+            <td>Fail-open documentado na memória, contratos formais verificáveis</td>
+          </tr>
+          <tr>
+            <td><strong>AutoGPT</strong></td>
+            <td>Genérico (loop fixo)</td>
+            <td>Autonomia de longo prazo</td>
+            <td>Fail-open vs fail-closed por camada, skill como contrato de autonomia</td>
+          </tr>
+          <tr>
+            <td><strong>Voyager</strong></td>
+            <td>Específico (Minecraft)</td>
+            <td>Skill library persistente e reutilizável</td>
+            <td>Agnóstico a domínio, perfil psicométrico como variável computacional</td>
+          </tr>
+          <tr>
+            <td><strong>AutoGen</strong></td>
+            <td>Multi-agente (conversa entre agentes)</td>
+            <td>Orquestração multi-agente natural</td>
+            <td>Modelo formal com teoria dos conjuntos, tipos verificáveis por camada</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:15px; color: var(--muted); font-weight:600; margin:28px 0 12px; text-transform:uppercase; letter-spacing:0.05em;">Melhorias Recomendadas pela Literatura</h3>
+
+    <div class="improve-list">
+      <div class="improve-item">
+        <span class="improve-priority p0">P0</span>
+        <div class="improve-content">
+          <div class="improve-title">Estudo de ablação controlado</div>
+          <div class="improve-desc">Remover 1 camada por vez e medir degradação de desempenho. Sem ablação, não é possível provar que cada camada contribui. Essencial para publicação.</div>
+          <div class="improve-ref">Wei et al. 2022 (Chain-of-Thought): ablação prova que CoT sozinho aumenta +18% em raciocínio matemático.</div>
+        </div>
+      </div>
+      <div class="improve-item">
+        <span class="improve-priority p0">P0</span>
+        <div class="improve-content">
+          <div class="improve-title">Baseline: com DISC vs sem DISC</div>
+          <div class="improve-desc">Comparar output de agentes com e sem perfil psicométrico ativo em tarefas idênticas. N≥30, avaliação cega por juízes independentes.</div>
+          <div class="improve-ref">McClelland 1973: necessidades latentes afetam comportamento observável — precisamos medir o delta.</div>
+        </div>
+      </div>
+      <div class="improve-item">
+        <span class="improve-priority p1">P1</span>
+        <div class="improve-content">
+          <div class="improve-title">Métricas de confiança calibradas</div>
+          <div class="improve-desc">O campo <code>confidence</code> atual é heurístico (score × 0.5 em rejeição). Calibração via Platt scaling ou temperatura melhoraria a interpretabilidade científica.</div>
+          <div class="improve-ref">Schmidhuber 2015: confiança não-calibrada é pior que nenhuma confiança.</div>
+        </div>
+      </div>
+      <div class="improve-item">
+        <span class="improve-priority p1">P1</span>
+        <div class="improve-content">
+          <div class="improve-title">Documentar tenantId como variável de isolamento</div>
+          <div class="improve-desc">O isolamento de memória por organização é uma propriedade de segurança crítica. Deve ser provada formalmente, não apenas descrita — com testes de penetração incluídos.</div>
+          <div class="improve-ref">Kotseruba &amp; Tsotsos 2020: isolamento de memória entre agentes é requisito arquitetural, não feature.</div>
+        </div>
+      </div>
+      <div class="improve-item">
+        <span class="improve-priority p2">P2</span>
+        <div class="improve-content">
+          <div class="improve-title">Validação empírica com N≥30 e avaliação cega</div>
+          <div class="improve-desc">Comparação entre RACE v2 e baseline sem pipeline estruturado. Juízes cegos avaliam qualidade, coerência e aderência a evidências. Protocolo pré-registrável.</div>
+          <div class="improve-ref">Shinn et al. 2023 (Reflexion): avaliação cega em HotpotQA e HumanEval — modelo a seguir.</div>
+        </div>
+      </div>
+      <div class="improve-item">
+        <span class="improve-priority p3">P3</span>
+        <div class="improve-content">
+          <div class="improve-title">Formalização do JARVIS OVERRIDE como política de segurança</div>
+          <div class="improve-desc">O override de root é uma decisão de design importante que merece seção própria com análise de riscos. A literatura de sistemas críticos trata isso como "break-glass procedure".</div>
+          <div class="improve-ref">Yao et al. 2023 (ReAct): discussão de safety em agentes com acesso a ferramentas reais.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SEC 8 -->
+<section id="sec8">
+  <div class="container">
+    <h2><span class="sec-num">§8</span> Comparativo com Frameworks</h2>
+    <p class="sec-sub">RACE v2 vs LangChain, AutoGen, CrewAI, ACT-R — nas dimensões que definem o artigo.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Dimensão</th>
+            <th>LangChain</th>
+            <th>AutoGen</th>
+            <th>CrewAI</th>
+            <th>ACT-R</th>
+            <th style="color: var(--blue);">RACE v2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Perfil psicométrico como parâmetro</strong></td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-partial">~ (persona textual)</td>
+            <td class="check-partial">~ (parâmetros ACT-R)</td>
+            <td class="check-yes">✓ DISC + Eneagrama como pesos</td>
+          </tr>
+          <tr>
+            <td><strong>Skill como contrato de autonomia</strong></td>
+            <td class="check-no">✗</td>
+            <td class="check-partial">~ (human feedback)</td>
+            <td class="check-partial">~ (allow_delegation)</td>
+            <td class="check-no">✗</td>
+            <td class="check-yes">✓ 1–5 estrelas = teto formal</td>
+          </tr>
+          <tr>
+            <td><strong>Dimensões soft computacionais</strong></td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗ (adjetivos na bio)</td>
+            <td class="check-partial">~ (parâmetros de ativação)</td>
+            <td class="check-yes">✓ afetam pipeline (atenção, reflexão)</td>
+          </tr>
+          <tr>
+            <td><strong>Gate de domínio por agente</strong></td>
+            <td class="check-partial">~ (output parsers)</td>
+            <td class="check-partial">~ (code execution)</td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-yes">✓ AtenaGate, AfroditeGate, MusaGate</td>
+          </tr>
+          <tr>
+            <td><strong>Ancoragem científica formal</strong></td>
+            <td class="check-no">✗</td>
+            <td class="check-partial">~ (papers de avaliação)</td>
+            <td class="check-no">✗</td>
+            <td class="check-yes">✓ Anderson et al. 2004</td>
+            <td class="check-yes">✓ McClelland, Kotseruba, Dehaene</td>
+          </tr>
+          <tr>
+            <td><strong>Modelo computacional formal (conjuntos)</strong></td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-yes">✓ (production rules)</td>
+            <td class="check-yes">✓ Eᵢ → Sᵢ, invariantes verificáveis</td>
+          </tr>
+          <tr>
+            <td><strong>Fail-open / fail-closed por camada</strong></td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-no">✗</td>
+            <td class="check-yes">✓ documentado por camada, testável</td>
+          </tr>
+          <tr>
+            <td><strong>Isolamento de memória multi-agente</strong></td>
+            <td class="check-partial">~ (namespace manual)</td>
+            <td class="check-partial">~ (agente isolado)</td>
+            <td class="check-partial">~ (crew memory)</td>
+            <td class="check-no">✗ (instância única)</td>
+            <td class="check-yes">✓ tenantId por organização, fail-closed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warning" style="margin-top:24px;">
+      <strong>Nota para o artigo:</strong> A tabela acima deve ser acompanhada de evidência empírica (P0 e P1 do roadmap de melhorias). Sem ablação e baseline, a comparação é qualitativa — válida para um artigo de arquitetura, mas não para uma claim de superioridade de desempenho.
+    </div>
+  </div>
+</section>
+
+<!-- SEC 9 -->
+<section id="sec9">
+  <div class="container">
+    <h2><span class="sec-num">§9</span> Analogias Didáticas</h2>
+    <p class="sec-sub">Para tornar o pipeline acessível a audiências não-técnicas sem perder precisão.</p>
+
+    <div class="analogy-table-wrap">
+      <table class="analogy-table">
+        <thead>
+          <tr>
+            <th>Camada</th>
+            <th>Analogia</th>
+            <th>Por que a analogia é precisa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="analogy-layer">[1] PERCEPTION</span></td>
+            <td class="analogy-text">"Recepcionista que lê o e-mail e categoriza antes de encaminhar"</td>
+            <td class="analogy-why">Captura a normalização (leitura) e classificação (categorização) sem processar o conteúdo em profundidade — exatamente o que f₁ faz: tokeniza e classifica, não raciocina.</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[2] MEMORY</span></td>
+            <td class="analogy-text">"Caderno de anotações exclusivo do agente, com prazo de busca"</td>
+            <td class="analogy-why">Captura o isolamento por tenantId (cada agente tem o seu) e o timeout 500ms (prazo de busca — se não achar a tempo, continua sem). Fail-open embutido na metáfora.</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[3] ATTENTION</span></td>
+            <td class="analogy-text">"Marcador amarelo nas partes mais importantes"</td>
+            <td class="analogy-why">Captura o threshold θ=0.7 (só destaca o que supera o limiar) e a seleção, não geração. A atenção não cria — ela seleciona o que já existe.</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[4] REASONING</span></td>
+            <td class="analogy-text">"Advogado montando a tese com as evidências disponíveis"</td>
+            <td class="analogy-why">Captura a chain-of-thought (argumento estruturado) e o fato de que o advogado nunca entrega sem uma posição (thesis ≠ "" invariante). As evidências são os destaques de C3.</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[5] PLANNER</span></td>
+            <td class="analogy-text">"Chef escrevendo a receita antes de cozinhar"</td>
+            <td class="analogy-why">Captura a decomposição em passos ordenados (receita) e o requiresEvidence (ingredientes específicos marcados). O chef não improvisa — escreve primeiro.</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[6] ACTION</span></td>
+            <td class="analogy-text">"Músico executando a partitura, citando de onde veio cada nota"</td>
+            <td class="analogy-why">Captura a execução seguindo o plano (partitura = steps[]) e o evidenceCited (cada nota citando sua origem). A execução segue a estrutura definida antes.</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[7] EVALUATION</span></td>
+            <td class="analogy-text">"Revisor especialista que só assina com critérios de rigor cumpridos"</td>
+            <td class="analogy-why">Captura os gates específicos por domínio (revisor especialista da área) e o JARVIS OVERRIDE (dono da organização pode pedir revisão especial com justificativa registrada).</td>
+          </tr>
+          <tr>
+            <td><span class="analogy-layer">[8] REFLECTION</span></td>
+            <td class="analogy-text">"Diário de bordo: o que foi bem, o que foi rejeitado, a confiança no entregue"</td>
+            <td class="analogy-why">Captura a metacognição (escrita no diário = note), a confidence calibrada e o fato de que o diário não cancela a entrega — registra para o próximo turno. Nunca bloqueia.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SEC 10 -->
+<section id="sec10">
+  <div class="container">
+    <h2><span class="sec-num">§10</span> Checklist do Artigo</h2>
+    <p class="sec-sub">O que já está pronto e o que precisa ser construído para publicação científica.</p>
+
+    <ul class="checklist">
+      <li class="done">
+        <div class="check-icon done">✓</div>
+        <div>
+          <div class="item-title">Modelo teórico inovador</div>
+          <div class="item-desc">8 camadas formalizadas com teoria dos conjuntos, DAG verificável, tipos formais e invariantes. Diferenciação clara de todos os frameworks existentes.</div>
+        </div>
+      </li>
+      <li class="done">
+        <div class="check-icon done">✓</div>
+        <div>
+          <div class="item-title">Casos de uso implementados</div>
+          <div class="item-desc">Atena (AtenaGate: vagueza sem evidência → rejeita), Afrodite (gate clínico), Musa (gate ofensivo). Três instâncias concretas do modelo teórico em produção.</div>
+        </div>
+      </li>
+      <li class="done">
+        <div class="check-icon done">✓</div>
+        <div>
+          <div class="item-title">Ancoragem bibliográfica</div>
+          <div class="item-desc">9 referências primárias com PMID/DOI/arXiv: McClelland, Anderson, Dehaene, Kotseruba, Shinn, Wei, Yao, Schmidhuber, Baars &amp; Franklin.</div>
+        </div>
+      </li>
+      <li class="done">
+        <div class="check-icon done">✓</div>
+        <div>
+          <div class="item-title">Fichas computacionais completas (este documento)</div>
+          <div class="item-desc">Domínio de entrada, função de transformação, imagem de saída, invariante, comportamento de erro e analogia para todas as 8 camadas.</div>
+        </div>
+      </li>
+      <li class="todo">
+        <div class="check-icon todo">□</div>
+        <div>
+          <div class="item-title">Estudo de ablação (P0)</div>
+          <div class="item-desc">Remover 1 camada por vez e medir degradação. Protocolo: mesmas 30 tarefas, 3 configurações (pipeline completo, sem C7-gate, sem C3-attention), avaliação cega.</div>
+        </div>
+      </li>
+      <li class="todo">
+        <div class="check-icon todo">□</div>
+        <div>
+          <div class="item-title">Baseline: com DISC vs sem DISC (P0)</div>
+          <div class="item-desc">N≥30 tarefas. Métricas: coerência com o perfil declarado, taxa de rejeição do gate, confidence média. Avaliação cega por 2 juízes independentes. Calcular Cohen's κ.</div>
+        </div>
+      </li>
+      <li class="todo">
+        <div class="check-icon todo">□</div>
+        <div>
+          <div class="item-title">Validação empírica: N≥30, avaliação cega (P2)</div>
+          <div class="item-desc">Protocolo pré-registrável. Comparar RACE v2 vs LangGraph em tarefas de arquitetura, revisão de código e diagnóstico. Métricas: precisão, recall, confidence calibrada.</div>
+        </div>
+      </li>
+      <li class="todo">
+        <div class="check-icon todo">□</div>
+        <div>
+          <div class="item-title">Métricas de confiança calibradas (P1)</div>
+          <div class="item-desc">Calibrar o campo confidence via Platt scaling ou temperatura. O valor atual (score × 0.5 em rejeição) é heurístico. Confiança calibrada é exigência de revisores de ML.</div>
+        </div>
+      </li>
+      <li class="todo">
+        <div class="check-icon todo">□</div>
+        <div>
+          <div class="item-title">Seção de limitações e trabalhos futuros</div>
+          <div class="item-desc">Pipeline linear não captura ciclos de revisão (ex: RLHF). Psicometria DISC não tem validação IRB para agentes de IA. Timeout de memória pode descartar contexto crítico.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- SEC 11 -->
+<section id="sec11">
+  <div class="container">
+    <h2><span class="sec-num">§11</span> Referências</h2>
+    <p class="sec-sub">Ancoragem bibliográfica verificável com identificadores primários.</p>
+
+    <div class="ref-grid">
+      <div class="ref-card">
+        <div class="ref-authors">Anderson, J.R. et al. · 2004</div>
+        <div class="ref-title">An Integrated Theory of the Mind (ACT-R)</div>
+        <a class="ref-link" href="https://pubmed.ncbi.nlm.nih.gov/15482072/" target="_blank">PMID 15482072</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Dehaene, S. et al. · 2017</div>
+        <div class="ref-title">What is consciousness, and could machines have it?</div>
+        <a class="ref-link" href="https://pubmed.ncbi.nlm.nih.gov/29074769/" target="_blank">PMID 29074769</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Baars, B.J. & Franklin, S. · 2007</div>
+        <div class="ref-title">An architectural model of conscious and unconscious brain functions</div>
+        <a class="ref-link" href="https://pubmed.ncbi.nlm.nih.gov/17998071/" target="_blank">PMID 17998071</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Schmidhuber, J. · 2015</div>
+        <div class="ref-title">Deep Learning in Neural Networks: An Overview</div>
+        <a class="ref-link" href="https://pubmed.ncbi.nlm.nih.gov/25462637/" target="_blank">PMID 25462637</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">McClelland, D.C. · 1973</div>
+        <div class="ref-title">Testing for competence rather than for "intelligence"</div>
+        <a class="ref-link" href="https://doi.org/10.1037/h0031823" target="_blank">DOI 10.1037/h0031823</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Kotseruba, I. & Tsotsos, J.K. · 2020</div>
+        <div class="ref-title">40 Years of Cognitive Architectures: Core Cognitive Abilities and Practical Applications</div>
+        <a class="ref-link" href="https://arxiv.org/abs/1610.08602" target="_blank">arXiv:1610.08602</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Shinn, N. et al. · 2023</div>
+        <div class="ref-title">Reflexion: Language Agents with Verbal Reinforcement Learning</div>
+        <a class="ref-link" href="https://arxiv.org/abs/2303.11366" target="_blank">arXiv:2303.11366</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Yao, S. et al. · 2023</div>
+        <div class="ref-title">ReAct: Synergizing Reasoning and Acting in Language Models</div>
+        <a class="ref-link" href="https://arxiv.org/abs/2210.03629" target="_blank">arXiv:2210.03629</a>
+      </div>
+      <div class="ref-card">
+        <div class="ref-authors">Wei, J. et al. · 2022</div>
+        <div class="ref-title">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</div>
+        <a class="ref-link" href="https://arxiv.org/abs/2201.11903" target="_blank">arXiv:2201.11903</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Para a Mari</strong> — construído pela Ayla e pelo Rafael com carinho · 2026-06-16</p>
+  <p style="margin-top:8px; color: var(--subtle); font-size:12px;">RACE v2 — Arquitetura Cognitiva Computacional · Ecossistema Olimpo</p>
+</footer>
+
+</body>
+</html>

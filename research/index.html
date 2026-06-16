@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olimpo Research — Arquitetura Cognitiva</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #21262d;
+    --blue: #58a6ff; --green: #3fb950; --purple: #a371f7;
+    --text: #e6edf3; --muted: #8b949e; --subtle: #6e7681;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; min-height: 100vh; }
+  .hero { padding: 80px 24px 48px; max-width: 900px; margin: 0 auto; }
+  .badge { display: inline-block; background: rgba(163,113,247,0.12); border: 1px solid rgba(163,113,247,0.3); color: var(--purple); font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 0.05em; text-transform: uppercase; }
+  h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; line-height: 1.15; margin-bottom: 14px; background: linear-gradient(135deg, var(--text) 30%, var(--blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { color: var(--muted); font-size: 16px; max-width: 600px; line-height: 1.7; margin-bottom: 48px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; text-decoration: none; color: inherit; display: block; transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .card-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue); margin-bottom: 10px; }
+  .card h2 { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+  .card p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+  .card-meta { font-size: 11px; color: var(--subtle); display: flex; gap: 12px; }
+  .sep { border-top: 1px solid var(--border); margin: 0 24px 48px; max-width: 852px; margin-left: auto; margin-right: auto; }
+  .back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; text-decoration: none; padding: 24px; }
+  .back:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<a class="back" href="../index.html">← Início</a>
+
+<div class="hero">
+  <div class="badge">Olimpo Research</div>
+  <h1>Arquitetura Cognitiva<br>& Metodologia RACE v2</h1>
+  <p class="subtitle">Documentos técnicos e acadêmicos sobre a arquitetura de 7 camadas dos agentes do Olimpo e a formalização computacional da metodologia RACE v2.</p>
+</div>
+
+<div class="sep"></div>
+
+<div class="grid">
+
+  <a class="card" href="race-arquitetura-computacional.html">
+    <div class="card-tag">RACE v2 · Principal</div>
+    <h2>Arquitetura Computacional Completa</h2>
+    <p>Fichas computacionais das 8 camadas, modelo matemático Φ = f₈∘…∘f₁, grafo G=(V,E), teoria dos conjuntos, comparativo com LangGraph/ACT-R, e o gap DISC: psicometria como parâmetro computacional real vs prompt engineering.</p>
+    <div class="card-meta">
+      <span>📐 Fichas das 8 camadas</span>
+      <span>🧮 Modelo matemático</span>
+      <span>⚠️ Gap DISC resolvido</span>
+    </div>
+  </a>
+
+  <a class="card" href="race-modelo-computacional-matematico.html">
+    <div class="card-tag">RACE v2 · Fundamentos</div>
+    <h2>Modelo Computacional e Matemático</h2>
+    <p>Documento original com a proposta de formalização do RACE v2: o que falta para tornar a metodologia verificável empiricamente, com analogia ao ACT-R e referências científicas verificadas.</p>
+    <div class="card-meta">
+      <span>📚 Referências PMID</span>
+      <span>🔢 Teoria dos conjuntos</span>
+      <span>📊 Grafo DAG</span>
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>
