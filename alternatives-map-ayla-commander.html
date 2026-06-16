@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayla Commander — Alternatives Map</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 5rem;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-product {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 0 80px rgba(59, 130, 246, 0.4);
+            min-width: 280px;
+        }
+
+        .center-product h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .center-product p {
+            color: #e0e7ff;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .alternative {
+            position: absolute;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 240px;
+            transition: all 0.3s ease;
+        }
+
+        .alternative:hover {
+            border-color: #ef4444;
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+        }
+
+        .alternative-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .alternative-icon {
+            font-size: 2rem;
+        }
+
+        .alternative-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .alternative-fail {
+            background: #dc2626;
+            color: #fff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .alternative-pain {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .alt-1 { top: 5%; left: 50%; transform: translateX(-50%); }
+        .alt-2 { top: 15%; right: 10%; }
+        .alt-3 { top: 40%; right: 2%; }
+        .alt-4 { bottom: 15%; right: 8%; }
+        .alt-5 { bottom: 5%; left: 50%; transform: translateX(-50%); }
+        .alt-6 { bottom: 15%; left: 8%; }
+        .alt-7 { top: 40%; left: 2%; }
+        .alt-8 { top: 15%; left: 10%; }
+
+        .gap-section {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #ef4444;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .gap-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #ef4444;
+            text-align: center;
+        }
+
+        .gap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gap-item {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .gap-item h3 {
+            color: #3b82f6;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gap-item p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 1024px) {
+            .map-container {
+                aspect-ratio: auto;
+                min-height: 1400px;
+            }
+            .alternative { width: 220px; }
+            .alt-1 { top: 5%; left: 50%; }
+            .alt-2 { top: 18%; right: 5%; }
+            .alt-3 { top: 35%; right: 0%; }
+            .alt-4 { top: 52%; right: 5%; }
+            .alt-5 { top: 68%; right: 15%; }
+            .alt-6 { top: 68%; left: 15%; }
+            .alt-7 { top: 52%; left: 5%; }
+            .alt-8 { top: 35%; left: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 2rem 1rem; }
+            h1 { font-size: 2rem; }
+            .map-container { min-height: 1600px; }
+            .center-product { min-width: 240px; padding: 2rem 1.5rem; }
+            .center-product h2 { font-size: 1.5rem; }
+            .alternative { width: 180px; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ayla Commander — Alternatives Map</h1>
+        <p class="subtitle">O que os devs usam hoje para fechar PRs longe da máquina — e onde tudo falha</p>
+
+        <div class="map-container">
+            <div class="center-product">
+                <h2>🎯 Ayla Commander</h2>
+                <p>War room assíncrono. Agentes IA fecham o ciclo completo de PR. Do celular ao hardware fraco.</p>
+            </div>
+
+            <div class="alternative alt-1">
+                <div class="alternative-header">
+                    <span class="alternative-icon">📱</span>
+                    <span class="alternative-name">GitHub Mobile</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Só read-only glorificado. Code review é scroll infinito sem contexto. Diff truncado. Approve é só botão — não fecha o ciclo.</p>
+            </div>
+
+            <div class="alternative alt-2">
+                <div class="alternative-header">
+                    <span class="alternative-icon">🔲</span>
+                    <span class="alternative-name">Linear Mobile</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Issue tracking, não code execution. Tarefa fechada ≠ código pronto. Dev ainda precisa abrir VSCode e escrever.</p>
+            </div>
+
+            <div class="alternative alt-3">
+                <div class="alternative-header">
+                    <span class="alternative-icon">💬</span>
+                    <span class="alternative-name">Slack + Bots</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Notificação sem ação. "PR pronto pra review" — mas revisar onde? Bot não executa, não testa, não entrega diff real.</p>
+            </div>
+
+            <div class="alternative alt-4">
+                <div class="alternative-header">
+                    <span class="alternative-icon">🌐</span>
+                    <span class="alternative-name">VSCode Web</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Tablet trava. Celular é unusável. Sem terminal, sem build, sem LSP real. É VSCode cosplay, não ferramenta de trabalho.</p>
+            </div>
+
+            <div class="alternative alt-5">
+                <div class="alternative-header">
+                    <span class="alternative-icon">🤖</span>
+                    <span class="alternative-name">Cursor / Copilot</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Só funciona no desktop. Precisa máquina boa, VSCode aberto, GPU. Zero mobilidade. Dev fora da máquina = dev improdutivo.</p>
+            </div>
+
+            <div class="alternative alt-6">
+                <div class="alternative-header">
+                    <span class="alternative-icon">📓</span>
+                    <span class="alternative-name">Notebook Físico</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Anotação ≠ execução. Dev escreve "fazer X" no papel, mas quem executa? Volta pra mesa, abre VSCode, recomeça do zero.</p>
+            </div>
+
+            <div class="alternative alt-7">
+                <div class="alternative-header">
+                    <span class="alternative-icon">⏭️</span>
+                    <span class="alternative-name">"Ignora o PR"</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">Alternativa real de 40% dos devs. PR fica aberto dias. Contexto perde. Reviewer esquece. Merge com conflito. Dívida técnica cresce.</p>
+            </div>
+
+            <div class="alternative alt-8">
+                <div class="alternative-header">
+                    <span class="alternative-icon">💻</span>
+                    <span class="alternative-name">SSH + Tmux</span>
+                </div>
+                <span class="alternative-fail">Falha fatal</span>
+                <p class="alternative-pain">CLI puro no celular é tortura. Vim no touch keyboard. Latência. Sessão cai. Só hardcore devs aguentam — não escala.</p>
+            </div>
+        </div>
+
+        <div class="gap-section">
+            <h2>🔥 A Brecha Real</h2>
+            <p style="text-align: center; color: #cbd5e1; margin-bottom: 1rem; font-size: 1.05rem;">
+                Nenhuma ferramenta fecha o ciclo completo longe da máquina principal. GitHub Mobile mostra, Linear organiza, Cursor gera — mas ninguém <strong>executa + revisa + merga</strong> num fluxo contínuo do celular.
+            </p>
+
+            <div class="gap-grid">
+                <div class="gap-item">
+                    <h3>🚫 Gap 1: Review sem contexto</h3>
+                    <p>Diff truncado, sem blame, sem histórico. Approve é chute. Reject é "vê depois no desktop". Code review virou teatro.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h3>🚫 Gap 2: Execução inexistente</h3>
+                    <p>Nenhuma tool mobile EXECUTA código. Todas mostram, notificam ou anotam. O dev continua dependente da máquina de trabalho.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h3>🚫 Gap 3: Ciclo quebrado</h3>
+                    <p>Task criada no Linear → código gerado no Cursor → review no GitHub Mobile → merge no desktop. 4 contextos, zero continuidade.</p>
+                </div>
+
+                <div class="gap-item">
+                    <h3>✅ Onde Ayla Commander entra</h3>
+                    <p>War room unificado. Agente executa, testa, entrega diff real. Dev faz review legítimo (approve/reject com contexto). Merge acontece. Tudo no celular. Ciclo fecha.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

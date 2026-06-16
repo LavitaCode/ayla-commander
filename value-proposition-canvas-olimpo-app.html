@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Value Proposition Canvas — Olimpo App</title>
+    <style>
+        :root {
+            --bg-primary: #131316;
+            --bg-card: #1a1a1f;
+            --bg-card-hover: #222229;
+            --border-subtle: #2a2a32;
+            --text-primary: #e8e8ea;
+            --text-secondary: #9d9da6;
+            --accent-iris: #8b7aff;
+            --accent-ayla: #ff6b9d;
+            --accent-apolo: #00d9ff;
+            --accent-quiron: #ffb347;
+            --priority-critical: #ef4444;
+            --priority-high: #f97316;
+            --priority-medium: #facc15;
+            --priority-low: #22c55e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .canvas-container { max-width: 1600px; margin: 0 auto; }
+        .canvas-header { text-align: center; margin-bottom: 3rem; }
+        .canvas-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-iris), var(--accent-ayla), var(--accent-apolo));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .canvas-header p { color: var(--text-secondary); font-size: 1rem; }
+        .canvas-header .subtitle-tag {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.35rem 1rem;
+            background: #1a1a1f;
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 0.85rem;
+            color: var(--accent-quiron);
+        }
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: 1fr 160px 1fr;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.75rem;
+        }
+        .panel-customer { border-top: 3px solid var(--accent-ayla); }
+        .panel-product  { border-top: 3px solid var(--accent-apolo); }
+        .panel-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .panel-customer .panel-title { color: var(--accent-ayla); }
+        .panel-product  .panel-title { color: var(--accent-apolo); }
+        .section { margin-bottom: 1.75rem; }
+        .section:last-child { margin-bottom: 0; }
+        .section-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+        .card-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 0.8rem 2.8rem 0.8rem 2.8rem;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-iris);
+            transform: translateX(3px);
+        }
+        .card-icon {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+        }
+        .card-text { font-size: 0.9rem; color: var(--text-primary); }
+        .card-priority {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px; height: 8px;
+            border-radius: 50%;
+        }
+        .priority-critical { background: var(--priority-critical); box-shadow: 0 0 6px var(--priority-critical); }
+        .priority-high     { background: var(--priority-high);     box-shadow: 0 0 6px var(--priority-high); }
+        .priority-medium   { background: var(--priority-medium);   box-shadow: 0 0 6px var(--priority-medium); }
+        .priority-low      { background: var(--priority-low);      box-shadow: 0 0 6px var(--priority-low); }
+
+        /* FIT */
+        .fit-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .fit-circle {
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-ayla), var(--accent-apolo));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(139,122,255,0.35);
+            animation: pulse 3s ease-in-out infinite;
+            text-align: center;
+            padding: 1rem;
+        }
+        @keyframes pulse {
+            0%,100% { transform: scale(1);    box-shadow: 0 0 40px rgba(139,122,255,0.35); }
+            50%      { transform: scale(1.05); box-shadow: 0 0 60px rgba(139,122,255,0.55); }
+        }
+        .fit-label      { font-size: 1.4rem; font-weight: 800; letter-spacing: 0.1em; }
+        .fit-sublabel   { font-size: 0.65rem; opacity: 0.9; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
+        .fit-arrow      { font-size: 1.8rem; color: var(--accent-iris); animation: bounce 2s ease-in-out infinite; }
+        @keyframes bounce {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-6px); }
+        }
+
+        /* POSICIONAMENTO */
+        .positioning-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .positioning-bar h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+        .positioning-statement {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .positioning-statement em {
+            color: var(--accent-iris);
+            font-style: normal;
+        }
+        .positioning-variants {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .variant-chip {
+            padding: 0.4rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        /* LEGEND */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--text-secondary); }
+        .legend-dot  { width: 10px; height: 10px; border-radius: 50%; }
+
+        @media (max-width: 1100px) {
+            .canvas-grid { grid-template-columns: 1fr; }
+            .fit-indicator { flex-direction: row; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="canvas-container">
+
+    <div class="canvas-header">
+        <h1>Value Proposition Canvas — Olimpo App</h1>
+        <p>Alinhamento entre as necessidades do dev mobile e a proposta de valor do produto</p>
+        <span class="subtitle-tag">🏛️ War room assíncrono · IRC + 12 agentes IA · Ciclo completo de PR no celular</span>
+    </div>
+
+    <!-- POSICIONAMENTO -->
+    <div class="positioning-bar">
+        <h2>Posicionamento (Hermes + Quiron + Íris)</h2>
+        <div class="positioning-statement">
+            "<em>Agentes de IA escrevem código, você aprova do celular</em> —
+            war room assíncrono que fecha o ciclo completo de PR sem depender de desktop."
+        </div>
+        <div class="positioning-variants">
+            <span class="variant-chip">🎯 Para: devs, tech leads, founders técnicos</span>
+            <span class="variant-chip">🏆 Categoria: asynch-first mobile-native DevOps orchestration</span>
+            <span class="variant-chip">🔑 Gap: nenhum concorrente fecha o ciclo de PR em mobile</span>
+        </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-grid">
+
+        <!-- CLIENTE -->
+        <div class="panel panel-customer">
+            <div class="panel-title">👤 Segmento de Cliente</div>
+
+            <div class="section">
+                <div class="section-title">🎯 Customer Jobs — o que o dev precisa fazer</div>
+                <div class="card-list">
+                    <div class="card">
+                        <span class="card-icon">🔀</span>
+                        <span class="card-text">Revisar PR completo (diff, inline comment, approve/merge) em qualquer lugar, qualquer device</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🚨</span>
+                        <span class="card-text">Responder incidente crítico fora do escritório sem laptop</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🔄</span>
+                        <span class="card-text">Manter contexto de trabalho entre devices (celular → tablet → desktop)</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🤖</span>
+                        <span class="card-text">Orquestrar DevOps pipeline (deploy, rollback, logs) sem terminal SSH</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">📋</span>
+                        <span class="card-text">Conduzir planning, sprints e ritos de engenharia de qualquer lugar</span>
+                        <span class="card-priority priority-medium"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">😰 Pains — o que dói hoje</div>
+                <div class="card-list">
+                    <div class="card">
+                        <span class="card-icon">🔥</span>
+                        <span class="card-text">GitHub/GitLab mobile são leitores — não fecham o ciclo de PR (sem approve/merge real)</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">⏰</span>
+                        <span class="card-text">Notificação chega no celular, ação só acontece 4h depois no PC</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🧠</span>
+                        <span class="card-text">Contexto se perde entre devices — recomeça do zero no desktop</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">💻</span>
+                        <span class="card-text">Hardware fraco = dev excluído — IDE pesada não roda em celular ou Chromebook</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🔌</span>
+                        <span class="card-text">SSH no celular é sofrimento — Termux + teclado virtual = improdutivo</span>
+                        <span class="card-priority priority-medium"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">✨ Gains — o que ele quer ganhar</div>
+                <div class="card-list">
+                    <div class="card">
+                        <span class="card-icon">📱</span>
+                        <span class="card-text">Diff legível + approve/merge touch-native — sem abrir laptop</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🌊</span>
+                        <span class="card-text">Flow assíncrono real — disparar agentes de manhã, fechar PRs à noite</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🧬</span>
+                        <span class="card-text">IA que entende o projeto — não é autocomplete genérico, é par técnico</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🏅</span>
+                        <span class="card-text">Identidade técnica desacoplada de hardware — ser dev ≠ ter M3 Max</span>
+                        <span class="card-priority priority-medium"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIT -->
+        <div class="fit-indicator">
+            <div class="fit-arrow">↔</div>
+            <div class="fit-circle">
+                <div class="fit-label">FIT</div>
+                <div class="fit-sublabel">Proposta ↔ Necessidade</div>
+            </div>
+            <div class="fit-arrow">↔</div>
+        </div>
+
+        <!-- PRODUTO -->
+        <div class="panel panel-product">
+            <div class="panel-title">🏛️ Proposta de Valor</div>
+
+            <div class="section">
+                <div class="section-title">🛠️ Products & Services</div>
+                <div class="card-list">
+                    <div class="card">
+                        <span class="card-icon">📡</span>
+                        <span class="card-text">IRC mobile-native — canais, DMs, presença ao vivo, touch-first</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🤖</span>
+                        <span class="card-text">12 agentes IA especializados com cognição, memória e personalidade própria</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">✅</span>
+                        <span class="card-text">Ciclo completo de PR: diff completo → comment → approve → merge no celular</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🚀</span>
+                        <span class="card-text">DevOps orchestration mobile — deploy, rollback, logs via botões, sem SSH</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🔁</span>
+                        <span class="card-text">Contexto persistente cross-device — continua onde parou, qualquer device</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">📋</span>
+                        <span class="card-text">Ritos reais: planning, TDD, sprint, preflight — gerados pelos agentes</span>
+                        <span class="card-priority priority-medium"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">💊 Pain Relievers</div>
+                <div class="card-list">
+                    <div class="card">
+                        <span class="card-icon">🔀</span>
+                        <span class="card-text">Diff completo touch-native + approve flow — fecha o ciclo que GitHub Mobile não fecha</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">⚡</span>
+                        <span class="card-text">Notificação + ação no mesmo device — pipeline quebrou → corrige do metrô</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🔗</span>
+                        <span class="card-text">Estado sincronizado — abre no celular, continua no tablet sem perder fio</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">☁️</span>
+                        <span class="card-text">Processamento server-side — hardware fraco vira vantagem, não barreira</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🎁 Gain Creators</div>
+                <div class="card-list">
+                    <div class="card">
+                        <span class="card-icon">🏆</span>
+                        <span class="card-text">Único produto que fecha ciclo completo de PR em mobile (gap confirmado na pesquisa)</span>
+                        <span class="card-priority priority-critical"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🧬</span>
+                        <span class="card-text">Agentes com contexto do codebase — revisam com conhecimento real do projeto</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🌍</span>
+                        <span class="card-text">Celular de R$800 vira workstation — profissão volta a ser sobre cognição, não hardware</span>
+                        <span class="card-priority priority-high"></span>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">⏳</span>
+                        <span class="card-text">Flow assíncrono — agentes trabalham enquanto você vive; você decide quando quiser</span>
+                        <span class="card-priority priority-medium"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+        <div class="legend-item"><span class="legend-dot priority-critical"></span><span>Crítico — blocker de autonomia real</span></div>
+        <div class="legend-item"><span class="legend-dot priority-high"></span><span>Alto — diferencial forte</span></div>
+        <div class="legend-item"><span class="legend-dot priority-medium"></span><span>Médio — nice-to-have</span></div>
+        <div class="legend-item"><span class="legend-dot priority-low"></span><span>Baixo — expansão futura</span></div>
+    </div>
+
+</div>
+</body>
+</html>

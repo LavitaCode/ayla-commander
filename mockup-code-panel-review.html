@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olimpo App — Code Panel & Review</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0b;
+      color: #e4e4e7;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      min-height: 100vh;
+    }
+    .page-title {
+      font-size: 13px;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .phones {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .phone-wrapper { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .phone-label { font-size: 12px; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+    .phone {
+      width: 375px;
+      background: #131316;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 0 0 8px #1a1a1f, 0 30px 80px rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      height: 780px;
+    }
+    .notch {
+      background: #131316;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .notch-bar {
+      width: 120px; height: 6px;
+      background: #27272a;
+      border-radius: 3px;
+    }
+
+    /* SHARED */
+    .header {
+      background: #1a1a1f;
+      padding: 12px 16px;
+      border-bottom: 1px solid #27272a;
+    }
+    .header-row { display: flex; justify-content: space-between; align-items: center; }
+    .pr-title { font-size: 15px; font-weight: 600; color: #fafafa; }
+    .badge {
+      padding: 3px 8px; border-radius: 6px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .badge-yellow { background: #fbbf24; color: #000; }
+    .badge-blue   { background: #3b82f6; color: #fff; }
+    .agent-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .agent-label { font-size: 12px; color: #a1a1aa; }
+
+    /* TIMELINE */
+    .timeline-wrap { padding: 14px 16px; background: #0f0f12; border-bottom: 1px solid #27272a; }
+    .timeline { display: flex; align-items: flex-start; gap: 0; }
+    .tl-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+    .tl-icon {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; z-index: 1;
+    }
+    .tl-icon.done    { background: #22c55e; color: #000; }
+    .tl-icon.current { background: #fbbf24; color: #000; }
+    .tl-icon.pending { background: #3f3f46; color: #52525b; }
+    .tl-label { font-size: 9px; color: #71717a; text-transform: uppercase; font-weight: 500; text-align: center; }
+    .tl-connector { height: 2px; background: #3f3f46; flex: 1; margin-top: 13px; }
+    .tl-connector.done { background: #22c55e; }
+
+    /* CONTENT */
+    .content { padding: 14px 16px; overflow-y: auto; flex: 1; }
+    .stats {
+      background: #1a1a1f; border: 1px solid #27272a;
+      border-radius: 8px; padding: 12px;
+      display: flex; gap: 0; margin-bottom: 14px;
+    }
+    .stat { flex: 1; text-align: center; }
+    .stat + .stat { border-left: 1px solid #27272a; }
+    .stat-val { font-size: 18px; font-weight: 700; }
+    .stat-val.add { color: #22c55e; }
+    .stat-val.del { color: #ef4444; }
+    .stat-lbl { font-size: 10px; color: #71717a; margin-top: 2px; }
+    .section-title {
+      font-size: 10px; font-weight: 600; color: #71717a;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+    .file-item {
+      background: #1a1a1f; border: 1px solid #27272a;
+      border-radius: 6px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 6px;
+    }
+    .file-name { font-family: 'Menlo', 'Courier New', monospace; font-size: 12px; color: #d4d4d8; }
+    .file-dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24; margin-left: auto; }
+    .btn {
+      width: 100%; padding: 14px; border-radius: 10px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .btn:last-child { margin-bottom: 0; }
+    .btn-primary  { background: #3b82f6; color: #fff; }
+    .btn-secondary { background: #27272a; color: #a1a1aa; }
+
+    /* DIFF */
+    .diff-nav {
+      background: #1a1a1f; padding: 10px 16px;
+      border-bottom: 1px solid #27272a;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .diff-filename { font-family: 'Menlo', 'Courier New', monospace; font-size: 13px; color: #fafafa; font-weight: 600; }
+    .diff-counter  { font-size: 12px; color: #71717a; background: #27272a; padding: 2px 8px; border-radius: 4px; }
+    .diff-scroll { flex: 1; overflow-y: auto; font-family: 'Menlo', 'Courier New', monospace; font-size: 12px; line-height: 22px; }
+    .diff-chunk-header {
+      background: #1e2a3a; color: #7dd3fc;
+      padding: 2px 12px; font-size: 11px;
+    }
+    .diff-line { display: flex; min-height: 22px; }
+    .ln { color: #52525b; text-align: right; padding: 0 8px; min-width: 36px; flex-shrink: 0; user-select: none; font-size: 11px; }
+    .lc { flex: 1; padding: 0 8px; white-space: pre; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+    .diff-line.removed { background: #3d1515; }
+    .diff-line.removed .lc { color: #ef4444; }
+    .diff-line.added   { background: #0d2818; }
+    .diff-line.added   .lc { color: #22c55e; }
+    .diff-line.context .lc { color: #d4d4d8; }
+    .diff-line.context { background: #131316; }
+    .cbtn {
+      background: #27272a; border: none; color: #71717a;
+      padding: 1px 5px; border-radius: 3px; font-size: 9px;
+      cursor: pointer; flex-shrink: 0; margin-left: 6px;
+      font-family: sans-serif;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: #1a1a1f; border-top: 1px solid #27272a;
+      padding: 12px 16px; display: flex; gap: 8px;
+    }
+    .fbtn {
+      flex: 1; padding: 14px 6px; border-radius: 10px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .fbtn.reject  { background: #7f1d1d; color: #fca5a5; }
+    .fbtn.comment { background: #27272a; color: #d4d4d8; }
+    .fbtn.approve { background: #14532d; color: #86efac; }
+
+    .arrow {
+      display: flex; align-items: center; justify-content: center;
+      color: #3b82f6; font-size: 28px; margin-top: 360px;
+    }
+    @media (max-width: 860px) {
+      .phones { flex-direction: column; }
+      .arrow { margin-top: 0; font-size: 28px; transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-title">Olimpo App — Fluxo Code Panel → Code Review</div>
+
+<div class="phones">
+
+  <!-- CODE PANEL -->
+  <div class="phone-wrapper">
+    <div class="phone-label">① Code Panel</div>
+    <div class="phone">
+      <div class="notch"><div class="notch-bar"></div></div>
+
+      <div class="header">
+        <div class="header-row">
+          <div class="pr-title">feat: JWT refresh + heartbeat</div>
+          <span class="badge badge-yellow">PR Aberto</span>
+        </div>
+        <div class="agent-row">
+          <span class="agent-label">Gerado por</span>
+          <span class="badge badge-blue">⚡ Apolo</span>
+          <span style="font-size:11px;color:#52525b;margin-left:auto;">há 3 min</span>
+        </div>
+      </div>
+
+      <div class="timeline-wrap">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-icon done">✓</div>
+            <div class="tl-label">Queued</div>
+          </div>
+          <div class="tl-connector done"></div>
+          <div class="tl-item">
+            <div class="tl-icon done">✓</div>
+            <div class="tl-label">Clone</div>
+          </div>
+          <div class="tl-connector done"></div>
+          <div class="tl-item">
+            <div class="tl-icon done">✓</div>
+            <div class="tl-label">Running</div>
+          </div>
+          <div class="tl-connector done"></div>
+          <div class="tl-item">
+            <div class="tl-icon current">●</div>
+            <div class="tl-label">PR Open</div>
+          </div>
+          <div class="tl-connector"></div>
+          <div class="tl-item">
+            <div class="tl-icon pending">○</div>
+            <div class="tl-label">Done</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-val">3</div>
+            <div class="stat-lbl">Arquivos</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val add">+47</div>
+            <div class="stat-lbl">Inserções</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val del">-12</div>
+            <div class="stat-lbl">Deleções</div>
+          </div>
+        </div>
+
+        <div class="section-title">Arquivos alterados</div>
+        <div class="file-item">
+          <span style="font-size:16px;">📄</span>
+          <span class="file-name">auth.service.ts</span>
+          <div class="file-dot"></div>
+        </div>
+        <div class="file-item">
+          <span style="font-size:16px;">📄</span>
+          <span class="file-name">jwt-refresh.interceptor.ts</span>
+          <div class="file-dot"></div>
+        </div>
+        <div class="file-item">
+          <span style="font-size:16px;">📄</span>
+          <span class="file-name">auth.model.ts</span>
+          <div class="file-dot"></div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <button class="btn btn-primary">🔍 Revisar código →</button>
+          <button class="btn btn-secondary">↗ Abrir no GitHub</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETA -->
+  <div class="arrow">→</div>
+
+  <!-- CODE REVIEW -->
+  <div class="phone-wrapper">
+    <div class="phone-label">② Code Review</div>
+    <div class="phone">
+      <div class="notch"><div class="notch-bar"></div></div>
+
+      <div class="header">
+        <div class="header-row">
+          <span style="font-size:13px;color:#a1a1aa;">← Voltar</span>
+          <span style="font-size:13px;color:#fafafa;font-weight:600;">Code Review</span>
+          <span style="font-size:13px;color:#a1a1aa;"></span>
+        </div>
+      </div>
+
+      <div class="diff-nav">
+        <span class="diff-filename">auth.service.ts</span>
+        <span class="diff-counter">1 / 3</span>
+      </div>
+
+      <div class="diff-scroll">
+        <div class="diff-chunk-header">@@ -42,8 +42,33 @@ export class AuthService {</div>
+
+        <div class="diff-line context">
+          <span class="ln">42</span>
+          <span class="lc"><span>  private apiUrl = env.apiUrl;</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">43</span>
+          <span class="lc"><span></span></span>
+        </div>
+        <div class="diff-line removed">
+          <span class="ln">44</span>
+          <span class="lc"><span>-  timeout: 5000,</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">44</span>
+          <span class="lc"><span>+  timeout: 10000,</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">45</span>
+          <span class="lc"><span>  });</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">46</span>
+          <span class="lc"><span></span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">47</span>
+          <span class="lc"><span>  login(creds: LoginDto) {</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">48</span>
+          <span class="lc"><span>    return this.http.post(</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">49</span>
+          <span class="lc"><span>      `${this.apiUrl}/auth/login`,</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">50</span>
+          <span class="lc"><span>      creds);</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">51</span>
+          <span class="lc"><span>  }</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">52</span>
+          <span class="lc"><span></span></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">53</span>
+          <span class="lc"><span>+  refreshToken(token: string) {</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">54</span>
+          <span class="lc"><span>+    return this.http.post(</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">55</span>
+          <span class="lc"><span>+      `${this.apiUrl}/auth/refresh`,</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">56</span>
+          <span class="lc"><span>+      { refreshToken: token }</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">57</span>
+          <span class="lc"><span>+    );</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line added">
+          <span class="ln">58</span>
+          <span class="lc"><span>+  }</span><button class="cbtn">💬</button></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">59</span>
+          <span class="lc"><span></span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">60</span>
+          <span class="lc"><span>  logout(): void {</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">61</span>
+          <span class="lc"><span>    this.token.clear();</span></span>
+        </div>
+        <div class="diff-line context">
+          <span class="ln">62</span>
+          <span class="lc"><span>  }</span></span>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="fbtn reject">❌ Rejeitar</button>
+        <button class="fbtn comment">💬 Comentar</button>
+        <button class="fbtn approve">✅ Aprovar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

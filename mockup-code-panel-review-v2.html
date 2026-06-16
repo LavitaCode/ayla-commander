@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olimpo App — Code Panel & Review v1 vs v2</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #050507;
+      color: #e4e4e7;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      min-height: 100vh;
+    }
+    .page-header { text-align: center; }
+    .page-title { font-size: 18px; font-weight: 700; color: #fafafa; margin-bottom: 4px; }
+    .page-sub { font-size: 12px; color: #52525b; letter-spacing: 0.05em; }
+
+    /* VERSION COLUMNS */
+    .versions {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .version-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .version-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; padding: 4px 14px; border-radius: 999px;
+    }
+    .v1-label { background: #27272a; color: #71717a; }
+    .v2-label { background: #3b82f6; color: #fff; }
+
+    /* PHONES ROW */
+    .phone-row { display: flex; gap: 16px; align-items: flex-start; }
+    .phone-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .phone-sublabel { font-size: 10px; color: #52525b; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .phone {
+      width: 355px;
+      border-radius: 38px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 760px;
+    }
+    .phone.v1 { background: #131316; box-shadow: 0 0 0 7px #1a1a1f, 0 24px 60px rgba(0,0,0,0.6); }
+    .phone.v2 { background: #0f172a; box-shadow: 0 0 0 7px #1e293b, 0 24px 60px rgba(59,130,246,0.15), 0 24px 60px rgba(0,0,0,0.6); }
+
+    .notch { height: 34px; display: flex; align-items: center; justify-content: center; }
+    .notch-bar { width: 110px; height: 5px; border-radius: 3px; }
+    .v1 .notch { background: #131316; }
+    .v1 .notch-bar { background: #27272a; }
+    .v2 .notch { background: #0f172a; }
+    .v2 .notch-bar { background: #1e293b; }
+
+    /* HEADER */
+    .hdr { padding: 11px 15px; border-bottom: 1px solid; }
+    .v1 .hdr { background: #1a1a1f; border-color: #27272a; }
+    .v2 .hdr { background: #1e293b; border-color: #334155; }
+    .hdr-row { display: flex; justify-content: space-between; align-items: center; }
+    .pr-title { font-size: 14px; font-weight: 600; color: #fafafa; }
+    .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* V1 badges */
+    .v1 .badge-status { background: #fbbf24; color: #000; }
+    .v1 .badge-agent  { background: #3b82f6; color: #fff; }
+    /* V2 badges */
+    .v2 .badge-status { background: #f59e0b; color: #000; }
+    .v2 .badge-agent  { background: #1d4ed8; color: #bfdbfe; }
+
+    .agent-row { display: flex; align-items: center; gap: 6px; margin-top: 7px; }
+    .agent-lbl { font-size: 11px; color: #a1a1aa; }
+
+    /* TIMELINE */
+    .tl-wrap { padding: 13px 15px; border-bottom: 1px solid; }
+    .v1 .tl-wrap { background: #0f0f12; border-color: #27272a; }
+    .v2 .tl-wrap { background: #0a1628; border-color: #1e3a5f; }
+    .tl { display: flex; align-items: flex-start; }
+    .tl-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .tl-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; z-index: 1; }
+    /* V1 tl */
+    .v1 .tl-icon.done    { background: #22c55e; color: #000; }
+    .v1 .tl-icon.current { background: #fbbf24; color: #000; }
+    .v1 .tl-icon.pending { background: #3f3f46; color: #52525b; }
+    .v1 .tl-conn         { height: 2px; background: #3f3f46; flex: 1; margin-top: 12px; }
+    .v1 .tl-conn.done    { background: #22c55e; }
+    /* V2 tl */
+    .v2 .tl-icon.done    { background: #22c55e; color: #000; }
+    .v2 .tl-icon.current { background: #f59e0b; color: #000; box-shadow: 0 0 8px #f59e0b88; }
+    .v2 .tl-icon.pending { background: #1e293b; color: #334155; border: 1px solid #334155; }
+    .v2 .tl-conn         { height: 2px; background: #1e3a5f; flex: 1; margin-top: 12px; }
+    .v2 .tl-conn.done    { background: #22c55e; }
+    .tl-lbl { font-size: 8px; color: #71717a; text-transform: uppercase; font-weight: 500; text-align: center; }
+
+    /* CONTENT */
+    .content { padding: 13px 15px; overflow-y: auto; flex: 1; }
+    .stats { border-radius: 8px; padding: 11px; display: flex; margin-bottom: 13px; }
+    .v1 .stats { background: #1a1a1f; border: 1px solid #27272a; }
+    .v2 .stats { background: #1e293b; border: 1px solid #334155; }
+    .stat { flex: 1; text-align: center; }
+    .stat + .stat { border-left: 1px solid; }
+    .v1 .stat + .stat { border-color: #27272a; }
+    .v2 .stat + .stat { border-color: #334155; }
+    .sv { font-size: 17px; font-weight: 700; }
+    .sl { font-size: 10px; color: #71717a; margin-top: 2px; }
+    /* V1 stat colors */
+    .v1 .sv.add { color: #22c55e; }
+    .v1 .sv.del { color: #ef4444; }
+    /* V2 stat colors */
+    .v2 .sv.add { color: #22d3ee; }
+    .v2 .sv.del { color: #f87171; }
+
+    .sec-title { font-size: 10px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 7px; }
+    .file-item { border-radius: 6px; padding: 9px 11px; display: flex; align-items: center; gap: 9px; margin-bottom: 5px; border: 1px solid; }
+    .v1 .file-item { background: #1a1a1f; border-color: #27272a; }
+    .v2 .file-item { background: #1e293b; border-color: #334155; }
+    .fname { font-family: 'Menlo','Courier New',monospace; font-size: 11px; color: #d4d4d8; }
+    .fdot { width: 6px; height: 6px; border-radius: 50%; margin-left: auto; }
+    .v1 .fdot { background: #fbbf24; }
+    .v2 .fdot { background: #f59e0b; box-shadow: 0 0 4px #f59e0b88; }
+
+    .btn { width: 100%; padding: 13px; border-radius: 10px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 7px; }
+    .btn:last-child { margin-bottom: 0; }
+    .v1 .btn-primary  { background: #3b82f6; color: #fff; }
+    .v1 .btn-secondary { background: #27272a; color: #a1a1aa; }
+    .v2 .btn-primary  { background: #2563eb; color: #fff; box-shadow: 0 0 12px #3b82f640; }
+    .v2 .btn-secondary { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+
+    /* DIFF */
+    .diff-nav { padding: 9px 15px; border-bottom: 1px solid; display: flex; justify-content: space-between; align-items: center; }
+    .v1 .diff-nav { background: #1a1a1f; border-color: #27272a; }
+    .v2 .diff-nav { background: #1e293b; border-color: #334155; }
+    .dfname { font-family: 'Menlo','Courier New',monospace; font-size: 12px; font-weight: 600; color: #fafafa; }
+    .dfcnt { font-size: 11px; padding: 2px 7px; border-radius: 4px; }
+    .v1 .dfcnt { background: #27272a; color: #71717a; }
+    .v2 .dfcnt { background: #1e3a5f; color: #7dd3fc; }
+
+    .diff-scroll { flex: 1; overflow-y: auto; font-family: 'Menlo','Courier New',monospace; font-size: 11.5px; line-height: 21px; }
+    .dchunk { padding: 2px 11px; font-size: 10px; }
+    .v1 .dchunk { background: #1e2a3a; color: #7dd3fc; }
+    .v2 .dchunk { background: #0d2240; color: #38bdf8; }
+
+    .dl { display: flex; min-height: 21px; }
+    .ln { color: #52525b; text-align: right; padding: 0 7px; min-width: 33px; flex-shrink: 0; user-select: none; font-size: 10px; }
+    .lc { flex: 1; padding: 0 7px; white-space: pre; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+
+    /* V1 diff */
+    .v1 .dl.removed { background: #3d1515; }
+    .v1 .dl.removed .lc { color: #ef4444; }
+    .v1 .dl.added   { background: #0d2818; }
+    .v1 .dl.added   .lc { color: #22c55e; }
+    .v1 .dl.context { background: #131316; }
+    .v1 .dl.context .lc { color: #d4d4d8; }
+
+    /* V2 diff — paleta Íris+Quiron */
+    .v2 .dl.removed { background: #2d0e0e; }
+    .v2 .dl.removed .lc { color: #f87171; }
+    .v2 .dl.added   { background: #042318; }
+    .v2 .dl.added   .lc { color: #22d3ee; }
+    .v2 .dl.context { background: #0f172a; }
+    .v2 .dl.context .lc { color: #94a3b8; }
+
+    .cbtn { border: none; padding: 1px 5px; border-radius: 3px; font-size: 9px; cursor: pointer; flex-shrink: 0; margin-left: 5px; font-family: sans-serif; }
+    .v1 .cbtn { background: #27272a; color: #71717a; }
+    .v2 .cbtn { background: #1e3a5f; color: #38bdf8; }
+
+    /* FOOTER */
+    .ftr { border-top: 1px solid; padding: 11px 15px; display: flex; gap: 7px; }
+    .v1 .ftr { background: #1a1a1f; border-color: #27272a; }
+    .v2 .ftr { background: #1e293b; border-color: #334155; }
+    .fb { flex: 1; padding: 13px 5px; border-radius: 10px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
+    /* V1 footer */
+    .v1 .fb.reject  { background: #7f1d1d; color: #fca5a5; }
+    .v1 .fb.comment { background: #27272a; color: #d4d4d8; }
+    .v1 .fb.approve { background: #14532d; color: #86efac; }
+    /* V2 footer — paleta Íris+Quiron */
+    .v2 .fb.reject  { background: #450a0a; color: #ef4444; border: 1px solid #7f1d1d; }
+    .v2 .fb.comment { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+    .v2 .fb.approve { background: #052e16; color: #22c55e; border: 1px solid #166534; box-shadow: 0 0 8px #22c55e22; }
+
+    /* VS divider */
+    .vs-divider {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; padding-top: 380px; color: #334155;
+    }
+    .vs-line { width: 1px; height: 60px; background: #27272a; }
+    .vs-text { font-size: 11px; font-weight: 700; color: #52525b; letter-spacing: 0.1em; }
+
+    /* LEGEND */
+    .legend {
+      display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+      padding: 14px 20px; border-radius: 12px; background: #0d0d10;
+      border: 1px solid #1e1e24;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #71717a; }
+    .ldot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    @media (max-width: 900px) {
+      .versions { flex-direction: column; }
+      .vs-divider { flex-direction: row; padding-top: 0; }
+      .vs-line { width: 60px; height: 1px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-title">Olimpo App — Code Panel + Code Review</div>
+  <div class="page-sub">Comparação de paleta · V1 (original) vs V2 (Íris + Quiron)</div>
+</div>
+
+<!-- ======== V1 ======== -->
+<div class="versions">
+  <div class="version-col">
+    <span class="version-label v1-label">V1 — Original</span>
+    <div class="phone-row">
+
+      <!-- V1 CODE PANEL -->
+      <div class="phone-wrapper">
+        <div class="phone-sublabel">Code Panel</div>
+        <div class="phone v1">
+          <div class="notch"><div class="notch-bar"></div></div>
+          <div class="hdr">
+            <div class="hdr-row">
+              <div class="pr-title">feat: JWT refresh</div>
+              <span class="badge badge-status">PR Aberto</span>
+            </div>
+            <div class="agent-row">
+              <span class="agent-lbl">Gerado por</span>
+              <span class="badge badge-agent">⚡ Apolo</span>
+              <span style="font-size:10px;color:#52525b;margin-left:auto;">há 3 min</span>
+            </div>
+          </div>
+          <div class="tl-wrap">
+            <div class="tl">
+              <div class="tl-item"><div class="tl-icon done">✓</div><div class="tl-lbl">Queued</div></div>
+              <div class="tl-conn done"></div>
+              <div class="tl-item"><div class="tl-icon done">✓</div><div class="tl-lbl">Clone</div></div>
+              <div class="tl-conn done"></div>
+              <div class="tl-item"><div class="tl-icon done">✓</div><div class="tl-lbl">Running</div></div>
+              <div class="tl-conn done"></div>
+              <div class="tl-item"><div class="tl-icon current">●</div><div class="tl-lbl">PR Open</div></div>
+              <div class="tl-conn"></div>
+              <div class="tl-item"><div class="tl-icon pending">○</div><div class="tl-lbl">Done</div></div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="stats">
+              <div class="stat"><div class="sv">3</div><div class="sl">Arquivos</div></div>
+              <div class="stat"><div class="sv add">+47</div><div class="sl">Inserções</div></div>
+              <div class="stat"><div class="sv del">-12</div><div class="sl">Deleções</div></div>
+            </div>
+            <div class="sec-title">Arquivos alterados</div>
+            <div class="file-item"><span style="font-size:15px;">📄</span><span class="fname">auth.service.ts</span><div class="fdot"></div></div>
+            <div class="file-item"><span style="font-size:15px;">📄</span><span class="fname">jwt-refresh.interceptor.ts</span><div class="fdot"></div></div>
+            <div class="file-item"><span style="font-size:15px;">📄</span><span class="fname">auth.model.ts</span><div class="fdot"></div></div>
+            <div style="margin-top:14px;">
+              <button class="btn btn-primary">🔍 Revisar código →</button>
+              <button class="btn btn-secondary">↗ Abrir no GitHub</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- V1 CODE REVIEW -->
+      <div class="phone-wrapper">
+        <div class="phone-sublabel">Code Review</div>
+        <div class="phone v1">
+          <div class="notch"><div class="notch-bar"></div></div>
+          <div class="hdr"><div class="hdr-row"><span style="font-size:12px;color:#a1a1aa;">← Voltar</span><span style="font-size:13px;color:#fafafa;font-weight:600;">Code Review</span><span></span></div></div>
+          <div class="diff-nav"><span class="dfname">auth.service.ts</span><span class="dfcnt">1 / 3</span></div>
+          <div class="diff-scroll">
+            <div class="dchunk">@@ -42,8 +42,33 @@ export class AuthService {</div>
+            <div class="dl context"><span class="ln">42</span><span class="lc"><span>  private apiUrl = env.apiUrl;</span></span></div>
+            <div class="dl context"><span class="ln">43</span><span class="lc"><span></span></span></div>
+            <div class="dl removed"><span class="ln">44</span><span class="lc"><span>-  timeout: 5000,</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">44</span><span class="lc"><span>+  timeout: 10000,</span><button class="cbtn">💬</button></span></div>
+            <div class="dl context"><span class="ln">45</span><span class="lc"><span>  });</span></span></div>
+            <div class="dl context"><span class="ln">46</span><span class="lc"><span></span></span></div>
+            <div class="dl context"><span class="ln">47</span><span class="lc"><span>  login(creds: LoginDto) {</span></span></div>
+            <div class="dl context"><span class="ln">48</span><span class="lc"><span>    return this.http.post(</span></span></div>
+            <div class="dl context"><span class="ln">49</span><span class="lc"><span>      `${this.apiUrl}/auth/login`,</span></span></div>
+            <div class="dl context"><span class="ln">50</span><span class="lc"><span>      creds);</span></span></div>
+            <div class="dl context"><span class="ln">51</span><span class="lc"><span>  }</span></span></div>
+            <div class="dl context"><span class="ln">52</span><span class="lc"><span></span></span></div>
+            <div class="dl added"><span class="ln">53</span><span class="lc"><span>+  refreshToken(token: string) {</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">54</span><span class="lc"><span>+    return this.http.post(</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">55</span><span class="lc"><span>+      `${this.apiUrl}/auth/refresh`,</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">56</span><span class="lc"><span>+      { refreshToken: token }</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">57</span><span class="lc"><span>+    );</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">58</span><span class="lc"><span>+  }</span><button class="cbtn">💬</button></span></div>
+            <div class="dl context"><span class="ln">59</span><span class="lc"><span></span></span></div>
+            <div class="dl context"><span class="ln">60</span><span class="lc"><span>  logout(): void {</span></span></div>
+            <div class="dl context"><span class="ln">61</span><span class="lc"><span>    this.token.clear();</span></span></div>
+            <div class="dl context"><span class="ln">62</span><span class="lc"><span>  }</span></span></div>
+          </div>
+          <div class="ftr">
+            <button class="fb reject">❌ Rejeitar</button>
+            <button class="fb comment">💬 Comentar</button>
+            <button class="fb approve">✅ Aprovar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VS -->
+  <div class="vs-divider">
+    <div class="vs-line"></div>
+    <div class="vs-text">VS</div>
+    <div class="vs-line"></div>
+  </div>
+
+  <!-- ======== V2 ======== -->
+  <div class="version-col">
+    <span class="version-label v2-label">V2 — Íris + Quiron</span>
+    <div class="phone-row">
+
+      <!-- V2 CODE PANEL -->
+      <div class="phone-wrapper">
+        <div class="phone-sublabel">Code Panel</div>
+        <div class="phone v2">
+          <div class="notch"><div class="notch-bar"></div></div>
+          <div class="hdr">
+            <div class="hdr-row">
+              <div class="pr-title">feat: JWT refresh</div>
+              <span class="badge badge-status">PR Aberto</span>
+            </div>
+            <div class="agent-row">
+              <span class="agent-lbl">Gerado por</span>
+              <span class="badge badge-agent">⚡ Apolo</span>
+              <span style="font-size:10px;color:#334155;margin-left:auto;">há 3 min</span>
+            </div>
+          </div>
+          <div class="tl-wrap">
+            <div class="tl">
+              <div class="tl-item"><div class="tl-icon done">✓</div><div class="tl-lbl">Queued</div></div>
+              <div class="tl-conn done"></div>
+              <div class="tl-item"><div class="tl-icon done">✓</div><div class="tl-lbl">Clone</div></div>
+              <div class="tl-conn done"></div>
+              <div class="tl-item"><div class="tl-icon done">✓</div><div class="tl-lbl">Running</div></div>
+              <div class="tl-conn done"></div>
+              <div class="tl-item"><div class="tl-icon current">●</div><div class="tl-lbl">PR Open</div></div>
+              <div class="tl-conn"></div>
+              <div class="tl-item"><div class="tl-icon pending">○</div><div class="tl-lbl">Done</div></div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="stats">
+              <div class="stat"><div class="sv">3</div><div class="sl">Arquivos</div></div>
+              <div class="stat"><div class="sv add">+47</div><div class="sl">Inserções</div></div>
+              <div class="stat"><div class="sv del">-12</div><div class="sl">Deleções</div></div>
+            </div>
+            <div class="sec-title">Arquivos alterados</div>
+            <div class="file-item"><span style="font-size:15px;">📄</span><span class="fname">auth.service.ts</span><div class="fdot"></div></div>
+            <div class="file-item"><span style="font-size:15px;">📄</span><span class="fname">jwt-refresh.interceptor.ts</span><div class="fdot"></div></div>
+            <div class="file-item"><span style="font-size:15px;">📄</span><span class="fname">auth.model.ts</span><div class="fdot"></div></div>
+            <div style="margin-top:14px;">
+              <button class="btn btn-primary">🔍 Revisar código →</button>
+              <button class="btn btn-secondary">↗ Abrir no GitHub</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- V2 CODE REVIEW -->
+      <div class="phone-wrapper">
+        <div class="phone-sublabel">Code Review</div>
+        <div class="phone v2">
+          <div class="notch"><div class="notch-bar"></div></div>
+          <div class="hdr"><div class="hdr-row"><span style="font-size:12px;color:#64748b;">← Voltar</span><span style="font-size:13px;color:#fafafa;font-weight:600;">Code Review</span><span></span></div></div>
+          <div class="diff-nav"><span class="dfname">auth.service.ts</span><span class="dfcnt">1 / 3</span></div>
+          <div class="diff-scroll">
+            <div class="dchunk">@@ -42,8 +42,33 @@ export class AuthService {</div>
+            <div class="dl context"><span class="ln">42</span><span class="lc"><span>  private apiUrl = env.apiUrl;</span></span></div>
+            <div class="dl context"><span class="ln">43</span><span class="lc"><span></span></span></div>
+            <div class="dl removed"><span class="ln">44</span><span class="lc"><span>-  timeout: 5000,</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">44</span><span class="lc"><span>+  timeout: 10000,</span><button class="cbtn">💬</button></span></div>
+            <div class="dl context"><span class="ln">45</span><span class="lc"><span>  });</span></span></div>
+            <div class="dl context"><span class="ln">46</span><span class="lc"><span></span></span></div>
+            <div class="dl context"><span class="ln">47</span><span class="lc"><span>  login(creds: LoginDto) {</span></span></div>
+            <div class="dl context"><span class="ln">48</span><span class="lc"><span>    return this.http.post(</span></span></div>
+            <div class="dl context"><span class="ln">49</span><span class="lc"><span>      `${this.apiUrl}/auth/login`,</span></span></div>
+            <div class="dl context"><span class="ln">50</span><span class="lc"><span>      creds);</span></span></div>
+            <div class="dl context"><span class="ln">51</span><span class="lc"><span>  }</span></span></div>
+            <div class="dl context"><span class="ln">52</span><span class="lc"><span></span></span></div>
+            <div class="dl added"><span class="ln">53</span><span class="lc"><span>+  refreshToken(token: string) {</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">54</span><span class="lc"><span>+    return this.http.post(</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">55</span><span class="lc"><span>+      `${this.apiUrl}/auth/refresh`,</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">56</span><span class="lc"><span>+      { refreshToken: token }</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">57</span><span class="lc"><span>+    );</span><button class="cbtn">💬</button></span></div>
+            <div class="dl added"><span class="ln">58</span><span class="lc"><span>+  }</span><button class="cbtn">💬</button></span></div>
+            <div class="dl context"><span class="ln">59</span><span class="lc"><span></span></span></div>
+            <div class="dl context"><span class="ln">60</span><span class="lc"><span>  logout(): void {</span></span></div>
+            <div class="dl context"><span class="ln">61</span><span class="lc"><span>    this.token.clear();</span></span></div>
+            <div class="dl context"><span class="ln">62</span><span class="lc"><span>  }</span></span></div>
+          </div>
+          <div class="ftr">
+            <button class="fb reject">❌ Rejeitar</button>
+            <button class="fb comment">💬 Comentar</button>
+            <button class="fb approve">✅ Aprovar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="ldot" style="background:#22c55e;"></div><span>Aprovação</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#ef4444;"></div><span>Rejeição</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#22d3ee;"></div><span>Diff adicionado (V2)</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#22c55e;opacity:.6"></div><span>Diff adicionado (V1)</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#f87171;"></div><span>Diff removido (V2)</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#ef4444;opacity:.6"></div><span>Diff removido (V1)</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#f59e0b;"></div><span>Alerta / PR aberto</span></div>
+  <div class="legend-item"><div class="ldot" style="background:#3b82f6;"></div><span>Ação primária</span></div>
+</div>
+
+</body>
+</html>
