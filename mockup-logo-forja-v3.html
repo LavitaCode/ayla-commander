@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forja — Logo · Rodada 3 (martelo)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #020617;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #e2e8f0;
+      padding: 3rem 1.5rem 5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 2.5rem;
+    }
+    .page-header { text-align: center; }
+    .page-title { font-size: 1.4rem; font-weight: 800; color: #f8fafc; letter-spacing: -.02em; }
+    .page-title .ember { background: linear-gradient(135deg,#fbbf24,#f97316); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .page-sub { font-size: .68rem; color: #475569; text-transform: uppercase; letter-spacing: .12em; margin-top: .4rem; }
+    .back { font-size: .65rem; color: #38bdf8; text-decoration: none; }
+
+    .cards { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; max-width: 800px; }
+    .card {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 1.25rem;
+      width: 360px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      display: flex; flex-direction: column;
+    }
+    .card-letter { font-size: .7rem; font-weight: 800; color: #f97316; letter-spacing: .1em; }
+    .card-top { padding: 1rem 1.25rem .5rem; display: flex; align-items: center; justify-content: space-between; }
+    .card-name { font-size: .85rem; font-weight: 700; color: #f1f5f9; }
+    .card-rec { font-size: .55rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: .2rem .5rem; border-radius: .3rem; }
+    .card-rec.primary { background: #431407; color: #fb923c; }
+    .card-rec.secondary { background: #1e293b; color: #64748b; }
+
+    .hero {
+      background: radial-gradient(circle at 50% 40%, #1a2438 0%, #0a1220 70%);
+      padding: 2.5rem 1rem; display: flex; align-items: center; justify-content: center;
+      min-height: 200px; border-top: 1px solid #1e293b; border-bottom: 1px solid #1e293b;
+    }
+    .card-desc { padding: 1rem 1.25rem; font-size: .72rem; color: #94a3b8; line-height: 1.6; }
+    .card-desc strong { color: #cbd5e1; }
+
+    .uses { padding: .85rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: .7rem; }
+    .uses-label { font-size: .55rem; color: #334155; text-transform: uppercase; letter-spacing: .08em; }
+    .use-row { display: flex; align-items: center; gap: 1rem; }
+    .fav { width: 28px; height: 28px; border-radius: .35rem; background: #0a1220; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #1e293b; flex-shrink: 0; }
+    .appicon { width: 48px; height: 48px; border-radius: .8rem; background: linear-gradient(135deg,#0f172a,#020617); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #1e293b, 0 4px 12px rgba(0,0,0,.5); flex-shrink: 0; }
+    .wordmark { display: flex; align-items: center; gap: .5rem; }
+    .wordmark-text { font-size: 1rem; font-weight: 800; color: #f1f5f9; letter-spacing: -.01em; }
+    .use-cap { font-size: .55rem; color: #475569; }
+
+    @keyframes flicker { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
+    .spark { animation: flicker 2.5s ease-in-out infinite; }
+    @keyframes flicker2 { 0%,100% { opacity: .9; } 40% { opacity: .5; } }
+    .spark2 { animation: flicker2 1.7s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="page-title"><span class="ember">Forja</span> — Logo · Rodada 3</div>
+    <div class="page-sub">+2 novas variações com martelo</div>
+    <a class="back" href="mockup-logo-forja-v2.html">← ver rodada 2</a> &nbsp;·&nbsp;
+    <a class="back" href="mockup-logo-forja.html">rodada 1</a>
+  </div>
+
+  <div class="cards">
+
+    <!-- OPÇÃO F — MARTELO VERTICAL MINIMAL + IMPACTO -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO F</div>
+          <div class="card-name">Martelo vertical · impacto</div>
+        </div>
+        <span class="card-rec primary">★ Limpo</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="steelF" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#e2e8f0"/><stop offset="50%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#475569"/>
+            </linearGradient>
+            <linearGradient id="emberF" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+            <radialGradient id="impactF" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fde68a"/><stop offset="45%" stop-color="#f97316"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- onda de impacto incandescente na base -->
+          <ellipse cx="60" cy="96" rx="34" ry="9" fill="url(#impactF)" class="spark2"/>
+          <!-- linhas de impacto -->
+          <g stroke="url(#emberF)" stroke-width="2.5" stroke-linecap="round" class="spark">
+            <line x1="30" y1="92" x2="20" y2="88"/>
+            <line x1="90" y1="92" x2="100" y2="88"/>
+            <line x1="40" y1="100" x2="34" y2="106"/>
+            <line x1="80" y1="100" x2="86" y2="106"/>
+          </g>
+          <!-- martelo reto, vertical, geométrico -->
+          <!-- cabeça -->
+          <rect x="36" y="22" width="48" height="22" rx="5" fill="url(#steelF)"/>
+          <rect x="36" y="22" width="48" height="5" rx="2.5" fill="#f1f5f9" opacity=".55"/>
+          <!-- pequena marca de têmpera na face que bate -->
+          <rect x="44" y="40" width="32" height="4" rx="2" fill="url(#emberF)" opacity=".9"/>
+          <!-- cabo -->
+          <rect x="54" y="44" width="12" height="44" rx="4" fill="url(#steelF)"/>
+          <!-- empunhadura -->
+          <rect x="53" y="76" width="14" height="12" rx="4" fill="#334155"/>
+        </svg>
+      </div>
+      <div class="card-desc">
+        Martelo <strong>reto, vertical e geométrico</strong>, descendo sobre uma onda de impacto incandescente. Leitura instantânea, formas simples (escala perfeito em favicon). A face que bate tem a marca da têmpera quente. Energia de "ação que acontece agora".
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><rect x="36" y="22" width="48" height="22" rx="5" fill="#94a3b8"/><rect x="54" y="44" width="12" height="44" rx="4" fill="#94a3b8"/><ellipse cx="60" cy="96" rx="22" ry="6" fill="#f97316"/></svg>
+          </div>
+          <span class="use-cap">favicon</span>
+          <div class="appicon">
+            <svg width="34" height="34" viewBox="0 0 120 120"><ellipse cx="60" cy="96" rx="30" ry="8" fill="#f97316"/><rect x="36" y="22" width="48" height="22" rx="5" fill="#94a3b8"/><rect x="44" y="40" width="32" height="4" rx="2" fill="#fbbf24"/><rect x="54" y="44" width="12" height="44" rx="4" fill="#94a3b8"/></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><rect x="36" y="22" width="48" height="22" rx="5" fill="#94a3b8"/><rect x="54" y="44" width="12" height="44" rx="4" fill="#94a3b8"/><ellipse cx="60" cy="96" rx="22" ry="6" fill="#f97316"/></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPÇÃO G — MARTELO DENTRO DE HEXÁGONO (engenharia) -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-letter">OPÇÃO G</div>
+          <div class="card-name">Martelo no hexágono</div>
+        </div>
+        <span class="card-rec secondary">Tech / Engenharia</span>
+      </div>
+      <div class="hero">
+        <svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="steelG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#cbd5e1"/><stop offset="100%" stop-color="#64748b"/>
+            </linearGradient>
+            <linearGradient id="emberG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+            <radialGradient id="glowG" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity=".4"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- hexágono (linguagem de engenharia/parafuso) -->
+          <path d="M60 12 L102 36 V84 L60 108 L18 84 V36 Z" fill="#0a1220" stroke="url(#emberG)" stroke-width="2.5"/>
+          <path d="M60 12 L102 36 V84 L60 108 L18 84 V36 Z" fill="url(#glowG)"/>
+          <!-- hexágono interno sutil -->
+          <path d="M60 24 L92 42 V78 L60 96 L28 78 V42 Z" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <!-- martelo inclinado dentro -->
+          <g transform="rotate(-38 60 60)">
+            <rect x="55" y="40" width="10" height="42" rx="4" fill="url(#steelG)"/>
+            <rect x="40" y="32" width="34" height="16" rx="4" fill="url(#steelG)"/>
+            <rect x="64" y="32" width="10" height="16" rx="3" fill="#475569"/>
+            <rect x="40" y="32" width="34" height="4" rx="2" fill="#e2e8f0" opacity=".55"/>
+            <!-- têmpera quente -->
+            <rect x="40" y="44" width="34" height="4" rx="2" fill="url(#emberG)"/>
+          </g>
+          <!-- faíscas no impacto -->
+          <g class="spark2" fill="#fbbf24">
+            <circle cx="40" cy="80" r="2.4"/><circle cx="32" cy="74" r="1.5"/><circle cx="46" cy="86" r="1.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-desc">
+        Martelo dentro de um <strong>hexágono</strong> — a forma universal de engenharia (parafuso, sextavado, "build"). Fala diretamente com o público dev: ofício + tecnologia. A borda em brasa e o glow interno dão o calor da forja sem perder o ar técnico.
+      </div>
+      <div class="uses">
+        <div class="uses-label">Em uso</div>
+        <div class="use-row">
+          <div class="fav">
+            <svg width="18" height="18" viewBox="0 0 120 120"><path d="M60 12 L102 36 V84 L60 108 L18 84 V36 Z" fill="none" stroke="#f97316" stroke-width="6"/><g transform="rotate(-38 60 60)"><rect x="55" y="40" width="10" height="42" rx="4" fill="#cbd5e1"/><rect x="40" y="32" width="34" height="16" rx="4" fill="#cbd5e1"/></g></svg>
+          </div>
+          <span class="use-cap">favicon</span>
+          <div class="appicon">
+            <svg width="34" height="34" viewBox="0 0 120 120"><path d="M60 12 L102 36 V84 L60 108 L18 84 V36 Z" fill="#0a1220" stroke="#f97316" stroke-width="4"/><g transform="rotate(-38 60 60)"><rect x="55" y="40" width="10" height="42" rx="4" fill="#cbd5e1"/><rect x="40" y="32" width="34" height="16" rx="4" fill="#cbd5e1"/><rect x="40" y="44" width="34" height="4" rx="2" fill="#f97316"/></g></svg>
+          </div>
+          <span class="use-cap">app icon</span>
+        </div>
+        <div class="use-row wordmark">
+          <svg width="26" height="26" viewBox="0 0 120 120"><path d="M60 12 L102 36 V84 L60 108 L18 84 V36 Z" fill="none" stroke="#f97316" stroke-width="4"/><g transform="rotate(-38 60 60)"><rect x="55" y="40" width="10" height="42" rx="4" fill="#cbd5e1"/><rect x="40" y="32" width="34" height="16" rx="4" fill="#cbd5e1"/></g></svg>
+          <span class="wordmark-text">Forja</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
