@@ -14,6 +14,7 @@ framework: user-story-mapping-patton
 icp: founder-tecnico-solo-dupla-pre-seed-seed
 related:
   - forja-definicoes-finais.md
+  - forja-v2/produto/forja-business-rules.md
   - forja-value-proposition-canvas.html
   - forja-sistema-arquitetura.html
   - mockup-fit-staircase.html
