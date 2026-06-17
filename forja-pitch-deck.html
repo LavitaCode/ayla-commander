@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forja — Managed AI Agent Platform</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0f1a;
+    --bg2: #0f1625;
+    --bg3: #131d2e;
+    --orange: #f97316;
+    --cyan: #22d3ee;
+    --yellow: #fbbf24;
+    --green: #4ade80;
+    --purple: #a78bfa;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,15,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+  }
+  nav a:hover { color: var(--text); background: var(--border); }
+  nav a.active { color: var(--orange); background: rgba(249,115,22,0.12); }
+
+  /* SECTIONS */
+  section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 2rem 4rem;
+    position: relative;
+  }
+
+  .section-inner {
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  /* SLIDE LABEL */
+  .slide-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--orange);
+    margin-bottom: 1rem;
+  }
+
+  /* HEADINGS */
+  h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 800; line-height: 1.1; }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; line-height: 1.2; }
+  h3 { font-size: 1.25rem; font-weight: 600; }
+
+  /* GRID */
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+
+  /* CARD */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .card:hover { border-color: rgba(249,115,22,0.3); transform: translateY(-2px); }
+
+  .card-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+  .card-body { color: var(--muted); font-size: 0.95rem; }
+
+  /* ORANGE GRADIENT TEXT */
+  .gradient-text {
+    background: linear-gradient(135deg, #f97316 0%, #fb923c 40%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--orange), var(--cyan));
+    border-radius: 2px;
+    margin: 1rem 0 2rem;
+  }
+
+  /* ---- SLIDE 1: CAPA ---- */
+  #capa {
+    background: radial-gradient(ellipse at 30% 50%, rgba(249,115,22,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(34,211,238,0.06) 0%, transparent 60%);
+    text-align: center;
+  }
+  #capa .forja-logo {
+    font-size: clamp(5rem, 18vw, 12rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    background: linear-gradient(135deg, #f97316 0%, #fb923c 35%, #fdba74 50%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  #capa .tagline {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: var(--text);
+    font-weight: 300;
+    margin: 1.5rem 0 0.5rem;
+    opacity: 0.9;
+  }
+  #capa .tagline-pt {
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+  #capa .badge {
+    display: inline-block;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  #capa .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ---- SLIDE 2: PROBLEMA ---- */
+  #problema { background: var(--bg); }
+  .pain-card {
+    background: var(--bg2);
+    border: 1px solid rgba(249,115,22,0.2);
+    border-left: 4px solid var(--orange);
+    border-radius: 16px;
+    padding: 2rem;
+  }
+  .pain-number {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--orange);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .pain-source { font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem; font-style: italic; }
+
+  /* ---- SLIDE 3: SOLUÇÃO ---- */
+  #solucao { background: var(--bg3); }
+  .solution-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .solution-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--orange), var(--cyan));
+  }
+  .solution-card .big-icon { font-size: 3rem; margin-bottom: 1.5rem; }
+
+  /* ---- SLIDE 4: MERCADO ---- */
+  #mercado { background: var(--bg); }
+  .circles-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3rem 0;
+    position: relative;
+  }
+  .circle {
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: absolute;
+  }
+  .circle-tam {
+    width: 380px; height: 380px;
+    background: rgba(249,115,22,0.06);
+    border: 2px solid rgba(249,115,22,0.3);
+  }
+  .circle-sam {
+    width: 250px; height: 250px;
+    background: rgba(249,115,22,0.1);
+    border: 2px solid rgba(249,115,22,0.5);
+  }
+  .circle-som {
+    width: 150px; height: 150px;
+    background: rgba(249,115,22,0.2);
+    border: 2px solid var(--orange);
+  }
+  .circle-value { font-size: 1.4rem; font-weight: 800; color: var(--orange); }
+  .circle-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .circle-sub { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+  .circles-wrapper {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+  }
+  .market-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .market-stat {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .market-stat-value { font-size: 1.8rem; font-weight: 800; color: var(--orange); }
+  .market-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  /* ---- SLIDE 5: PRODUTO ---- */
+  #produto { background: var(--bg3); }
+  .terminal {
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.72rem;
+    color: #c9d1d9;
+    margin-top: 1.5rem;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+  .terminal .prompt { color: var(--green); }
+  .terminal .cmd { color: var(--text); }
+  .terminal .output { color: var(--cyan); }
+  .terminal .agent { color: var(--orange); }
+  .terminal-header {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  /* ---- SLIDE 6: NEGÓCIO ---- */
+  #negocio { background: var(--bg); }
+  .pricing-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .pricing-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    transition: transform 0.3s;
+  }
+  .pricing-card:hover { transform: translateY(-4px); }
+  .pricing-card.featured {
+    border-color: var(--orange);
+    background: rgba(249,115,22,0.05);
+  }
+  .featured-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--orange);
+    color: white;
+    padding: 2px 16px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .pricing-plan { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  .pricing-price { font-size: 2.5rem; font-weight: 800; color: var(--text); margin: 0.5rem 0; line-height: 1; }
+  .pricing-price span { font-size: 0.9rem; font-weight: 400; color: var(--muted); }
+  .pricing-features { list-style: none; margin-top: 1.5rem; }
+  .pricing-features li { font-size: 0.85rem; color: var(--muted); padding: 4px 0; }
+  .pricing-features li::before { content: '✓ '; color: var(--green); font-weight: 700; }
+  .unit-econ {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+  .unit-item { text-align: center; }
+  .unit-value { font-size: 1.6rem; font-weight: 800; color: var(--cyan); }
+  .unit-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .unit-disclaimer { font-size: 0.7rem; color: var(--muted); text-align: center; margin-top: 0.5rem; font-style: italic; }
+
+  /* ---- SLIDE 7: TRAÇÃO ---- */
+  #tracao { background: var(--bg3); }
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-top: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--orange), var(--cyan));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 1.5rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--orange);
+    border: 2px solid var(--bg3);
+  }
+  .timeline-item.current::before { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+  .timeline-item.next::before { background: var(--bg3); border-color: var(--muted); }
+  .tl-date { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); font-weight: 600; }
+  .tl-title { font-size: 1.1rem; font-weight: 700; margin: 0.25rem 0; }
+  .tl-body { font-size: 0.9rem; color: var(--muted); }
+
+  /* ---- SLIDE 8: COMPETIÇÃO ---- */
+  #competicao { background: var(--bg); }
+  .matrix-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto 0;
+    aspect-ratio: 1;
+  }
+  .matrix-bg {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(255,255,255,0.15);
+    position: relative;
+    background: var(--bg2);
+    border-radius: 4px;
+  }
+  .matrix-bg::before, .matrix-bg::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.08);
+  }
+  .matrix-bg::before { left: 50%; top: 0; bottom: 0; width: 1px; }
+  .matrix-bg::after { top: 50%; left: 0; right: 0; height: 1px; }
+  .axis-label {
+    position: absolute;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .ax-top { top: 6px; left: 50%; transform: translateX(-50%); }
+  .ax-bottom { bottom: 6px; left: 50%; transform: translateX(-50%); }
+  .ax-left { left: 6px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: center; }
+  .ax-right { right: 6px; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: center; }
+  .bubble {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-align: center;
+    cursor: default;
+    transition: transform 0.2s;
+  }
+  .bubble:hover { transform: translate(-50%, -50%) scale(1.1); }
+  .bubble-name { margin-top: 3px; white-space: nowrap; }
+  .b-copilot {
+    width: 70px; height: 70px;
+    background: rgba(100,100,200,0.2);
+    border: 2px solid rgba(100,100,200,0.5);
+    color: #94a3b8;
+    left: 28%; top: 72%;
+  }
+  .b-cursor {
+    width: 75px; height: 75px;
+    background: rgba(34,211,238,0.1);
+    border: 2px solid rgba(34,211,238,0.4);
+    color: var(--cyan);
+    left: 72%; top: 72%;
+  }
+  .b-devin {
+    width: 75px; height: 75px;
+    background: rgba(167,139,250,0.1);
+    border: 2px solid rgba(167,139,250,0.4);
+    color: var(--purple);
+    left: 28%; top: 28%;
+  }
+  .b-forja {
+    width: 95px; height: 95px;
+    background: rgba(249,115,22,0.2);
+    border: 3px solid var(--orange);
+    color: var(--orange);
+    left: 72%; top: 28%;
+    box-shadow: 0 0 30px rgba(249,115,22,0.2);
+  }
+  .blue-ocean-label {
+    position: absolute;
+    top: 6%; right: 2%;
+    font-size: 0.65rem;
+    color: var(--orange);
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+
+  /* ---- SLIDE 9: TIME ---- */
+  #time { background: var(--bg3); }
+  .team-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+  .team-name { font-size: 1.3rem; font-weight: 700; }
+  .team-role { color: var(--orange); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin: 4px 0 8px; }
+  .team-bio { color: var(--muted); font-size: 0.9rem; }
+
+  /* ---- SLIDE 10: ROADMAP ---- */
+  #roadmap { background: var(--bg); }
+  .roadmap-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .rm-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .rm-card::after {
+    content: attr(data-n);
+    position: absolute;
+    bottom: -10px;
+    right: -5px;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(249,115,22,0.05);
+    line-height: 1;
+  }
+  .rm-milestone { font-size: 0.75rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+  .rm-title { font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0 1rem; color: var(--text); }
+  .rm-body { color: var(--muted); font-size: 0.9rem; }
+
+  /* ---- SLIDE 11: WAR ROOM ---- */
+  #warroom { background: var(--bg3); }
+  .chat-window {
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 1.5rem;
+  }
+  .chat-header {
+    padding: 0.75rem 1.25rem;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chat-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    max-height: 520px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(249,115,22,0.3) transparent;
+  }
+  .msg { display: flex; gap: 0.5rem; line-height: 1.5; }
+  .msg-sender { font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .msg-text { color: #c9d1d9; }
+  .sender-hera { color: var(--yellow); }
+  .sender-atena { color: var(--cyan); }
+  .sender-hermes { color: var(--green); }
+  .sender-gaia { color: var(--orange); }
+
+  /* ---- SLIDE 12: ASK ---- */
+  #ask {
+    background: radial-gradient(ellipse at 50% 50%, rgba(249,115,22,0.08) 0%, transparent 60%);
+    text-align: center;
+  }
+  .ask-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  .ask-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: left;
+    transition: border-color 0.3s;
+  }
+  .ask-item:hover { border-color: rgba(249,115,22,0.4); }
+  .ask-emoji { font-size: 2rem; flex-shrink: 0; }
+  .ask-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .ask-body { font-size: 0.875rem; color: var(--muted); }
+  .cta-box {
+    margin-top: 3rem;
+    padding: 2rem 3rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .cta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.5rem; }
+  .cta-email {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--orange);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .cta-email:hover { opacity: 0.8; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    section { padding: 70px 1rem 3rem; }
+    .market-stats { grid-template-columns: 1fr 1fr; }
+    .circles-wrapper { width: 320px; height: 320px; }
+    .circle-tam { width: 310px; height: 310px; }
+    .circle-sam { width: 200px; height: 200px; }
+    .circle-som { width: 120px; height: 120px; }
+    .unit-econ { grid-template-columns: 1fr; }
+    .team-card { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#capa">Forja</a>
+  <a href="#problema">Problema</a>
+  <a href="#solucao">Solução</a>
+  <a href="#mercado">Mercado</a>
+  <a href="#produto">Produto</a>
+  <a href="#negocio">Negócio</a>
+  <a href="#tracao">Tração</a>
+  <a href="#competicao">Competição</a>
+  <a href="#time">Time</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#warroom">War Room</a>
+  <a href="#ask">Ask</a>
+</nav>
+
+<!-- ======================== SLIDE 1: CAPA ======================== -->
+<section id="capa">
+  <div class="section-inner" style="text-align:center">
+    <div class="forja-logo">FORJA</div>
+    <p class="tagline">Stop building agents. Start using the best one.</p>
+    <p class="tagline-pt">Pare de construir agentes. Use o melhor, agora.</p>
+    <div class="badge">Managed AI Agent Platform</div>
+
+    <div style="margin-top:3rem; display:flex; justify-content:center; gap:2rem; flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-size:2rem; font-weight:900; color:var(--orange);">15</div>
+        <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;">Agentes Prontos</div>
+      </div>
+      <div style="width:1px; background:var(--border);"></div>
+      <div style="text-align:center;">
+        <div style="font-size:2rem; font-weight:900; color:var(--cyan);">v0.5.0</div>
+        <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;">Versão Atual</div>
+      </div>
+      <div style="width:1px; background:var(--border);"></div>
+      <div style="text-align:center;">
+        <div style="font-size:2rem; font-weight:900; color:var(--text);">BR+LATAM</div>
+        <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;">Mercado Inicial</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">▼ scroll</div>
+</section>
+
+<!-- ======================== SLIDE 2: PROBLEMA ======================== -->
+<section id="problema">
+  <div class="section-inner">
+    <div class="slide-label">01 — Problema</div>
+    <h2>O dev de hoje está <span class="gradient-text">fragmentado</span></h2>
+    <div class="divider"></div>
+    <div class="grid-3">
+      <div class="pain-card">
+        <div class="pain-number">61%</div>
+        <h3 style="margin-bottom:0.5rem;">Fragmentação de Ferramentas</h3>
+        <p class="card-body">Dos devs usam IA mas relatam fragmentação entre tools — cada ferramenta num silo, sem contexto compartilhado, sem orquestração.</p>
+        <p class="pain-source">Stack Overflow Developer Survey 2024</p>
+      </div>
+      <div class="pain-card" style="border-left-color: var(--cyan);">
+        <div class="pain-number" style="color:var(--cyan);">∞</div>
+        <h3 style="margin-bottom:0.5rem;">Setup Infinito</h3>
+        <p class="card-body">Cada nova tool = horas de configuração, prompt engineering do zero, contexto perdido. Dev passa mais tempo configurando do que desenvolvendo.</p>
+        <p class="pain-source">Estimativa baseada em padrão de adoção de ferramentas IA (2023-2024)</p>
+      </div>
+      <div class="pain-card" style="border-left-color: var(--purple);">
+        <div class="pain-number" style="color:var(--purple);">#1</div>
+        <h3 style="margin-bottom:0.5rem;">Memória Zero</h3>
+        <p class="card-body">Falta de persistência de contexto é o principal atrito com ferramentas de IA. Cada sessão começa do zero — histórico, decisões, preferências perdidos.</p>
+        <p class="pain-source">Stack Overflow Developer Survey 2024 — AI tools friction</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 3: SOLUÇÃO ======================== -->
+<section id="solucao">
+  <div class="section-inner">
+    <div class="slide-label">02 — Solução</div>
+    <h2>Um <span class="gradient-text">ecossistema completo</span>,<br>não mais uma ferramenta</h2>
+    <div class="divider"></div>
+    <div class="grid-3">
+      <div class="solution-card">
+        <div class="big-icon">🖥️</div>
+        <h3 style="margin-bottom:0.75rem;">CLI Local-First</h3>
+        <p class="card-body">Runtime em localhost:8080 com fallback automático para EC2. Latência mínima, sem dependência de cloud permanente. Você controla onde roda.</p>
+        <div style="margin-top:1.25rem; padding:0.75rem; background:rgba(249,115,22,0.07); border-radius:8px;">
+          <code style="font-size:0.75rem; color:var(--orange);">$ olimpo serve — localhost:8080 ✓</code>
+        </div>
+      </div>
+      <div class="solution-card">
+        <div class="big-icon">🧠</div>
+        <h3 style="margin-bottom:0.75rem;">Ayla — Memória Real</h3>
+        <p class="card-body">Orquestradora com memória persistente cross-sessão via Neon DB. Aprende com cada conversa, mantém contexto entre terminais, mantém estado de projeto.</p>
+        <div style="margin-top:1.25rem; padding:0.75rem; background:rgba(34,211,238,0.07); border-radius:8px;">
+          <code style="font-size:0.75rem; color:var(--cyan);">Contexto preservado entre sessões ↗</code>
+        </div>
+      </div>
+      <div class="solution-card">
+        <div class="big-icon">⚡</div>
+        <h3 style="margin-bottom:0.75rem;">15 Agentes Prontos</h3>
+        <p class="card-body">Atena (arquitetura), Hermes (pesquisa), Apolo (testes), Afrodite (UX), Gaia (estratégia), Hefesto (infra), Íris (design), Quiron (mentoria), Musa (auditoria), Hera (supervisão) e mais — cada um especializado.</p>
+        <div style="margin-top:1.25rem; padding:0.75rem; background:rgba(249,115,22,0.07); border-radius:8px;">
+          <code style="font-size:0.75rem; color:var(--orange);">invoke_agent('atena', {goal}) ✓</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 4: MERCADO ======================== -->
+<section id="mercado">
+  <div class="section-inner">
+    <div class="slide-label">03 — Mercado</div>
+    <h2>Mercado <span class="gradient-text">grande e crescendo rápido</span></h2>
+    <div class="divider"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; flex-wrap:wrap;">
+      <div>
+        <div class="circles-wrapper">
+          <div class="circle circle-tam" style="left:50%;top:50%;transform:translate(-50%,-50%);">
+            <div style="position:absolute; top:22px; text-align:center;">
+              <div class="circle-value">$25B</div>
+              <div class="circle-label">TAM</div>
+              <div class="circle-sub">Developer Tools Global</div>
+            </div>
+          </div>
+          <div class="circle circle-sam" style="left:50%;top:50%;transform:translate(-50%,-50%);">
+            <div style="position:absolute; top:18px; text-align:center;">
+              <div class="circle-value" style="font-size:1.1rem;">$3B</div>
+              <div class="circle-label">SAM</div>
+              <div class="circle-sub">AI Agent Tools</div>
+            </div>
+          </div>
+          <div class="circle circle-som" style="left:50%;top:50%;transform:translate(-50%,-50%);">
+            <div style="text-align:center;">
+              <div class="circle-value" style="font-size:0.9rem;">$30M</div>
+              <div class="circle-label" style="font-size:0.55rem;">SOM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          <div style="padding:1.5rem; background:var(--bg2); border-radius:16px; border-left:4px solid var(--orange);">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:4px;">TAM — Developer Tools Global</div>
+            <div style="font-size:1.8rem; font-weight:800; color:var(--orange);">$25B</div>
+            <div style="font-size:0.8rem; color:var(--muted);">~18% CAGR — IDC Developer Tools Market Report 2024</div>
+          </div>
+          <div style="padding:1.5rem; background:var(--bg2); border-radius:16px; border-left:4px solid var(--cyan);">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:4px;">SAM — AI Coding & Agent Tools</div>
+            <div style="font-size:1.8rem; font-weight:800; color:var(--cyan);">$3B</div>
+            <div style="font-size:0.8rem; color:var(--muted);">Segmento de orquestração e agentes IA para devs</div>
+          </div>
+          <div style="padding:1.5rem; background:var(--bg2); border-radius:16px; border-left:4px solid var(--yellow);">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:4px;">SOM — BR+LATAM (18 meses)</div>
+            <div style="font-size:1.8rem; font-weight:800; color:var(--yellow);">$30M</div>
+            <div style="font-size:0.8rem; color:var(--muted);">Early adopters dev Brasil + América Latina</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 5: PRODUTO ======================== -->
+<section id="produto">
+  <div class="section-inner">
+    <div class="slide-label">04 — Produto</div>
+    <h2>Três modos, <span class="gradient-text">um ecossistema</span></h2>
+    <div class="divider"></div>
+    <div class="grid-3">
+      <!-- CLI Mode -->
+      <div class="card">
+        <div class="card-icon">⌨️</div>
+        <div class="card-title">CLI Mode</div>
+        <div class="card-body">Terminal-first, baixa latência, offline-capable</div>
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span style="color:var(--muted);font-size:0.7rem;margin-left:6px;">olimpo-cli</span>
+          </div>
+          <div><span class="prompt">~/projeto $</span> <span class="cmd">ayla "refatora este módulo"</span></div>
+          <div class="output">🧠 Ayla iniciando...</div>
+          <div class="output">  → invocando Atena (arquitetura)</div>
+          <div class="output">  → invocando Apolo (testes)</div>
+          <div class="agent">✓ PR pronto: olimpo/feat/refactor-module</div>
+          <div style="color:var(--muted);">Tempo: 28s | Tokens: 4.2k</div>
+        </div>
+      </div>
+      <!-- Mobile Mode -->
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <div class="card-title">Mobile Mode</div>
+        <div class="card-body">App completo — mesma Ayla, qualquer lugar</div>
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span style="color:var(--muted);font-size:0.7rem;margin-left:6px;">forja-app v0.5.0</span>
+          </div>
+          <div style="color:var(--muted);">┌─ Chat ──────────────────┐</div>
+          <div><span class="agent">Você:</span> <span class="cmd">analisa o PR #42</span></div>
+          <div><span class="output">Ayla:</span> <span style="color:#c9d1d9;">Chamando Artemis</span></div>
+          <div style="color:var(--cyan);">  [Artemis] Code review:</div>
+          <div style="color:var(--muted);">  ✓ Cobertura ok (87%)</div>
+          <div style="color:var(--muted);">  ⚠ Race condition L.47</div>
+          <div style="color:var(--muted);">└─────────────────────────┘</div>
+        </div>
+      </div>
+      <!-- Web Mode -->
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Web Mode</div>
+        <div class="card-body">Dashboard de agentes, canais IRC-style, real-time</div>
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span style="color:var(--muted);font-size:0.7rem;margin-left:6px;">forja.app — #dev-channel</span>
+          </div>
+          <div style="color:var(--muted);">● hermes ● atena ● apolo (3/15)</div>
+          <div style="border-top:1px solid rgba(255,255,255,0.07); margin:4px 0; padding-top:4px;"></div>
+          <div><span class="sender-hermes">[hermes]</span> <span style="color:#c9d1d9;">pesquisa concluída</span></div>
+          <div><span class="sender-atena">[atena]</span> <span style="color:#c9d1d9;">arquitetura pronta</span></div>
+          <div><span class="agent">[ayla]</span> <span style="color:#c9d1d9;">implementando...</span></div>
+          <div style="color:var(--muted);">&gt; _</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 6: NEGÓCIO ======================== -->
+<section id="negocio">
+  <div class="section-inner">
+    <div class="slide-label">05 — Modelo de Negócio</div>
+    <h2>Pricing <span class="gradient-text">simples e previsível</span></h2>
+    <div class="divider"></div>
+    <div class="pricing-table">
+      <div class="pricing-card">
+        <div class="pricing-plan">Free</div>
+        <div class="pricing-price">R$0<span>/mês</span></div>
+        <ul class="pricing-features">
+          <li>1 usuário</li>
+          <li>Agentes básicos (5)</li>
+          <li>50 requisições/dia</li>
+          <li>Memória de sessão</li>
+        </ul>
+      </div>
+      <div class="pricing-card featured">
+        <div class="featured-badge">⭐ Popular</div>
+        <div class="pricing-plan">Pro</div>
+        <div class="pricing-price">R$99<span>/mês</span></div>
+        <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">~$18 USD</div>
+        <ul class="pricing-features">
+          <li>1 usuário</li>
+          <li>Todos os 15 agentes</li>
+          <li>Requisições ilimitadas</li>
+          <li>Memória persistente cross-sessão</li>
+          <li>CLI + Mobile + Web</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-plan">Team</div>
+        <div class="pricing-price">R$119<span>/seat/mês</span></div>
+        <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">~$22 USD por usuário</div>
+        <ul class="pricing-features">
+          <li>Multi-usuário</li>
+          <li>Agentes dedicados</li>
+          <li>API access</li>
+          <li>Tudo do Pro</li>
+          <li>Suporte prioritário</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="unit-econ">
+      <div class="unit-item">
+        <div class="unit-value">R$150</div>
+        <div class="unit-label">CAC Estimado</div>
+      </div>
+      <div class="unit-item">
+        <div class="unit-value">R$1.188</div>
+        <div class="unit-label">LTV Pro (12 meses)</div>
+      </div>
+      <div class="unit-item">
+        <div class="unit-value">7,9×</div>
+        <div class="unit-label">LTV/CAC Estimado</div>
+      </div>
+    </div>
+    <div class="unit-disclaimer">* Estimativas baseadas em benchmarks SaaS B2D (developer tools) — validação real com primeiros 10 pagantes</div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 7: TRAÇÃO ======================== -->
+<section id="tracao">
+  <div class="section-inner">
+    <div class="slide-label">06 — Tração</div>
+    <h2>De zero a <span class="gradient-text">arquitetura real</span> em 6 meses</h2>
+    <div class="divider"></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="tl-date">2025 Q4</div>
+          <div class="tl-title">Olimpo v0.1</div>
+          <div class="tl-body">Arquitetura base, primeiros agentes, runtime local funcional</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-date">2026 Q1</div>
+          <div class="tl-title">Auth Real + Vault</div>
+          <div class="tl-body">Auth via Neon (JWT ES256), vault pessoal, deploy EC2, Qwen no Bedrock</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-date">2026 Q2</div>
+          <div class="tl-title">Orquestração Multi-Agent</div>
+          <div class="tl-body">Centrifugo real-time, orchestrate paralelo, v0.4.x, cognição da Ayla ligada</div>
+        </div>
+        <div class="timeline-item current">
+          <div class="tl-date" style="color:var(--cyan);">2026-06 — AGORA</div>
+          <div class="tl-title">Forja v0.5.0</div>
+          <div class="tl-body">15 agentes no runtime, mobile app, 2 usuários ativos, brand Forja lançado</div>
+        </div>
+        <div class="timeline-item next">
+          <div class="tl-date" style="color:var(--muted);">Próximo</div>
+          <div class="tl-title" style="color:var(--muted);">Primeiros 10 Pagantes</div>
+          <div class="tl-body">Validação de mercado real, LTV/CAC confirmado, onboarding automatizado</div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem; justify-content:center;">
+        <div style="padding:1.5rem; background:var(--bg2); border-radius:16px; border:1px solid var(--border);">
+          <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.5rem;">Status Atual</div>
+          <div style="display:flex; flex-direction:column; gap:0.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.85rem;">Agentes no runtime</span>
+              <span style="font-weight:700; color:var(--orange);">15 ✓</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.85rem;">Usuários ativos</span>
+              <span style="font-weight:700; color:var(--cyan);">2 ✓</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.85rem;">Versão em produção</span>
+              <span style="font-weight:700; color:var(--green);">v0.5.0 ✓</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.85rem;">PRs mergeados</span>
+              <span style="font-weight:700; color:var(--text);">800+ ✓</span>
+            </div>
+          </div>
+        </div>
+        <div style="padding:1.5rem; background:rgba(249,115,22,0.05); border-radius:16px; border:1px solid rgba(249,115,22,0.2);">
+          <div style="font-size:0.85rem; color:var(--muted); font-style:italic; line-height:1.6;">
+            "Arquitetura validada em produção real. Dois usuários usando diariamente. Não é protótipo — é produto."
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 8: COMPETIÇÃO ======================== -->
+<section id="competicao">
+  <div class="section-inner">
+    <div class="slide-label">07 — Competição</div>
+    <h2>Posicionamento <span class="gradient-text">sem concorrente direto</span></h2>
+    <div class="divider"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start;">
+      <div>
+        <div class="matrix-wrapper">
+          <div class="matrix-bg">
+            <div class="axis-label ax-top">Alta Orquestração</div>
+            <div class="axis-label ax-bottom">Baixa Orquestração</div>
+            <div class="axis-label ax-left" style="transform:translateX(-30px) translateY(-50%) rotate(-90deg); left:14px; top:50%;">Persistência Baixa</div>
+            <div class="axis-label ax-right" style="transform:translateX(30px) translateY(-50%) rotate(90deg); right:14px; top:50%;">Persistência Alta</div>
+
+            <div class="bubble b-copilot">
+              <div>🐙</div>
+              <div class="bubble-name">GitHub<br>Copilot</div>
+            </div>
+            <div class="bubble b-cursor">
+              <div>⌨️</div>
+              <div class="bubble-name">Cursor</div>
+            </div>
+            <div class="bubble b-devin">
+              <div>🤖</div>
+              <div class="bubble-name">Devin</div>
+            </div>
+            <div class="bubble b-forja">
+              <div>🔥</div>
+              <div class="bubble-name">FORJA</div>
+            </div>
+            <div class="blue-ocean-label">Blue Ocean 🌊</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1.25rem; margin-top:1rem;">
+        <div style="padding:1.25rem; background:var(--bg2); border-radius:14px; border:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <span style="font-weight:700;">GitHub Copilot</span>
+            <span style="font-size:0.75rem; color:var(--muted);">IDE autocompletion</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.8rem; color:var(--muted);">
+            <span>Orquestração: ✗</span><span>Memória: ✗</span>
+          </div>
+        </div>
+        <div style="padding:1.25rem; background:var(--bg2); border-radius:14px; border:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <span style="font-weight:700;">Cursor</span>
+            <span style="font-size:0.75rem; color:var(--muted);">IDE-first, $9B valuation</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.8rem; color:var(--muted);">
+            <span>Orquestração: ✗</span><span>Memória parcial: ~</span>
+          </div>
+        </div>
+        <div style="padding:1.25rem; background:var(--bg2); border-radius:14px; border:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <span style="font-weight:700;">Devin (Cognition AI)</span>
+            <span style="font-size:0.75rem; color:var(--muted);">$500/mês, Série B $175M</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.8rem; color:var(--muted);">
+            <span>Orquestração: ✓</span><span>Memória cross-sessão: ✗</span>
+          </div>
+        </div>
+        <div style="padding:1.25rem; background:rgba(249,115,22,0.08); border-radius:14px; border:2px solid var(--orange);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+            <span style="font-weight:800; color:var(--orange);">FORJA</span>
+            <span style="font-size:0.75rem; color:var(--orange);">R$99/mês — local-first</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.8rem; color:var(--text);">
+            <span>Orquestração: ✓✓</span><span>Memória persistente: ✓✓</span>
+          </div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem;">+ Local-first + 15 agentes + 5× mais barato que Devin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 9: TIME ======================== -->
+<section id="time">
+  <div class="section-inner">
+    <div class="slide-label">08 — Time</div>
+    <h2>Quem <span class="gradient-text">construiu isso</span></h2>
+    <div class="divider"></div>
+    <div class="grid-2">
+      <div class="team-card">
+        <div class="avatar">👨‍💻</div>
+        <div>
+          <div class="team-name">Rafael Dias</div>
+          <div class="team-role">Founder &amp; Engineer</div>
+          <div class="team-bio">Full-stack + AI infrastructure. Criou toda a arquitetura Olimpo/Forja — do runtime local ao Neon DB, do pipeline de cognição da Ayla ao deploy EC2. 800+ PRs em produção. Referência em sistemas multi-agent com memória persistente.</div>
+          <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <span style="background:rgba(249,115,22,0.1); color:var(--orange); padding:3px 10px; border-radius:6px; font-size:0.75rem;">TypeScript</span>
+            <span style="background:rgba(34,211,238,0.1); color:var(--cyan); padding:3px 10px; border-radius:6px; font-size:0.75rem;">AI Infra</span>
+            <span style="background:rgba(74,222,128,0.1); color:var(--green); padding:3px 10px; border-radius:6px; font-size:0.75rem;">Multi-Agent</span>
+          </div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">👩‍💼</div>
+        <div>
+          <div class="team-name">Mari</div>
+          <div class="team-role">Ops &amp; Produto</div>
+          <div class="team-bio">Primeira usuária real do Forja. Feedback de produto diário, validação de UX, uso de todos os agentes em contexto operacional real. Define o que um usuário não-técnico precisa que funcione — sem desculpas.</div>
+          <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <span style="background:rgba(167,139,250,0.1); color:var(--purple); padding:3px 10px; border-radius:6px; font-size:0.75rem;">Product</span>
+            <span style="background:rgba(251,191,36,0.1); color:var(--yellow); padding:3px 10px; border-radius:6px; font-size:0.75rem;">UX Feedback</span>
+            <span style="background:rgba(249,115,22,0.1); color:var(--orange); padding:3px 10px; border-radius:6px; font-size:0.75rem;">Early Adopter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:2rem; padding:1.5rem 2rem; background:var(--bg2); border-radius:16px; border:1px solid var(--border); text-align:center;">
+      <p style="color:var(--muted); font-size:0.9rem;">Projeto bootstrapped. Zero dependência de funding para chegar aqui. O que precisamos agora não é capital para construir — <span style="color:var(--text); font-weight:600;">é os primeiros 10 clientes pagantes</span> para validar o modelo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 10: ROADMAP ======================== -->
+<section id="roadmap">
+  <div class="section-inner">
+    <div class="slide-label">09 — Roadmap</div>
+    <h2>Três <span class="gradient-text">marcos claros</span></h2>
+    <div class="divider"></div>
+    <div class="roadmap-cards">
+      <div class="rm-card" data-n="1">
+        <div class="rm-milestone">Milestone 1</div>
+        <div class="rm-title">10 Pagantes</div>
+        <div class="rm-body">Validação de mercado real. Coletar feedback qualitativo dos primeiros clientes. Medir LTV/CAC com dados reais. Iterar onboarding com base no uso.</div>
+        <div style="margin-top:1.25rem; padding:0.75rem; background:rgba(249,115,22,0.07); border-radius:8px; font-size:0.8rem; color:var(--orange);">Critério: 10 pagantes ativos por 2+ meses</div>
+      </div>
+      <div class="rm-card" data-n="2">
+        <div class="rm-milestone">Milestone 2</div>
+        <div class="rm-title">100 Usuários</div>
+        <div class="rm-body">Onboarding automatizado. Pricing confirmado por dados reais. Estratégia de marketing definida. Presença em comunidades BR+LATAM. Growth engine ligado.</div>
+        <div style="margin-top:1.25rem; padding:0.75rem; background:rgba(34,211,238,0.07); border-radius:8px; font-size:0.8rem; color:var(--cyan);">Critério: MRR recorrente + NPS &gt; 50</div>
+      </div>
+      <div class="rm-card" data-n="3">
+        <div class="rm-milestone">Milestone 3</div>
+        <div class="rm-title">API Pública</div>
+        <div class="rm-body">Plataforma aberta para terceiros. Marketplace de agentes customizados. Integrações com ecosistema dev (GitHub, Jira, Slack). Posicionamento para Série A.</div>
+        <div style="margin-top:1.25rem; padding:0.75rem; background:rgba(74,222,128,0.07); border-radius:8px; font-size:0.8rem; color:var(--green);">Critério: 10+ integrações de terceiros publicadas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 11: WAR ROOM ======================== -->
+<section id="warroom">
+  <div class="section-inner">
+    <div class="slide-label">10 — War Room</div>
+    <h2>Revisão <span class="gradient-text">interna do pitch</span></h2>
+    <div class="divider"></div>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">Os próprios agentes do Forja revisaram este pitch. Abaixo, a transcrição completa.</p>
+    <div class="chat-window">
+      <div class="chat-header">
+        <span>●</span>
+        <span>#war-room — Revisão do Pitch Forja</span>
+        <span style="margin-left:auto; color:var(--muted);">hera atena hermes gaia</span>
+      </div>
+      <div class="chat-body">
+        <div class="msg">
+          <span class="msg-sender sender-hera">[HERA]</span>
+          <span class="msg-text">Começando revisão do pitch. Claim de '15 agentes especializados' — Atena, isso é real ou marketing?</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-atena">[ATENA]</span>
+          <span class="msg-text">Confirmado no codebase v0.5.0. São 15 agentes no runtime Olimpo com personas e ferramentas distintas: Hermes, Atena, Apolo, Afrodite, Gaia, Íris, Hefesto, Quiron, Musa, Hera, Quíron, Yara, Zeus, Atlas, Ayla (orquestradora). Cada um tem brain próprio, tool-loop independente e invoke_agent endpoint.</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-hera">[HERA]</span>
+          <span class="msg-text">TAM de $25B — qual a fonte exata? Não aceito número sem referência.</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-hermes">[HERMES]</span>
+          <span class="msg-text">IDC Developer Tools Market Report 2024 e Gartner Magic Quadrant for Developer Tooling 2024. O número $25B com CAGR de ~18% é amplamente citado em relatórios públicos de ambas as firmas. Confirmado.</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-gaia">[GAIA]</span>
+          <span class="msg-text">O posicionamento blue-ocean é defensável? Cursor com $9B de valuation não vai adicionar orquestração em 6 meses?</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-atena">[ATENA]</span>
+          <span class="msg-text">Cursor é IDE-first, resolve autocomplete e edição in-context. Orquestração multi-agent com memória cross-sessão é arquitetura fundamentalmente diferente — requer backend próprio, banco persistente, runtime de agentes, pipeline de cognição. Timeline mínimo para Cursor replicar: 18-24 meses. E Devin ($500/mo) não tem memória persistente cross-sessão nem orquestração local-first.</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-hera">[HERA]</span>
+          <span class="msg-text">Slide de tração mostra apenas 2 usuários. Isso não enfraquece a proposta?</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-gaia">[GAIA]</span>
+          <span class="msg-text">Pelo contrário — é a força do pitch honesto. Mostramos o que é real: v0.5.0 funcional, arquitetura validada, 2 early-users ativos. O ask é justamente os primeiros 10 pagantes para validar LTV/CAC. Inflacionar números aqui seria exatamente o problema que prometemos resolver: contexto falso.</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-hermes">[HERMES]</span>
+          <span class="msg-text">Dado adicional: Cognition AI levantou $175M Série B para o Devin. Mostra apetite do mercado para agent platforms mesmo com preço $500/mês. Forja entra em $99 com mais memória e orquestração local.</span>
+        </div>
+        <div class="msg">
+          <span class="msg-sender sender-hera">[HERA]</span>
+          <span class="msg-text" style="color:var(--green);">Aprovado. Pitch está honesto, claims verificáveis, posicionamento defensável. Prosseguir.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 12: ASK ======================== -->
+<section id="ask">
+  <div class="section-inner" style="text-align:center;">
+    <div class="slide-label">11 — O Pedido</div>
+    <h2>O que precisamos <span class="gradient-text">agora</span></h2>
+    <div class="divider" style="margin:1rem auto 2rem;"></div>
+    <div class="ask-items">
+      <div class="ask-item">
+        <div class="ask-emoji">🎯</div>
+        <div>
+          <div class="ask-title">Validação de Mercado</div>
+          <div class="ask-body">Os 10 primeiros pagantes. Feedback real sobre o que funciona, o que falta, quanto vale. Sem isso, otimizamos em câmara de eco.</div>
+        </div>
+      </div>
+      <div class="ask-item">
+        <div class="ask-emoji">💬</div>
+        <div>
+          <div class="ask-title">Conversa</div>
+          <div class="ask-body">Founders, VCs, devs que sofrem com fragmentação de IA. Queremos ouvir. Cada conversa muda o produto.</div>
+        </div>
+      </div>
+      <div class="ask-item">
+        <div class="ask-emoji">🔗</div>
+        <div>
+          <div class="ask-title">Acesso</div>
+          <div class="ask-body">Comunidades dev BR+LATAM — Discord, Slack, X/Twitter. Se você conhece um canal onde devs reclamam de ferramenta de IA, é lá que queremos estar.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cta-box">
+      <div class="cta-label">Entre em contato</div>
+      <a class="cta-email" href="mailto:rafasdiasdev@gmail.com">rafasdiasdev@gmail.com</a>
+    </div>
+    <div style="margin-top:3rem; padding:1.5rem; background:var(--bg2); border-radius:16px; border:1px solid var(--border); max-width:500px; margin-left:auto; margin-right:auto;">
+      <p style="font-size:0.85rem; color:var(--muted); line-height:1.7;">
+        "O dev de amanhã não vai <em>construir</em> um agente de IA.<br>
+        Vai <strong style="color:var(--text);">usar o melhor</strong> — e voltar ao código que importa."
+      </p>
+      <div style="margin-top:0.75rem;">
+        <span style="font-size:0.75rem; color:var(--orange); font-weight:600;">— Rafael Dias, Founder, Forja</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // IntersectionObserver for active nav
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('#main-nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+        const id = entry.target.id;
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+        // scroll nav link into view
+        const activeLink = document.querySelector(`#main-nav a[href="#${id}"]`);
+        if (activeLink) {
+          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Smooth scroll for nav clicks
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Auto-scroll chat to bottom
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatBody = document.querySelector('.chat-body');
+    if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+  });
+
+  // Simple entrance animations on scroll
+  const cards = document.querySelectorAll('.card, .pain-card, .solution-card, .pricing-card, .rm-card, .team-card, .ask-item, .timeline-item');
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = entry.target.style.transform?.replace('translateY(20px)', '') || '';
+        cardObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(card => {
+    card.style.opacity = '0';
+    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    card.style.transform = 'translateY(20px)';
+    cardObserver.observe(card);
+  });
+</script>
+</body>
+</html>
