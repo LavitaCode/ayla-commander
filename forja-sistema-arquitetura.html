@@ -8,26 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a0f1a; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 
-        /* ── Swimlane embed ── */
-        .embed-wrap {
-            width: 100%;
-            background: #0a0f1a;
-            padding: 0;
-        }
-        .embed-wrap iframe {
-            width: 100%;
-            height: 70vh;
-            min-height: 600px;
-            border: none;
-            display: block;
-        }
-
-        /* ── Divider ── */
-        .divider {
-            border: none;
-            border-top: 2px solid #1e293b;
-            margin: 0;
-        }
+        .schema-section { padding-top: 4rem; }
 
         /* ── Schema section ── */
         .schema-section {
@@ -189,18 +170,10 @@
         @media (max-width: 640px) {
             .layer { grid-template-columns: 44px 1fr; gap: .75rem; }
             .layer-desc { grid-column: 1 / -1; margin-top: .25rem; }
-            .embed-wrap iframe { height: 50vh; min-height: 360px; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Swimlane intocável embeds here -->
-    <div class="embed-wrap">
-        <iframe src="forja-arquitetura.html" title="Forja — Arquitetura CLI vs Mobile/Web" scrolling="no"></iframe>
-    </div>
-
-    <hr class="divider">
 
     <div class="schema-section">
 
@@ -284,10 +257,6 @@
                 <div class="layer-desc">Saída validada contra contrato (Output Contract). Zero any, zero fallback silencioso, zero catch que descarta. Se Neon offline → 503 retryável, não dado inventado. Schema 8 = o que garante que cada camada entrega o que prometeu.</div>
             </div>
 
-        </div>
-
-        <div class="note">
-            <strong>Nota de integridade:</strong> Este schema representa a arquitetura base compartilhada por todos os agentes Olimpo. A arquitetura interna da Ayla — seu corpus, persona, vault e camadas cognitivas privadas — <strong>não é documentada aqui</strong> e permanece sob acesso exclusivo do root.
         </div>
 
     </div>
