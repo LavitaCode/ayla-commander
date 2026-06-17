@@ -1,1005 +1,337 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forja Roadmap — v0.5.0 → Enterprise</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0a0f1a;
-    --card: #111827;
-    --card2: #0f172a;
-    --border: #1e293b;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --orange: #f97316;
-    --cyan: #22d3ee;
-    --purple: #a78bfa;
-    --green: #4ade80;
-    --red: #f87171;
-    --pink: #fb7185;
-    --hermes: #22d3ee;
-    --atena: #a78bfa;
-    --hera: #fb7185;
-    --gaia: #4ade80;
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  a { color: var(--cyan); text-decoration: none; }
-
-  /* ─── HEADER ─── */
-  .header {
-    background: linear-gradient(135deg, #0a0f1a 0%, #0f1e3a 50%, #0a0f1a 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 56px 32px 48px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -80px; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 300px;
-    background: radial-gradient(ellipse, rgba(249,115,22,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .header-logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .header-logo svg {
-    width: 40px; height: 40px;
-  }
-  .header h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .header-sub {
-    font-size: 1.15rem;
-    color: var(--muted);
-    margin-top: 8px;
-    letter-spacing: 0.04em;
-  }
-  .header-meta {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    margin-top: 24px;
-    flex-wrap: wrap;
-  }
-  .header-badge {
-    background: rgba(249,115,22,0.12);
-    border: 1px solid rgba(249,115,22,0.3);
-    color: var(--orange);
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  /* ─── SECTION WRAPPER ─── */
-  .section {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 56px 24px;
-  }
-  .section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-title .icon { font-size: 1.4rem; }
-  .section-desc {
-    color: var(--muted);
-    margin-bottom: 36px;
-    font-size: 0.95rem;
-  }
-
-  /* ─── WAR ROOM ─── */
-  .war-room {
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  .war-room-header {
-    background: linear-gradient(90deg, rgba(249,115,22,0.08), rgba(34,211,238,0.08));
-    border-bottom: 1px solid var(--border);
-    padding: 20px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .war-room-header h2 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .agents-legend {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .agent-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 12px;
-    border: 1px solid;
-  }
-  .agent-pill.hermes { color: var(--hermes); border-color: rgba(34,211,238,0.4); background: rgba(34,211,238,0.08); }
-  .agent-pill.atena  { color: var(--atena);  border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }
-  .agent-pill.hera   { color: var(--hera);   border-color: rgba(251,113,133,0.4); background: rgba(251,113,133,0.08); }
-  .agent-pill.gaia   { color: var(--gaia);   border-color: rgba(74,222,128,0.4);  background: rgba(74,222,128,0.08); }
-
-  .debate {
-    padding: 8px 0;
-  }
-  .exchange {
-    display: flex;
-    gap: 16px;
-    padding: 20px 28px;
-    border-bottom: 1px solid rgba(30,41,59,0.6);
-    transition: background 0.15s;
-  }
-  .exchange:last-child { border-bottom: none; }
-  .exchange:hover { background: rgba(255,255,255,0.02); }
-  .exchange-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-    border: 2px solid;
-    margin-top: 2px;
-  }
-  .exchange-avatar.hermes { background: rgba(34,211,238,0.12); border-color: rgba(34,211,238,0.5); }
-  .exchange-avatar.atena  { background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.5); }
-  .exchange-avatar.hera   { background: rgba(251,113,133,0.12); border-color: rgba(251,113,133,0.5); }
-  .exchange-avatar.gaia   { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.5); }
-  .exchange-body { flex: 1; min-width: 0; }
-  .exchange-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
-  }
-  .exchange-name {
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-  .exchange-name.hermes { color: var(--hermes); }
-  .exchange-name.atena  { color: var(--atena); }
-  .exchange-name.hera   { color: var(--hera); }
-  .exchange-name.gaia   { color: var(--gaia); }
-  .exchange-role {
-    font-size: 0.75rem;
-    color: var(--muted);
-    background: rgba(255,255,255,0.05);
-    padding: 1px 8px;
-    border-radius: 8px;
-  }
-  .exchange-tag {
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .tag-cut    { background: rgba(251,113,133,0.15); color: var(--pink); border: 1px solid rgba(251,113,133,0.3); }
-  .tag-data   { background: rgba(34,211,238,0.12);  color: var(--cyan); border: 1px solid rgba(34,211,238,0.3); }
-  .tag-arch   { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
-  .tag-biz    { background: rgba(74,222,128,0.12);  color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
-  .tag-risk   { background: rgba(249,115,22,0.12);  color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
-
-  .exchange-text {
-    color: #cbd5e1;
-    font-size: 0.95rem;
-    line-height: 1.65;
-  }
-  .exchange-text strong { color: var(--text); }
-  .exchange-text .highlight-cut   { color: var(--pink); font-weight: 600; }
-  .exchange-text .highlight-data  { color: var(--cyan); font-weight: 600; }
-  .exchange-text .highlight-arch  { color: var(--purple); font-weight: 600; }
-  .exchange-text .highlight-biz   { color: var(--green); font-weight: 600; }
-
-  /* ─── TIMELINE ─── */
-  .timeline-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-  }
-  .quarter-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .quarter-header {
-    padding: 20px 22px 16px;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-  }
-  .quarter-header::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    border-radius: 0;
-  }
-  .q3 .quarter-header::before { background: var(--orange); }
-  .q4 .quarter-header::before { background: var(--cyan); }
-  .q1 .quarter-header::before { background: var(--purple); }
-  .q2 .quarter-header::before { background: var(--green); }
-
-  .quarter-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-  .q3 .quarter-label { color: var(--orange); }
-  .q4 .quarter-label { color: var(--cyan); }
-  .q1 .quarter-label { color: var(--purple); }
-  .q2 .quarter-label { color: var(--green); }
-
-  .quarter-theme {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .quarter-items {
-    padding: 16px 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    flex: 1;
-  }
-  .item {
-    border-left: 2px solid var(--border);
-    padding-left: 12px;
-  }
-  .item-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 5px;
-    line-height: 1.4;
-  }
-  .item-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 4px;
-  }
-  .badge {
-    font-size: 0.72rem;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 6px;
-    white-space: nowrap;
-  }
-  .badge-owner {
-    background: rgba(249,115,22,0.12);
-    color: #fdba74;
-    border: 1px solid rgba(249,115,22,0.25);
-  }
-  .badge-metric {
-    background: rgba(255,255,255,0.05);
-    color: var(--muted);
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .quarter-footer {
-    padding: 14px 22px;
-    border-top: 1px solid var(--border);
-    background: rgba(255,255,255,0.02);
-  }
-  .quarter-footer .metric-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--muted);
-    margin-bottom: 2px;
-  }
-  .quarter-footer .metric-value {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  /* ─── RATIONALE & CUTS ─── */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-  @media (max-width: 720px) {
-    .two-col { grid-template-columns: 1fr; }
-  }
-
-  .rationale-card, .cuts-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 28px;
-  }
-  .rationale-card {
-    border-left: 4px solid var(--purple);
-  }
-  .cuts-card {
-    border-left: 4px solid var(--pink);
-  }
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .card-agent-avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-  }
-  .avatar-atena { background: rgba(167,139,250,0.15); border: 2px solid rgba(167,139,250,0.5); }
-  .avatar-hera  { background: rgba(251,113,133,0.15); border: 2px solid rgba(251,113,133,0.5); }
-  .card-agent-name {
-    font-weight: 700;
-    font-size: 1rem;
-  }
-  .card-agent-name.atena { color: var(--atena); }
-  .card-agent-name.hera  { color: var(--hera); }
-  .card-agent-sub {
-    font-size: 0.78rem;
-    color: var(--muted);
-  }
-
-  .rationale-list, .cuts-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .rationale-list li, .cuts-list li {
-    display: flex;
-    gap: 10px;
-    font-size: 0.92rem;
-    color: #cbd5e1;
-    line-height: 1.55;
-  }
-  .rationale-list li::before {
-    content: '→';
-    color: var(--purple);
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .cut-item {
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-  }
-  .cut-title {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--pink);
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .cut-reason {
-    font-size: 0.84rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  /* ─── DIVIDER ─── */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0 24px;
-  }
-
-  /* ─── FOOTER ─── */
-  .footer {
-    text-align: center;
-    padding: 32px 24px;
-    color: var(--muted);
-    font-size: 0.82rem;
-    border-top: 1px solid var(--border);
-  }
-  .footer strong { color: var(--orange); }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 900px) {
-    .timeline-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 560px) {
-    .timeline-grid { grid-template-columns: 1fr; }
-    .exchange { padding: 16px 16px; }
-    .war-room-header { padding: 16px; }
-    .section { padding: 40px 16px; }
-  }
-
-  /* ─── PRINT ─── */
-  @media print {
-    body { background: white; color: black; }
-    .war-room, .quarter-card, .rationale-card, .cuts-card {
-      border: 1px solid #ccc !important;
-      box-shadow: none !important;
-      break-inside: avoid;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B8 — Roadmap Q3 2026 → Q2 2027 · Forja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #020617; --card: #0f172a; --border: #1e293b;
+      --amber: #f59e0b; --blue: #3b82f6; --verde: #22c55e;
+      --vermelho: #ef4444; --roxo: #8b5cf6;
+      --text: #e2e8f0; --muted: #64748b; --subtle: #334155;
     }
-    .header { background: white; }
-    .header h1 { -webkit-text-fill-color: #f97316; }
-  }
-</style>
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 15px; line-height: 1.6; min-height: 100vh;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none; z-index: 0;
+    }
+    .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    /* Header */
+    .header { text-align: center; margin-bottom: 56px; }
+    .header-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 100px; padding: 4px 14px; font-size: 12px; font-weight: 600;
+      color: var(--amber); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    .header-eyebrow::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--amber); animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    h1 {
+      font-size: clamp(2rem,5vw,3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+      background: linear-gradient(135deg,#f1f5f9 0%,#94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px;
+    }
+    .header-subtitle { font-size: 1.1rem; color: var(--muted); font-weight: 400; margin-bottom: 16px; }
+    .header-note {
+      display: inline-block; font-size: 13px; font-weight: 500; color: var(--amber);
+      background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 8px; padding: 6px 14px;
+    }
+    /* Timeline */
+    .timeline { position: relative; display: flex; flex-direction: column; }
+    .timeline-item { position: relative; display: flex; gap: 0; }
+    .timeline-connector { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
+    .timeline-dot {
+      width: 14px; height: 14px; border-radius: 50%; border: 2px solid;
+      background: var(--bg); flex-shrink: 0; margin-top: 24px; position: relative; z-index: 2;
+    }
+    .timeline-line { width: 2px; flex: 1; min-height: 32px; background: linear-gradient(to bottom,currentColor,transparent); opacity: 0.25; margin-top: 4px; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-card {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; margin-bottom: 24px;
+      position: relative; overflow: hidden; transition: border-color 0.2s;
+    }
+    .timeline-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 16px 0 0 16px;
+    }
+    .timeline-card:hover { border-color: var(--subtle); }
+    /* Accent */
+    .accent-vermelho .timeline-dot { border-color:var(--vermelho); color:var(--vermelho); }
+    .accent-vermelho .timeline-line { color:var(--vermelho); }
+    .accent-vermelho .timeline-card::before { background:var(--vermelho); }
+    .accent-amber .timeline-dot { border-color:var(--amber); color:var(--amber); }
+    .accent-amber .timeline-line { color:var(--amber); }
+    .accent-amber .timeline-card::before { background:var(--amber); }
+    .accent-blue .timeline-dot { border-color:var(--blue); color:var(--blue); }
+    .accent-blue .timeline-line { color:var(--blue); }
+    .accent-blue .timeline-card::before { background:var(--blue); }
+    .accent-verde .timeline-dot { border-color:var(--verde); color:var(--verde); }
+    .accent-verde .timeline-line { color:var(--verde); }
+    .accent-verde .timeline-card::before { background:var(--verde); }
+    /* Card internals */
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .card-quarter { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .card-title { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; letter-spacing: -0.02em; }
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+    .status-badge.active { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: var(--vermelho); }
+    .status-badge.planned { background: rgba(100,116,139,0.12); border: 1px solid rgba(100,116,139,0.2); color: var(--muted); }
+    .gate-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 6px 12px;
+      border-radius: 8px; margin-bottom: 16px;
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; width: 100%;
+    }
+    .prereq-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; padding: 5px 12px;
+      border-radius: 8px; margin-bottom: 16px;
+      background: rgba(100,116,139,0.1); border: 1px solid rgba(100,116,139,0.2); color: var(--muted);
+    }
+    .items-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .items-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #cbd5e1; }
+    .items-list li::before { content: '→'; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+    .accent-vermelho .items-list li::before { color: var(--vermelho); }
+    .accent-amber .items-list li::before { color: var(--amber); }
+    .accent-blue .items-list li::before { color: var(--blue); }
+    .accent-verde .items-list li::before { color: var(--verde); }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--border); }
+    .owner-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 100px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); color: #c4b5fd; }
+    .metas { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .metas strong { color: #94a3b8; }
+    .arrmeta { margin-top: 12px; padding: 10px 14px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 8px; font-size: 13px; color: #86efac; font-weight: 600; }
+    /* Section headers */
+    .section-header { margin: 56px 0 24px; display: flex; align-items: center; gap: 12px; }
+    .section-header h2 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; letter-spacing: -0.01em; }
+    .section-divider { flex: 1; height: 1px; background: var(--border); }
+    /* Hera Cortou */
+    .cut-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+    .cut-card { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--vermelho); border-radius: 10px; padding: 14px 16px; transition: border-color 0.2s; }
+    .cut-card:hover { border-color: rgba(239,68,68,0.5); border-left-color: var(--vermelho); }
+    .cut-feature { font-size: 13px; font-weight: 600; color: #94a3b8; text-decoration: line-through; text-decoration-color: rgba(239,68,68,0.6); margin-bottom: 5px; }
+    .cut-reason { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .cut-reason::before { content: 'Motivo: '; font-weight: 500; color: #475569; }
+    /* Benchmarks */
+    .bench-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 16px; }
+    .bench-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: border-color 0.2s; }
+    .bench-card:hover { border-color: var(--subtle); }
+    .bench-name { font-size: 16px; font-weight: 700; color: #f1f5f9; margin-bottom: 2px; }
+    .bench-val { font-size: 12px; font-weight: 600; color: var(--amber); margin-bottom: 10px; }
+    .bench-metric { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+    .bench-lesson { font-size: 12px; color: #94a3b8; font-weight: 500; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border-left: 2px solid var(--amber); font-style: italic; }
+    /* Footer */
+    footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+    footer span { margin: 0 6px; opacity: 0.4; }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container { padding: 32px 16px 60px; }
+      .header { margin-bottom: 40px; }
+      h1 { font-size: 1.8rem; }
+      .timeline-connector { width: 32px; }
+      .timeline-card { padding: 20px 18px; }
+      .card-header { flex-direction: column; gap: 8px; }
+      .card-meta { flex-direction: column; align-items: flex-start; }
+      .cut-grid { grid-template-columns: 1fr; }
+      .bench-grid { grid-template-columns: 1fr; }
+      .section-header { margin: 40px 0 18px; }
+    }
+  </style>
 </head>
 <body>
+<div class="container">
 
-<!-- ─── HEADER ─── -->
-<header class="header">
-  <div class="header-logo">
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="40" height="40" rx="10" fill="rgba(249,115,22,0.15)"/>
-      <path d="M10 28 L20 10 L30 28" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M14 22 L26 22" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"/>
-      <circle cx="20" cy="10" r="2" fill="#f97316"/>
-    </svg>
-  </div>
-  <h1>Forja Roadmap</h1>
-  <p class="header-sub">v0.5.0 → Enterprise · Olimpo Ecosystem · 2026–2027</p>
-  <div class="header-meta">
-    <span class="header-badge">War Room Validated</span>
-    <span class="header-badge">4 Quarters</span>
-    <span class="header-badge">Live as of 2026-06-17</span>
-  </div>
-</header>
+  <header class="header">
+    <div class="header-eyebrow">Forja · Product Roadmap</div>
+    <h1>B8 — Roadmap</h1>
+    <p class="header-subtitle">Q3 Foundation é o gate. PLG só começa depois.</p>
+    <div class="header-note">v0.5.0 funciona. Distribuição é o próximo passo.</div>
+  </header>
 
-<!-- ─── WAR ROOM ─── -->
-<section class="section">
-  <h2 class="section-title"><span class="icon">⚔️</span> War Room — Debate de Priorização</h2>
-  <p class="section-desc">Hermes (pesquisa de mercado), Atena (arquitetura técnica), Hera (supervisão/cortes), Gaia (estratégia de negócio) — debate real, decisões reais.</p>
-
-  <div class="war-room">
-    <div class="war-room-header">
-      <h2>⚔️ Forja Roadmap War Room</h2>
-      <div class="agents-legend">
-        <span class="agent-pill hermes">📡 Hermes</span>
-        <span class="agent-pill atena">⚙️ Atena</span>
-        <span class="agent-pill hera">👑 Hera</span>
-        <span class="agent-pill gaia">🌿 Gaia</span>
-      </div>
-    </div>
-
-    <div class="debate">
-
-      <!-- Exchange 1 — Hermes -->
-      <div class="exchange">
-        <div class="exchange-avatar hermes">📡</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name hermes">Hermes</span>
-            <span class="exchange-role">Pesquisa de Mercado</span>
-            <span class="exchange-tag tag-data">Benchmark</span>
-          </div>
-          <p class="exchange-text">
-            <span class="highlight-data">Cursor levou 18 meses para 500k pagantes com $20M de investimento</span> e distribuição via VS Code. Nós temos zero distribuição orgânica garantida. O PLG loop só funciona se o onboarding for <strong>&lt;5min</strong> — e hoje está acima de 30min. Se entramos em Q4 tentando escalar aquisição com um onboarding quebrado, cada real gasto em marketing é desperdiçado. O Ramp fez isso certo: fechou o funil antes de abrir o spigot.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 2 — Gaia -->
-      <div class="exchange">
-        <div class="exchange-avatar gaia">🌿</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name gaia">Gaia</span>
-            <span class="exchange-role">Estratégia de Negócio</span>
-            <span class="exchange-tag tag-biz">Fundação</span>
-          </div>
-          <p class="exchange-text">
-            Hermes está certo, e é exatamente por isso que <span class="highlight-biz">Q3 precisa ser 100% fundação</span>. Self-serve, billing, onboarding. Sem esse trio, qualquer crescimento em Q4 vira operação manual — Rafael como gargalo humano de cada signup. MRR real exige que o ciclo feche sem intervenção. Não é pessimismo, é matemática de SaaS: você não pode escalar o que não roda sozinho.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 3 — Hera CORTA -->
-      <div class="exchange">
-        <div class="exchange-avatar hera">👑</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name hera">Hera</span>
-            <span class="exchange-role">Supervisão / Cortes</span>
-            <span class="exchange-tag tag-cut">Corte</span>
-          </div>
-          <p class="exchange-text">
-            <span class="highlight-cut">Marketplace de agentes estava no Q3 original. Cortei.</span> Razão objetiva: marketplace requer um ecossistema de desenvolvedores externos que ainda não existe. Colocar no Q3 seria teatro de produto — uma vitrine vazia que confunde usuários e dispersa o time. Movido para Q1 2027 condicionado a ter 50+ usuários ativos que demonstrem essa demanda. Se o mercado não pedir, não abrimos.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 4 — Atena -->
-      <div class="exchange">
-        <div class="exchange-avatar atena">⚙️</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name atena">Atena</span>
-            <span class="exchange-role">Arquitetura Técnica</span>
-            <span class="exchange-tag tag-arch">Sequência</span>
-          </div>
-          <p class="exchange-text">
-            API pública também saiu do Q3. Não porque não é importante — é crítica. Mas <span class="highlight-arch">API pública sem billing integrado é receita zero e suporte infinito</span>. A sequência correta é inevitável: auth → billing → API pública → SDK. Qualquer outra ordem cria débito técnico que vira suporte de R$0 de retorno. Quem expõe API antes de ter controle de uso fica preso em abuse mitigation antes de ter o produto estabilizado.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 5 — Hermes -->
-      <div class="exchange">
-        <div class="exchange-avatar hermes">📡</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name hermes">Hermes</span>
-            <span class="exchange-role">Pesquisa de Mercado</span>
-            <span class="exchange-tag tag-data">Caso Linear</span>
-          </div>
-          <p class="exchange-text">
-            <span class="highlight-data">Linear chegou a 25k empresas em 2 anos com zero marketing pago</span> — só referral de devs indicando para outros devs. O mecanismo foi: produto excepcional + comunidade Discord + changelog público semanal que gerava loops de atenção orgânica. Os artigos B7/B8 do Rafael podem fazer papel similar. Marketing técnico de alta qualidade gera credibilidade antes de gastar R$1 em ads, e o público-alvo (devs) responde exatamente a esse canal.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 6 — Gaia -->
-      <div class="exchange">
-        <div class="exchange-avatar gaia">🌿</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name gaia">Gaia</span>
-            <span class="exchange-role">Estratégia de Negócio</span>
-            <span class="exchange-tag tag-biz">Timing</span>
-          </div>
-          <p class="exchange-text">
-            Concordo com Hermes. Os artigos são ativos de marketing que não custam nada além de tempo, e o diferencial do Rafael — pesquisa acadêmica sólida sobre arquitetura cognitiva de LLMs — é único no mercado BR. Mas <span class="highlight-biz">precisam sair em Q4, não Q2 2027</span> como estava no rascunho inicial. Marketing técnico precisa estar rodando e acumulando ANTES de escalar aquisição paga. Artigo publicado hoje ainda está sendo indexado quando você precisar dele em Q1.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 7 — Hera CORTA -->
-      <div class="exchange">
-        <div class="exchange-avatar hera">👑</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name hera">Hera</span>
-            <span class="exchange-role">Supervisão / Cortes</span>
-            <span class="exchange-tag tag-cut">Corte</span>
-          </div>
-          <p class="exchange-text">
-            <span class="highlight-cut">On-premise foi pedido por uma pessoa. Uma.</span> Cortei do Q3 e Q4, colocado em Q2 2027 condicionado a pelo menos um contrato enterprise que exija explicitamente self-hosted. On-premise é complexidade de infra enorme: update pipeline, isolamento de dados, suporte de instalação, auditoria de versão. Implementar isso sem demanda validada é entregar um fardo ao time antes de ter tração. Se nenhum enterprise exigir, não construímos.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 8 — Atena RISCO -->
-      <div class="exchange">
-        <div class="exchange-avatar atena">⚙️</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name atena">Atena</span>
-            <span class="exchange-role">Arquitetura Técnica</span>
-            <span class="exchange-tag tag-risk">Risco Q3</span>
-          </div>
-          <p class="exchange-text">
-            Há um risco não listado no Q3: <span class="highlight-arch">Centrifugo sem fallback SSE em produção</span>. Se o Centrifugo cair durante o onboarding de um novo usuário, a experiência de primeiro uso é literalmente zero — tela em branco, sem erro, sem mensagem. Isso não é edge case, é o caminho crítico. Precisamos de health check automático com restart antes de escalar aquisição. Não é novo feature, é gate de sobrevivência da fundação.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 9 — Gaia defende -->
-      <div class="exchange">
-        <div class="exchange-avatar gaia">🌿</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name gaia">Gaia</span>
-            <span class="exchange-role">Estratégia de Negócio</span>
-            <span class="exchange-tag tag-biz">Bundle</span>
-          </div>
-          <p class="exchange-text">
-            Hera, você cortou o SDK Python/JS do Q3 — entendo a lógica. Mas ele precisa estar no Q1 2027 junto com a API pública, não separado. <span class="highlight-biz">SDK sem API é inútil; API sem SDK tem adoção 10x menor</span>. Para devs, o SDK é a API — eles não leem documentação REST, eles fazem `pip install forja` e esperam que funcione. Se lançarmos a API sem o SDK, o número de integrações vai ser 10, não 50. Eles são um bundle inseparável.
-          </p>
-        </div>
-      </div>
-
-      <!-- Exchange 10 — Hera aceita com condição -->
-      <div class="exchange">
-        <div class="exchange-avatar hera">👑</div>
-        <div class="exchange-body">
-          <div class="exchange-meta">
-            <span class="exchange-name hera">Hera</span>
-            <span class="exchange-role">Supervisão / Cortes</span>
-            <span class="exchange-tag tag-cut">Aceito com Condição</span>
-          </div>
-          <p class="exchange-text">
-            Aceito o bundle SDK+API no Q1. Mas quero explícito no roadmap: <span class="highlight-cut">API v1 é somente leitura e invoke</span>. Nenhum endpoint de escrita de agente, nenhuma modificação de persona via API — isso é complexidade de segurança que não temos capacidade de auditar em Q1. Qualquer endpoint de escrita abre surface para ataques de prompt injection via API que passam por baixo de todos os gates que construímos. Scope hard: read + invoke, ponto final para Q1.
-          </p>
-        </div>
-      </div>
-
-    </div><!-- /debate -->
-  </div><!-- /war-room -->
-</section>
-
-<hr class="divider">
-
-<!-- ─── TIMELINE ─── -->
-<section class="section">
-  <h2 class="section-title"><span class="icon">🗓️</span> Timeline — Q3 2026 a Q2 2027</h2>
-  <p class="section-desc">Cada quarter tem um tema central, entregáveis concretos com responsável, e métrica de sucesso.</p>
-
-  <div class="timeline-grid">
+  <div class="timeline">
 
     <!-- Q3 2026 -->
-    <div class="quarter-card q3">
-      <div class="quarter-header">
-        <div class="quarter-label">Q3 2026</div>
-        <div class="quarter-theme">Foundation</div>
+    <div class="timeline-item accent-vermelho">
+      <div class="timeline-connector">
+        <div class="timeline-dot"></div>
+        <div class="timeline-line"></div>
       </div>
-      <div class="quarter-items">
-
-        <div class="item">
-          <div class="item-title">Self-serve signup — sem intervenção Rafael</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">1º signup autônomo</span>
+      <div class="timeline-card">
+        <div class="gate-badge">⛔ GATE CRÍTICO — SEM ESTE QUARTER, Q4 NÃO COMEÇA</div>
+        <div class="card-header">
+          <div>
+            <div class="card-quarter">Q3 2026 · Jul – Set</div>
+            <div class="card-title">Foundation</div>
           </div>
+          <span class="status-badge active">🔴 Em andamento</span>
         </div>
-
-        <div class="item">
-          <div class="item-title">Stripe billing (Free / Pro R$99 / Team R$119)</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael + Ayla</span>
-            <span class="badge badge-metric">1º pagamento processado</span>
-          </div>
+        <ul class="items-list">
+          <li>Self-serve signup e onboarding guiado</li>
+          <li>Stripe billing (Free enforced, Pro/Team pago)</li>
+          <li>invoke_agent liberado para role comum (não só ROOT)</li>
+          <li>Eng #1 início 01/Set — SR TS/Node/React/RN, PJ R$22k/mês + 1% equity</li>
+        </ul>
+        <div class="card-meta">
+          <span class="owner-badge">👤 Rafael + Eng #1</span>
         </div>
-
-        <div class="item">
-          <div class="item-title">Onboarding automatizado — install ao 1º invoke_agent</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael + Mari</span>
-            <span class="badge badge-metric">Mediana &lt;5min</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Docs públicos — docs.forja.dev, README, quickstart</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Mari + Ayla</span>
-            <span class="badge badge-metric">Bounce rate &lt;60%</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">CLI one-liner — npx forja ou npm i -g @lavitacode/forja</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">npm installs/semana</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Monitoramento de uptime dos 15 agentes EC2 (health check + restart automático)</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">Zero downtime silencioso</span>
-          </div>
-        </div>
-
-      </div>
-      <div class="quarter-footer">
-        <div class="metric-label">Meta principal do quarter</div>
-        <div class="metric-value">Primeiro usuário paga sem Rafael intervir</div>
       </div>
     </div>
 
     <!-- Q4 2026 -->
-    <div class="quarter-card q4">
-      <div class="quarter-header">
-        <div class="quarter-label">Q4 2026</div>
-        <div class="quarter-theme">Growth</div>
+    <div class="timeline-item accent-amber">
+      <div class="timeline-connector">
+        <div class="timeline-dot"></div>
+        <div class="timeline-line"></div>
       </div>
-      <div class="quarter-items">
-
-        <div class="item">
-          <div class="item-title">PLG loop — invite → uso → pagamento automático</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Time</span>
-            <span class="badge badge-metric">20% conversão free→pro</span>
+      <div class="timeline-card">
+        <div class="prereq-badge">✅ Pré-requisito: Q3 Foundation obrigatório</div>
+        <div class="card-header">
+          <div>
+            <div class="card-quarter">Q4 2026 · Out – Dez</div>
+            <div class="card-title">PLG Activation</div>
           </div>
+          <span class="status-badge planned">⏳ Planejado</span>
         </div>
-
-        <div class="item">
-          <div class="item-title">Primeiros 100 pagantes</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Gaia + Rafael</span>
-            <span class="badge badge-metric">MRR R$9.900+</span>
-          </div>
+        <ul class="items-list">
+          <li>Free tier viral — frictionless signup</li>
+          <li>Activation funnel instrumentado (Mixpanel / Amplitude)</li>
+          <li>Content: ADRs públicos, case studies, blog técnico</li>
+          <li>Email nurture automatizado</li>
+        </ul>
+        <div class="card-meta">
+          <span class="owner-badge">👤 Rafael + Eng #1</span>
+          <div class="metas"><strong>Meta:</strong> 50–100 signups · 10–20% conversão Pro</div>
         </div>
-
-        <div class="item">
-          <div class="item-title">Dashboard de uso por org (tokens, agentes, custo)</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael + Ayla</span>
-            <span class="badge badge-metric">DAU dashboard &gt;50%</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Referral program — 1 mês Pro por indicação que pagar</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Mari</span>
-            <span class="badge badge-metric">15% novos via referral</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">B7/B8 publicados — artigos como marketing técnico</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">500+ leitores, 50+ signups</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Analytics de produto — onde usuários travam no onboarding</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">Funil mapeado com dados reais</span>
-          </div>
-        </div>
-
-      </div>
-      <div class="quarter-footer">
-        <div class="metric-label">Meta principal do quarter</div>
-        <div class="metric-value">100 pagantes, MRR R$9.900+</div>
       </div>
     </div>
 
     <!-- Q1 2027 -->
-    <div class="quarter-card q1">
-      <div class="quarter-header">
-        <div class="quarter-label">Q1 2027</div>
-        <div class="quarter-theme">Scale</div>
+    <div class="timeline-item accent-blue">
+      <div class="timeline-connector">
+        <div class="timeline-dot"></div>
+        <div class="timeline-line"></div>
       </div>
-      <div class="quarter-items">
-
-        <div class="item">
-          <div class="item-title">API pública v1 — REST, auth por API key, rate limiting (somente leitura + invoke)</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael + Ayla</span>
-            <span class="badge badge-metric">10 integrações externas</span>
+      <div class="timeline-card">
+        <div class="prereq-badge">✅ Pré-requisito: Q4 PLG obrigatório</div>
+        <div class="card-header">
+          <div>
+            <div class="card-quarter">Q1 2027 · Jan – Mar</div>
+            <div class="card-title">Team Tier &amp; Collaboration</div>
           </div>
+          <span class="status-badge planned">⏳ Planejado</span>
         </div>
-
-        <div class="item">
-          <div class="item-title">SDK Python/JS — bundle com API v1</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">pip install forja funcional</span>
-          </div>
+        <ul class="items-list">
+          <li>Workspace multi-user — roles e permissões</li>
+          <li>Audit log e compliance básico</li>
+          <li>Integrações: Notion, Linear, Slack</li>
+          <li>Eng #2 — hypothesis, depende de tração</li>
+        </ul>
+        <div class="card-meta">
+          <span class="owner-badge">👤 Rafael + Eng #1 + Eng #2 (hypothesis)</span>
+          <div class="metas"><strong>Meta:</strong> 5–10 contas Team · MRR R$10–15k</div>
         </div>
-
-        <div class="item">
-          <div class="item-title">Marketplace de agentes — devs publicam agentes customizados</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">5 agentes por terceiros</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Team tier expansion — permissões granulares, múltiplos admins</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">10 orgs Team ativas</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Webhooks — eventos de agente para sistemas externos</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Ayla</span>
-            <span class="badge badge-metric">20 webhooks configurados</span>
-          </div>
-        </div>
-
-      </div>
-      <div class="quarter-footer">
-        <div class="metric-label">Meta principal do quarter</div>
-        <div class="metric-value">10 integrações externas via API</div>
       </div>
     </div>
 
     <!-- Q2 2027 -->
-    <div class="quarter-card q2">
-      <div class="quarter-header">
-        <div class="quarter-label">Q2 2027</div>
-        <div class="quarter-theme">Enterprise</div>
+    <div class="timeline-item accent-verde">
+      <div class="timeline-connector">
+        <div class="timeline-dot"></div>
+        <div class="timeline-line"></div>
       </div>
-      <div class="quarter-items">
-
-        <div class="item">
-          <div class="item-title">SSO — SAML/OIDC para enterprise</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">1 contrato enterprise</span>
+      <div class="timeline-card">
+        <div class="card-header">
+          <div>
+            <div class="card-quarter">Q2 2027 · Abr – Jun</div>
+            <div class="card-title">Scale &amp; Retention</div>
           </div>
+          <span class="status-badge planned">⏳ Planejado</span>
         </div>
-
-        <div class="item">
-          <div class="item-title">Audit logs completos — quem invocou o quê, quando</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael + Ayla</span>
-            <span class="badge badge-metric">Compliance check aprovado</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">SLA 99.9% uptime — medido e contratado</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">Uptime medido em prod</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Contratos enterprise — faturamento, NDA, DPA</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">1 contrato &gt;R$5k/mês</span>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">On-premise option — self-hosted Olimpo (se enterprise exigir)</div>
-          <div class="item-meta">
-            <span class="badge badge-owner">Rafael</span>
-            <span class="badge badge-metric">1 POC validado</span>
-          </div>
-        </div>
-
-      </div>
-      <div class="quarter-footer">
-        <div class="metric-label">Meta principal do quarter</div>
-        <div class="metric-value">Primeiro contrato enterprise &gt;R$5k/mês</div>
-      </div>
-    </div>
-
-  </div><!-- /timeline-grid -->
-</section>
-
-<hr class="divider">
-
-<!-- ─── RATIONALE + CUTS ─── -->
-<section class="section">
-  <h2 class="section-title"><span class="icon">🧠</span> Decisões de Arquitetura e Cortes</h2>
-  <p class="section-desc">Atena explica o porquê da sequência. Hera lista o que foi cortado e por quê.</p>
-
-  <div class="two-col">
-
-    <!-- Atena: Por que esta ordem -->
-    <div class="rationale-card">
-      <div class="card-header">
-        <div class="card-agent-avatar avatar-atena">⚙️</div>
-        <div>
-          <div class="card-agent-name atena">Atena</div>
-          <div class="card-agent-sub">Por que esta ordem</div>
+        <ul class="items-list">
+          <li>Enterprise tier — custom pricing, SLA, SSO</li>
+          <li>Churn mitigation — health score, proactive CS</li>
+          <li>Expansion revenue — upsell Team → Enterprise</li>
+          <li>ARR M12 define valuation da próxima rodada</li>
+        </ul>
+        <div class="arrmeta">🎯 Gate Series A: ARR M12 ≥ R$500k → abre rodada</div>
+        <div class="card-meta" style="margin-top:12px;">
+          <span class="owner-badge">👤 Rafael + Time</span>
+          <div class="metas"><strong>Meta:</strong> 30–40 contas · R$30–50k MRR · churn &lt;5%</div>
         </div>
       </div>
-      <ul class="rationale-list">
-        <li>Foundation primeiro porque sem billing e self-serve, qualquer crescimento é operacional manual — Rafael como gargalo humano de cada signup.</li>
-        <li>Onboarding antes de marketing porque CAC zero não adianta se o funil vaza no primeiro minuto. Você não escala o que não fecha.</li>
-        <li>Dashboard antes de API pública porque você precisa ver o que os usuários fazem antes de expor para terceiros fazerem. Observabilidade precede exposição.</li>
-        <li>Marketplace somente após ter desenvolvedores ativos porque marketplace vazio é pior que não ter marketplace — sinaliza produto sem tração.</li>
-        <li>Enterprise somente após PLG funcionar porque enterprise sem tração de mercado é um contrato de serviço, não SaaS — e serviço não escala.</li>
-      </ul>
-    </div>
-
-    <!-- Hera: O que foi cortado -->
-    <div class="cuts-card">
-      <div class="card-header">
-        <div class="card-agent-avatar avatar-hera">👑</div>
-        <div>
-          <div class="card-agent-name hera">Hera</div>
-          <div class="card-agent-sub">O que foi cortado</div>
-        </div>
-      </div>
-      <ul class="cuts-list">
-        <li>
-          <div class="cut-item">
-            <div class="cut-title">✂️ Marketplace no Q3</div>
-            <div class="cut-reason">Sem ecosystem de devs externos, seria vitrine vazia. Movido para Q1 2027 após 50+ usuários ativos.</div>
-          </div>
-        </li>
-        <li>
-          <div class="cut-item">
-            <div class="cut-title">✂️ API pública no Q3</div>
-            <div class="cut-reason">Sem billing integrado = receita zero + suporte infinito. Sequência obrigatória: auth → billing → API.</div>
-          </div>
-        </li>
-        <li>
-          <div class="cut-item">
-            <div class="cut-title">✂️ On-premise no Q3/Q4</div>
-            <div class="cut-reason">1 pedido não valida complexidade de infra. Condicional a 1 contrato enterprise que exija explicitamente.</div>
-          </div>
-        </li>
-        <li>
-          <div class="cut-item">
-            <div class="cut-title">✂️ Mobile app nativo (React Native/Flutter)</div>
-            <div class="cut-reason">Angular/Ionic já funciona. Reescrever é custo sem ROI claro antes de 500+ usuários ativos.</div>
-          </div>
-        </li>
-        <li>
-          <div class="cut-item">
-            <div class="cut-title">✂️ Integração Slack/Teams no Q3</div>
-            <div class="cut-reason">Nice-to-have, não blocker de pagamento. Entra em backlog para Q2 2027 se usuários pedirem.</div>
-          </div>
-        </li>
-        <li>
-          <div class="cut-item">
-            <div class="cut-title">✂️ Múltiplos modelos LLM configuráveis pelo usuário no Q3</div>
-            <div class="cut-reason">Complexidade de infra + suporte. Roadmap para Q2 2027 se enterprise exigir modelo próprio.</div>
-          </div>
-        </li>
-      </ul>
     </div>
 
   </div>
-</section>
 
-<!-- ─── FOOTER ─── -->
-<footer class="footer">
-  <strong>Forja</strong> — Ecossistema Olimpo · Roadmap validado em War Room · 2026-06-17 · v0.5.0 → Enterprise
-</footer>
+  <!-- Hera Cortou -->
+  <div class="section-header">
+    <h2>🔪 Hera Cortou do Escopo</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="cut-grid">
+    <div class="cut-card">
+      <div class="cut-feature">Mobile nativo v2 (React Native rebuild)</div>
+      <div class="cut-reason">CLI + Web cobre ICP atual</div>
+    </div>
+    <div class="cut-card">
+      <div class="cut-feature">Marketplace de agentes</div>
+      <div class="cut-reason">prematuro, distrai do moat</div>
+    </div>
+    <div class="cut-card">
+      <div class="cut-feature">Suporte multi-LLM (OpenAI / Gemini)</div>
+      <div class="cut-reason">complexidade vs benefício no Q3</div>
+    </div>
+    <div class="cut-card">
+      <div class="cut-feature">Dashboard analytics avançado</div>
+      <div class="cut-reason">nice-to-have, não é gate PLG</div>
+    </div>
+  </div>
 
+  <!-- Benchmarks -->
+  <div class="section-header">
+    <h2>📊 Benchmarks</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="bench-grid">
+    <div class="bench-card">
+      <div class="bench-name">Cursor</div>
+      <div class="bench-val">$9B valuation</div>
+      <div class="bench-metric">PLG a partir do Q2 — crescimento orgânico por adoção individual antes de mover para equipes.</div>
+      <div class="bench-lesson">"distribution &gt; features"</div>
+    </div>
+    <div class="bench-card">
+      <div class="bench-name">Linear</div>
+      <div class="bench-val">$400M valuation</div>
+      <div class="bench-metric">Team tier no Q1 desbloqueou ACV — colaboração como alavanca de expansão de receita.</div>
+      <div class="bench-lesson">"collaboration unlocks ACV"</div>
+    </div>
+    <div class="bench-card">
+      <div class="bench-name">Vercel</div>
+      <div class="bench-val">$2.5B valuation</div>
+      <div class="bench-metric">Self-serve desde D1 — o produto é a distribuição; onboarding sem fricção é vantagem competitiva.</div>
+      <div class="bench-lesson">"self-serve is the product"</div>
+    </div>
+  </div>
+
+  <footer>
+    LavitaCode<span>·</span>Forja<span>·</span>Roadmap Q3 2026–Q2 2027<span>·</span>2026
+  </footer>
+
+</div>
 </body>
 </html>
