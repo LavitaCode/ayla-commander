@@ -1,716 +1,471 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forja — Business Model Canvas</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B6 — Business Model Canvas · Forja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #0a0f1a;
-      --bg2:      #0f1625;
-      --bg3:      #141c2e;
-      --border:   #1e2d45;
-      --orange:   #f97316;
-      --orange2:  #fb923c;
-      --cyan:     #22d3ee;
-      --cyan2:    #67e8f9;
-      --purple:   #a78bfa;
-      --green:    #34d399;
-      --pink:     #f472b6;
-      --muted:    #64748b;
-      --text:     #e2e8f0;
-      --text2:    #94a3b8;
+      --bg:        #020617;
+      --card:      #0f172a;
+      --border:    #1e293b;
+      --muted:     #334155;
+      --text:      #e2e8f0;
+      --text-muted:#94a3b8;
+      --amber:     #f59e0b;
+      --blue:      #3b82f6;
+      --green:     #22c55e;
+      --red:       #ef4444;
+      --purple:    #a855f7;
+      --cyan:      #06b6d4;
+      --pink:      #ec4899;
+      --indigo:    #6366f1;
+      --teal:      #14b8a6;
     }
 
+    html { font-size: 15px; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       min-height: 100vh;
       padding: 2rem 1.5rem 4rem;
+      line-height: 1.6;
     }
 
-    /* ── Header ── */
-    header {
-      text-align: center;
-      margin-bottom: 2.5rem;
+    /* HEADER */
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .header .badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.3);
+      color: var(--amber); font-size: .7rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: .25rem .75rem; border-radius: 999px; margin-bottom: .9rem;
     }
-    header .badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--orange), var(--pink));
-      color: #fff;
-      font-size: .7rem;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      padding: .25rem .75rem;
-      border-radius: 999px;
-      margin-bottom: .75rem;
+    .header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800;
+      letter-spacing: -.02em; line-height: 1.15;
+      background: linear-gradient(135deg, #f8fafc 0%, var(--amber) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    header h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--orange) 0%, var(--cyan) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-    }
-    header p {
-      color: var(--text2);
-      font-size: .95rem;
-      margin-top: .5rem;
-    }
-    .meta-row {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-top: 1.2rem;
-      flex-wrap: wrap;
-    }
-    .meta-pill {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .4rem 1rem;
-      font-size: .8rem;
-      color: var(--text2);
-    }
-    .meta-pill span { color: var(--cyan); font-weight: 700; }
+    .header .subtitle { margin-top: .5rem; font-size: 1rem; color: var(--text-muted); }
+    .header .tagline { margin-top: .85rem; font-size: 1.05rem; font-weight: 600; color: var(--text); }
 
-    /* ── Canvas grid ── */
-    .canvas-wrapper {
-      max-width: 1400px;
+    .divider { width: 100%; height: 1px; background: var(--border); margin: 1.5rem 0 2rem; }
+
+    /* BMC GRID — 5 columns */
+    .bmc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 1rem;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
-    /* Row 1: KP | KA | VP | CR | CS  (5 cols) */
-    /* Row 2: KP | KR |    | CH | CS  (continues) */
-    /* Row 3: Cost Structure (left half) | Revenue Streams (right half) */
+    .block-key-partners      { grid-column: 1;     grid-row: 1 / 3; }
+    .block-key-activities    { grid-column: 2;     grid-row: 1; }
+    .block-key-resources     { grid-column: 2;     grid-row: 2; }
+    .block-value-proposition { grid-column: 3;     grid-row: 1 / 3; }
+    .block-customer-rel      { grid-column: 4;     grid-row: 1; }
+    .block-channels          { grid-column: 4;     grid-row: 2; }
+    .block-customer-segments { grid-column: 5;     grid-row: 1 / 3; }
+    .block-cost              { grid-column: 1 / 4; grid-row: 3; }
+    .block-revenue           { grid-column: 3 / 6; grid-row: 3; }
 
-    /* We use a named-area approach */
-    .canvas {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.3fr 1fr 1fr;
-      grid-template-rows: auto auto auto;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
+    /* CARD */
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 1.15rem;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; gap: .65rem;
+      transition: border-color .2s, transform .15s;
     }
-
-    .block {
-      background: var(--bg2);
-      padding: 1.1rem 1.2rem 1.3rem;
-      position: relative;
-      transition: background .2s;
-    }
-    .block:hover { background: var(--bg3); }
-
-    /* grid placement */
-    .b-kp { grid-column: 1; grid-row: 1 / 3; }
-    .b-ka { grid-column: 2; grid-row: 1; }
-    .b-vp { grid-column: 3; grid-row: 1 / 3; }
-    .b-cr { grid-column: 4; grid-row: 1; }
-    .b-cs { grid-column: 5; grid-row: 1 / 3; }
-    .b-kr { grid-column: 2; grid-row: 2; }
-    .b-ch { grid-column: 4; grid-row: 2; }
-    .b-cost { grid-column: 1 / 4; grid-row: 3; }
-    .b-rev  { grid-column: 4 / 6; grid-row: 3; }
-
-    /* Block header */
-    .block-label {
-      font-size: .65rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin-bottom: .6rem;
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-    .block-label .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    .card:hover { border-color: var(--muted); transform: translateY(-1px); }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; border-radius: 12px 12px 0 0;
     }
 
-    .b-kp  .block-label .dot,
-    .b-ka  .block-label .dot,
-    .b-kr  .block-label .dot  { background: var(--purple); }
-    .b-vp  .block-label .dot  { background: var(--orange); }
-    .b-cr  .block-label .dot,
-    .b-ch  .block-label .dot  { background: var(--cyan); }
-    .b-cs  .block-label .dot  { background: var(--green); }
-    .b-cost .block-label .dot { background: var(--pink); }
-    .b-rev  .block-label .dot { background: var(--orange); }
+    .block-key-partners::before      { background: var(--purple); }
+    .block-key-activities::before    { background: var(--blue); }
+    .block-key-resources::before     { background: var(--indigo); }
+    .block-value-proposition::before { background: linear-gradient(90deg, var(--amber), #f97316); }
+    .block-customer-rel::before      { background: var(--cyan); }
+    .block-channels::before          { background: var(--teal); }
+    .block-customer-segments::before { background: var(--pink); }
+    .block-cost::before              { background: var(--red); }
+    .block-revenue::before           { background: var(--green); }
 
-    .b-kp  .block-label { color: var(--purple); }
-    .b-ka  .block-label { color: var(--purple); }
-    .b-kr  .block-label { color: var(--purple); }
-    .b-vp  .block-label { color: var(--orange); }
-    .b-cr  .block-label { color: var(--cyan); }
-    .b-ch  .block-label { color: var(--cyan); }
-    .b-cs  .block-label { color: var(--green); }
-    .b-cost .block-label { color: var(--pink); }
-    .b-rev  .block-label { color: var(--orange2); }
+    .card-label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); padding-top: .2rem; }
+    .card-title { font-size: .88rem; font-weight: 700; color: var(--text); }
 
-    /* Items */
-    ul.items { list-style: none; }
-    ul.items li {
-      font-size: .82rem;
-      color: var(--text2);
-      padding: .28rem 0;
-      padding-left: .9rem;
-      position: relative;
-      line-height: 1.4;
-      border-bottom: 1px solid transparent;
-    }
-    ul.items li:hover { color: var(--text); }
-    ul.items li::before {
-      content: '›';
-      position: absolute;
-      left: 0;
-      color: var(--muted);
-      font-weight: 700;
-    }
+    .card ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+    .card ul li { font-size: .8rem; color: var(--text-muted); padding-left: 1.1rem; position: relative; line-height: 1.5; }
+    .card ul li::before { content: '›'; position: absolute; left: 0; color: var(--text-muted); font-weight: 700; }
 
-    .tag {
-      display: inline-block;
-      font-size: .65rem;
-      font-weight: 600;
-      padding: .1rem .4rem;
-      border-radius: 4px;
-      margin-left: .3rem;
-      vertical-align: middle;
-    }
-    .tag-orange { background: rgba(249,115,22,.18); color: var(--orange2); }
-    .tag-cyan   { background: rgba(34,211,238,.15); color: var(--cyan2); }
-    .tag-green  { background: rgba(52,211,153,.15); color: var(--green); }
-    .tag-pink   { background: rgba(244,114,182,.15); color: var(--pink); }
-    .tag-purple { background: rgba(167,139,250,.15); color: var(--purple); }
+    .tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tag { font-size: .68rem; font-weight: 600; padding: .2rem .55rem; border-radius: 999px; letter-spacing: .02em; }
+    .tag-amber  { background: rgba(245,158,11,.15); color: var(--amber);  border: 1px solid rgba(245,158,11,.25); }
+    .tag-blue   { background: rgba(59,130,246,.15);  color: var(--blue);   border: 1px solid rgba(59,130,246,.25); }
+    .tag-green  { background: rgba(34,197,94,.15);   color: var(--green);  border: 1px solid rgba(34,197,94,.25); }
+    .tag-purple { background: rgba(168,85,247,.15);  color: var(--purple); border: 1px solid rgba(168,85,247,.25); }
+    .tag-pink   { background: rgba(236,72,153,.15);  color: var(--pink);   border: 1px solid rgba(236,72,153,.25); }
+    .tag-cyan   { background: rgba(6,182,212,.15);   color: var(--cyan);   border: 1px solid rgba(6,182,212,.25); }
 
-    /* Revenue special */
-    .rev-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: .6rem;
-      margin-top: .5rem;
-    }
-    .rev-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .7rem .8rem;
-    }
-    .rev-card .rc-title {
-      font-size: .72rem;
-      font-weight: 700;
-      color: var(--orange);
-      margin-bottom: .4rem;
-    }
-    .rev-card .rc-amount {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: .2rem;
-    }
-    .rev-card .rc-desc {
-      font-size: .72rem;
-      color: var(--text2);
-      line-height: 1.4;
-    }
+    .hl-amber  { color: var(--amber);  font-weight: 600; }
+    .hl-green  { color: var(--green);  font-weight: 600; }
+    .hl-blue   { color: var(--blue);   font-weight: 600; }
+    .hl-red    { color: var(--red);    font-weight: 600; }
+    .hl-purple { color: var(--purple); font-weight: 600; }
+    .hl-cyan   { color: var(--cyan);   font-weight: 600; }
 
-    /* Cost special */
-    .cost-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: .5rem;
-      font-size: .8rem;
+    .moat-box {
+      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
+      border-radius: 8px; padding: .6rem .8rem; font-size: .78rem; color: var(--text); line-height: 1.5;
     }
-    .cost-table th {
-      text-align: left;
-      color: var(--muted);
-      font-size: .68rem;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: .3rem .5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .cost-table td {
-      padding: .35rem .5rem;
-      color: var(--text2);
-      border-bottom: 1px solid rgba(30,45,69,.5);
-    }
-    .cost-table td:last-child { text-align: right; }
-    .cost-table tr:hover td { color: var(--text); background: rgba(255,255,255,.02); }
-    .cost-table .total td {
-      color: var(--text);
-      font-weight: 700;
-      border-top: 1px solid var(--border);
-      border-bottom: none;
-    }
-    .cost-badge {
-      display: inline-block;
-      font-size: .65rem;
-      padding: .1rem .35rem;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-    .cb-fixed  { background: rgba(167,139,250,.18); color: var(--purple); }
-    .cb-var    { background: rgba(244,114,182,.18); color: var(--pink); }
-    .cb-crit   { background: rgba(249,115,22,.18);  color: var(--orange2); }
+    .moat-box strong { color: var(--amber); display: block; font-size: .67rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .25rem; }
 
-    /* VP special */
-    .vp-tiers {
-      display: flex;
-      flex-direction: column;
-      gap: .5rem;
-      margin-top: .4rem;
-    }
-    .vp-tier {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .55rem .75rem;
-    }
-    .vp-tier-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: .25rem;
-    }
-    .vp-tier-name { font-size: .78rem; font-weight: 700; color: var(--text); }
-    .vp-tier-price { font-size: .85rem; font-weight: 800; }
-    .vp-tier-price.free   { color: var(--green); }
-    .vp-tier-price.pro    { color: var(--orange); }
-    .vp-tier-price.team   { color: var(--cyan); }
-    .vp-tier-desc { font-size: .72rem; color: var(--text2); line-height: 1.4; }
+    .bmc-table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+    .bmc-table th { text-align: left; padding: .35rem .5rem; color: var(--text-muted); font-weight: 600; font-size: .68rem; letter-spacing: .05em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+    .bmc-table td { padding: .38rem .5rem; border-bottom: 1px solid rgba(30,41,59,.5); color: var(--text); vertical-align: middle; }
+    .bmc-table tr:last-child td { border-bottom: none; }
+    .bmc-table .row-total td { font-weight: 700; border-top: 1px solid var(--border); padding-top: .5rem; }
+    .td-free   { color: var(--text-muted); }
+    .td-active { color: var(--green);  font-size: .7rem; font-weight: 600; }
+    .td-manual { color: var(--amber);  font-size: .7rem; font-weight: 600; }
+    .td-today  { color: var(--text-muted); }
+    .td-post   { color: var(--amber); }
 
-    /* ── War Room ── */
-    .war-room {
-      max-width: 1400px;
-      margin: 2rem auto 0;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem 1.75rem;
+    .mrr-callout {
+      background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+      border-radius: 8px; padding: .55rem .8rem; font-size: .8rem;
+      display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
     }
-    .wr-title {
-      font-size: .75rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
-    .wr-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    .mrr-callout .mrr-val { font-size: 1.05rem; font-weight: 800; color: var(--green); }
+    .mrr-callout .mrr-label { color: var(--text-muted); font-size: .75rem; }
 
-    .debate {
-      display: flex;
-      flex-direction: column;
-      gap: .9rem;
+    .be-box {
+      margin-top: .4rem; background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.18);
+      border-radius: 8px; padding: .5rem .75rem; font-size: .75rem; color: var(--text-muted); line-height: 1.5;
     }
-    .msg {
-      display: flex;
-      gap: .75rem;
-      align-items: flex-start;
-    }
-    .msg.right { flex-direction: row-reverse; }
+    .be-box strong { color: var(--red); }
 
-    .avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .75rem;
-      font-weight: 800;
-      flex-shrink: 0;
+    /* Unit Economics */
+    .unit-econ-section { max-width: 1280px; margin: 1rem auto 0; }
+    .unit-econ-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 1.3rem; position: relative; overflow: hidden;
     }
-    .av-gaia     { background: linear-gradient(135deg,#22d3ee,#6366f1); color:#fff; }
-    .av-afrodite { background: linear-gradient(135deg,#f97316,#ec4899); color:#fff; }
+    .unit-econ-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan)); border-radius: 12px 12px 0 0;
+    }
+    .ue-header { display: flex; align-items: center; gap: .75rem; margin-bottom: .9rem; flex-wrap: wrap; }
+    .ue-header .ue-title { font-size: .88rem; font-weight: 700; color: var(--text); }
+    .ue-header .ue-sub   { font-size: .73rem; color: var(--text-muted); }
+    .ue-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+    .ue-metric { background: rgba(15,23,42,.6); border: 1px solid var(--border); border-radius: 8px; padding: .6rem .8rem; }
+    .ue-metric-label { font-size: .65rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: .2rem; }
+    .ue-metric-val  { font-size: 1rem; font-weight: 800; color: var(--text); }
+    .ue-metric-note { font-size: .65rem; color: var(--text-muted); margin-top: .15rem; }
+    .accent-green .ue-metric-val { color: var(--green); }
+    .accent-amber .ue-metric-val { color: var(--amber); }
+    .accent-blue  .ue-metric-val { color: var(--blue);  }
+    .accent-red   .ue-metric-val { color: var(--red);   }
 
-    .bubble {
-      max-width: 72%;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: .65rem .85rem;
-      font-size: .82rem;
-      color: var(--text2);
-      line-height: 1.5;
-    }
-    .bubble strong { color: var(--text); }
-    .msg.right .bubble { background: rgba(249,115,22,.08); border-color: rgba(249,115,22,.2); }
-    .speaker-tag {
-      font-size: .65rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-bottom: .3rem;
-    }
-    .tag-gaia     { color: var(--cyan); }
-    .tag-afrodite { color: var(--orange); }
+    footer { text-align: center; margin-top: 2.5rem; font-size: .72rem; color: var(--text-muted); letter-spacing: .04em; }
+    footer span { color: var(--amber); font-weight: 600; }
 
-    .verdict {
-      margin-top: 1rem;
-      background: linear-gradient(135deg,rgba(34,211,238,.06),rgba(249,115,22,.06));
-      border: 1px solid rgba(249,115,22,.25);
-      border-radius: 10px;
-      padding: .85rem 1.1rem;
-      font-size: .82rem;
-      color: var(--text2);
-      line-height: 1.6;
-    }
-    .verdict strong { color: var(--orange); }
-
-    /* ── Responsive ── */
-    @media (max-width: 900px) {
-      .canvas {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: none;
-      }
-      .b-kp, .b-ka, .b-vp, .b-cr, .b-cs,
-      .b-kr, .b-ch, .b-cost, .b-rev {
-        grid-column: auto;
-        grid-row: auto;
-      }
-      .rev-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 560px) {
-      .canvas { grid-template-columns: 1fr; }
-      .rev-grid { grid-template-columns: 1fr; }
-      .bubble { max-width: 90%; }
+    @media (max-width: 768px) {
+      body { padding: 1.25rem 1rem 3rem; }
+      .bmc-grid { grid-template-columns: 1fr !important; grid-template-rows: unset !important; gap: .85rem; }
+      .bmc-grid > * { grid-column: unset !important; grid-row: unset !important; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="badge">AaaS · Agent-as-a-Service</div>
-  <h1>Forja — Business Model Canvas</h1>
-  <p>Ecossistema Olimpo · 15 agentes · CLI + Mobile/Web · Neon + Bedrock + EC2</p>
-  <div class="meta-row">
-    <div class="meta-pill">Stack <span>Bedrock (Claude/Qwen) + EC2 + Neon</span></div>
-    <div class="meta-pill">Free <span>R$0</span> · Pro <span>R$99</span> · Team <span>R$119/assento</span></div>
-    <div class="meta-pill">Custo/usuário ativo <span>~R$15–30/mês</span></div>
-    <div class="meta-pill">War Room <span>Gaia × Afrodite</span></div>
-  </div>
-</header>
+  <header class="header">
+    <div class="badge">🧩 AaaS — Agent as a Service</div>
+    <h1>B6 — Business Model Canvas</h1>
+    <p class="subtitle">Forja · LavitaCode · 2026</p>
+    <p class="tagline">"Stop building agents. Start using the best one."</p>
+  </header>
 
-<div class="canvas-wrapper">
-  <div class="canvas">
+  <div class="divider"></div>
 
-    <!-- ① Key Partnerships -->
-    <div class="block b-kp">
-      <div class="block-label"><span class="dot"></span>① Key Partnerships</div>
-      <ul class="items">
-        <li>AWS / Bedrock <span class="tag tag-purple">infra crítica</span></li>
-        <li>Anthropic (modelos Claude) <span class="tag tag-purple">LLM core</span></li>
-        <li>Neon (serverless Postgres) <span class="tag tag-purple">memória</span></li>
-        <li>Centrifugo (realtime SSE/WS)</li>
-        <li>Qwen / Alibaba Cloud <span class="tag tag-cyan">social barato</span></li>
-        <li>GitHub / GitLab <span class="tag tag-cyan">dev workflow</span></li>
-        <li>Stripe / Pagar.me <span class="tag tag-orange">billing</span></li>
-        <li>Comunidade open-source (plugins/agentes)</li>
-        <li>Integradores / SIs parceiros</li>
-        <li>Universidades <span class="tag tag-cyan">pesquisa cognição</span></li>
+  <div class="bmc-grid">
+
+    <!-- KEY PARTNERS -->
+    <div class="card block-key-partners">
+      <div class="card-label">Bloco 7</div>
+      <div class="card-title">🤝 Key Partners</div>
+      <ul>
+        <li><span class="hl-amber">AWS</span> — Bedrock (inferência) + EC2 (Ayla orquestradora)</li>
+        <li><span class="hl-blue">Neon</span> — memória episódica (Postgres serverless)</li>
+        <li><span class="hl-purple">GitHub</span> — distribuição CLI via npm</li>
+        <li><span class="hl-green">Stripe</span> — billing &amp; subscriptions (Q3)</li>
+        <li><span class="hl-amber">Anthropic</span> — Claude API (motor principal da Ayla)</li>
+      </ul>
+      <div class="tags" style="margin-top:auto;padding-top:.5rem;">
+        <span class="tag tag-amber">AWS Bedrock</span>
+        <span class="tag tag-blue">Neon</span>
+        <span class="tag tag-purple">GitHub</span>
+        <span class="tag tag-green">Stripe</span>
+        <span class="tag tag-cyan">Anthropic</span>
+      </div>
+    </div>
+
+    <!-- KEY ACTIVITIES -->
+    <div class="card block-key-activities">
+      <div class="card-label">Bloco 6</div>
+      <div class="card-title">⚙️ Key Activities</div>
+      <ul>
+        <li><span class="hl-amber">Q3 Foundation</span> — Stripe + self-serve + PLG loop</li>
+        <li>Outbound <span class="hl-blue">founder-led</span> M1–M3 (LinkedIn DM + comunidade)</li>
+        <li>Manutenção e evolução da <span class="hl-amber">Ayla</span> (cognição, personas, memória)</li>
+        <li>Onboarding 1:1 <span class="hl-blue">(manual hoje)</span></li>
       </ul>
     </div>
 
-    <!-- ② Key Activities -->
-    <div class="block b-ka">
-      <div class="block-label"><span class="dot"></span>② Key Activities</div>
-      <ul class="items">
-        <li>Evolução contínua da Ayla (cognição, voz, memória)</li>
-        <li>Orquestração dos 15 agentes Olimpo</li>
-        <li>Manutenção da CLI + SDK</li>
-        <li>CI/CD e deploy automatizado (EC2)</li>
-        <li>Curadoria do corpus Laura / vault</li>
-        <li>Benchmarking de modelos (Bedrock roteamento)</li>
-        <li>Segurança e compliance (RLS Neon, JWT)</li>
-        <li>Onboarding self-serve de devs</li>
-        <li>War-room de planejamento (Gaia+Íris)</li>
+    <!-- VALUE PROPOSITION -->
+    <div class="card block-value-proposition">
+      <div class="card-label">Bloco 2 · Core</div>
+      <div class="card-title" style="font-size:1rem;">⚡ Value Proposition</div>
+      <div class="moat-box">
+        <strong>Proposta central</strong>
+        "Agente que lembra e evolui — contexto persistente + calibração comportamental"
+      </div>
+      <div class="moat-box" style="background:rgba(99,102,241,.07);border-color:rgba(99,102,241,.25);">
+        <strong style="color:var(--indigo);">Moat defensável</strong>
+        <span class="hl-purple">Memória episódica</span> → a Ayla lembra de você entre sessões<br/>
+        <span class="hl-amber">Personas psicométricas</span> → DISC + Eneagrama integrado<br/>
+        <span class="hl-blue">Veto hierarchy</span> → governança root/dev/user sem fricção
+      </div>
+      <div class="moat-box" style="background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.2);">
+        <strong style="color:var(--red);">NÃO é commodity</strong>
+        Não é "15 agentes genéricos" — é <strong>orquestração inteligente com memória</strong> e voz calibrada (Corpus Laura)
+      </div>
+      <ul>
+        <li>CLI via <code style="font-size:.72rem;color:var(--amber)">npm install -g @lavitacode/olimpo</code> ou app</li>
+        <li>Time pequeno produtivo no dia 1 — zero configuração de agente</li>
+        <li>15 agentes especializados orquestrados pela Ayla</li>
       </ul>
     </div>
 
-    <!-- ③ Value Propositions -->
-    <div class="block b-vp">
-      <div class="block-label"><span class="dot"></span>③ Value Propositions</div>
-      <p style="font-size:.78rem;color:var(--text2);margin-bottom:.6rem;">
-        <strong style="color:var(--orange)">Diferencial:</strong> você chega no Forja e já tem a Ayla — sem construir orquestrador, sem integrar modelos.
-      </p>
-      <div class="vp-tiers">
-        <div class="vp-tier">
-          <div class="vp-tier-header">
-            <span class="vp-tier-name">Free</span>
-            <span class="vp-tier-price free">R$0</span>
-          </div>
-          <div class="vp-tier-desc">Ayla básica, 3 agentes ativos, memória 30 dias, CLI read-only. Onboarding zero-fricção.</div>
+    <!-- CUSTOMER RELATIONSHIPS -->
+    <div class="card block-customer-rel">
+      <div class="card-label">Bloco 4</div>
+      <div class="card-title">💬 Customer Relationships</div>
+      <ul>
+        <li><span class="hl-blue">Free</span> → docs self-serve</li>
+        <li><span class="hl-amber">Pro</span> → email suporte 48h</li>
+        <li><span class="hl-green">Team</span> → onboarding dedicado</li>
+        <li><span class="hl-purple">Enterprise</span> → SLA + suporte direto</li>
+      </ul>
+    </div>
+
+    <!-- KEY RESOURCES -->
+    <div class="card block-key-resources">
+      <div class="card-label">Bloco 5</div>
+      <div class="card-title">🔑 Key Resources</div>
+      <ul>
+        <li><span class="hl-amber">15 agentes Olimpo</span> especializados (Atena, Hermes, Apolo…)</li>
+        <li><span class="hl-blue">Memória episódica</span> (Neon — context_events append-only)</li>
+        <li><span class="hl-purple">Ayla EC2</span> — orquestradora central</li>
+        <li><strong>IP:</strong> psicometria + veto hierarchy (diferencial defensável)</li>
+        <li>Corpus Laura — voz única da Ayla (intransferível)</li>
+      </ul>
+    </div>
+
+    <!-- CHANNELS -->
+    <div class="card block-channels">
+      <div class="card-label">Bloco 3</div>
+      <div class="card-title">📡 Channels</div>
+      <ul>
+        <li><span class="hl-blue">LinkedIn</span> — founder DM (outbound M1–M3)</li>
+        <li><span class="hl-purple">Dev community</span> — Twitter/X + Discord</li>
+        <li><span class="hl-amber">CLI</span> — <code style="font-size:.72rem">npm install</code> (PLG)</li>
+        <li><span class="hl-green">Mobile</span> — App Store / Play Store</li>
+        <li><span class="hl-cyan">Web App</span> — forja.lavitacode.com.br</li>
+      </ul>
+    </div>
+
+    <!-- CUSTOMER SEGMENTS -->
+    <div class="card block-customer-segments">
+      <div class="card-label">Bloco 1</div>
+      <div class="card-title">🎯 Customer Segments</div>
+      <div class="moat-box" style="background:rgba(236,72,153,.07);border-color:rgba(236,72,153,.25);">
+        <strong style="color:var(--pink);">ICP Hoje — Pré-seed / Seed</strong>
+        Founder técnico solo ou dupla<br/>
+        Precisa de velocidade máxima com equipe mínima.<br/>
+        Dói: tempo gasto em boilerplate + troca de contexto constante.
+      </div>
+      <div class="moat-box" style="background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.25);margin-top:.4rem;">
+        <strong style="color:var(--blue);">Hipótese — Series A / B</strong>
+        CTO ou VP Eng com 5–15 devs<br/>
+        Quer padronizar fluxo assistido por IA.<br/>
+        Dói: cada dev usa um LLM diferente, sem memória compartilhada.
+      </div>
+      <div class="tags" style="margin-top:auto;padding-top:.5rem;">
+        <span class="tag tag-pink">Founder técnico</span>
+        <span class="tag tag-blue">CTO / VP Eng</span>
+        <span class="tag tag-amber">Pre-seed → Seed</span>
+        <span class="tag tag-purple">Series A–B (hyp.)</span>
+      </div>
+    </div>
+
+    <!-- COST STRUCTURE -->
+    <div class="card block-cost">
+      <div class="card-label">Bloco 8</div>
+      <div class="card-title" style="color:var(--red);">💸 Cost Structure</div>
+      <div style="overflow-x:auto;">
+        <table class="bmc-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Hoje (R$)</th>
+              <th style="color:var(--amber);">Pós-Q3 (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Infra (AWS + Neon)</td>
+              <td class="td-today">3.000</td>
+              <td class="td-post">8.000</td>
+            </tr>
+            <tr>
+              <td>Eng — founder</td>
+              <td class="td-today">5.000</td>
+              <td class="td-post">30.000</td>
+            </tr>
+            <tr>
+              <td>Eng #1 (hire)</td>
+              <td class="td-today" style="color:var(--text-muted)">—</td>
+              <td class="td-post">15.000</td>
+            </tr>
+            <tr>
+              <td>Sales / Marketing</td>
+              <td class="td-today">2.000</td>
+              <td class="td-post">7.000</td>
+            </tr>
+            <tr class="row-total">
+              <td><strong>Total</strong></td>
+              <td><span class="hl-red">R$10.000</span></td>
+              <td><span class="hl-amber">R$50–65k</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="be-box">
+        <strong>Break-even:</strong> ~50 contas Pro = <strong>R$4.950 MRR</strong> cobre custo mínimo pós-Q3 (infra + 1 eng)
+      </div>
+    </div>
+
+    <!-- REVENUE STREAMS -->
+    <div class="card block-revenue">
+      <div class="card-label">Bloco 9</div>
+      <div class="card-title" style="color:var(--green);">💰 Revenue Streams</div>
+      <div style="overflow-x:auto;">
+        <table class="bmc-table">
+          <thead>
+            <tr>
+              <th>Tier</th>
+              <th>Preço</th>
+              <th>Invocações</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Free</strong></td>
+              <td class="td-free">R$0</td>
+              <td class="td-free">10/mês</td>
+              <td><span class="td-active">● Ativo</span></td>
+            </tr>
+            <tr>
+              <td><strong>Pro</strong></td>
+              <td style="color:var(--amber);font-weight:700;">R$99/mês</td>
+              <td>Ilimitado</td>
+              <td><span class="td-active">● Ativo</span></td>
+            </tr>
+            <tr>
+              <td><strong>Team</strong></td>
+              <td style="color:var(--amber);font-weight:700;">R$119/assento</td>
+              <td>Ilimitado</td>
+              <td><span class="td-active">● Ativo</span></td>
+            </tr>
+            <tr>
+              <td><strong>Enterprise</strong></td>
+              <td>Custom</td>
+              <td>Custom</td>
+              <td><span class="td-manual">◐ Manual</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mrr-callout">
+        <span class="mrr-val">R$297</span>
+        <span class="mrr-label">MRR atual · 3 usuários · <span class="hl-green">100% retenção</span></span>
+      </div>
+    </div>
+
+  </div><!-- /bmc-grid -->
+
+  <!-- UNIT ECONOMICS -->
+  <div class="unit-econ-section">
+    <div class="unit-econ-card">
+      <div class="ue-header">
+        <div>
+          <div class="ue-title">📊 Unit Economics — Conta Pro (R$99/mês)</div>
+          <div class="ue-sub">Referência por conta individual no plano Pro</div>
         </div>
-        <div class="vp-tier">
-          <div class="vp-tier-header">
-            <span class="vp-tier-name">Pro</span>
-            <span class="vp-tier-price pro">R$99 /mês</span>
-          </div>
-          <div class="vp-tier-desc">15 agentes Olimpo completos · invoke_agent + orchestrate · memória Neon ilimitada · vault pessoal · CLI + Web + Mobile.</div>
-        </div>
-        <div class="vp-tier">
-          <div class="vp-tier-header">
-            <span class="vp-tier-name">Team</span>
-            <span class="vp-tier-price team">R$119 /assento</span>
-          </div>
-          <div class="vp-tier-desc">Tudo do Pro + workspace compartilhado · canais IRC multiagente · RBAC (ROOT / DEV / USER) · SLA · billing por org.</div>
-        </div>
+        <span class="tag tag-blue" style="margin-left:auto;">Por conta</span>
       </div>
-      <ul class="items" style="margin-top:.7rem;">
-        <li>Paridade cognitiva app↔CLI ~95% <span class="tag tag-orange">v0.5.0</span></li>
-        <li>Roteamento inteligente Claude↔Qwen <span class="tag tag-green">~20× mais barato social</span></li>
-        <li>Memória de longo prazo (Neon, RLS)</li>
-        <li>Sem lock-in de modelo (multi-LLM)</li>
-      </ul>
-    </div>
-
-    <!-- ④ Customer Relationships -->
-    <div class="block b-cr">
-      <div class="block-label"><span class="dot"></span>④ Customer Relationships</div>
-      <ul class="items">
-        <li>Self-serve onboarding (CLI + docs)</li>
-        <li>War-room Ayla: suporte contextual nativo</li>
-        <li>Discord / comunidade dev</li>
-        <li>SLA dedicado (Team+)</li>
-        <li>Changelog semanal (Gaia)</li>
-        <li>Feedback loop: corpus anônimo → melhoria contínua</li>
-        <li>NPS mensal automatizado (Íris)</li>
-      </ul>
-    </div>
-
-    <!-- ⑤ Customer Segments -->
-    <div class="block b-cs">
-      <div class="block-label"><span class="dot"></span>⑤ Customer Segments</div>
-      <ul class="items">
-        <li><strong style="color:var(--text)">Devs solo</strong> <span class="tag tag-green">Free→Pro</span></li>
-        <li>Startups early-stage <span class="tag tag-cyan">Team 2–5 seats</span></li>
-        <li>Times de produto (PM + eng)</li>
-        <li>Pesquisadores / acadêmicos</li>
-        <li>Agências de software</li>
-        <li>Empresas que querem IA sem infra própria</li>
-        <li>Builders de produtos verticais (saúde, educação, engenharia)</li>
-      </ul>
-    </div>
-
-    <!-- ⑥ Key Resources -->
-    <div class="block b-kr">
-      <div class="block-label"><span class="dot"></span>⑥ Key Resources</div>
-      <ul class="items">
-        <li>Ayla (kernel cognitivo, corpus Laura)</li>
-        <li>15 agentes Olimpo especializados</li>
-        <li>EC2 (runtime local + fallback)</li>
-        <li>Neon DB (memória, vault, RLS)</li>
-        <li>Bedrock (Claude Opus/Sonnet/Haiku + Qwen)</li>
-        <li>Codebase monorepo (TypeScript)</li>
-        <li>CLI olimpo + SDK npm público</li>
-        <li>Rafael (arquiteto-root) + Mari (produto)</li>
-      </ul>
-    </div>
-
-    <!-- ⑦ Channels -->
-    <div class="block b-ch">
-      <div class="block-label"><span class="dot"></span>⑦ Channels</div>
-      <ul class="items">
-        <li>CLI <code style="font-size:.7rem;color:var(--cyan)">npm i -g olimpo</code></li>
-        <li>Web App (Angular / Ionic)</li>
-        <li>Mobile (iOS + Android — Ionic)</li>
-        <li>npm registry (SDK público)</li>
-        <li>GitHub (repositório + issues)</li>
-        <li>Docs site (Forja)</li>
-        <li>Indicação dev-to-dev</li>
-        <li>Product Hunt / X (lançamento)</li>
-      </ul>
-    </div>
-
-    <!-- ⑧ Cost Structure -->
-    <div class="block b-cost">
-      <div class="block-label"><span class="dot"></span>⑧ Cost Structure</div>
-      <table class="cost-table">
-        <thead>
-          <tr>
-            <th>Linha de custo</th>
-            <th>Componente</th>
-            <th>Tipo</th>
-            <th>Estimativa / usuário ativo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Inferência Bedrock — Claude (trabalho)</td>
-            <td>Sonnet/Opus invoke_agent, orchestrate</td>
-            <td><span class="cost-badge cb-var">Variável</span></td>
-            <td>R$12–22 /mês</td>
-          </tr>
-          <tr>
-            <td>Inferência Bedrock — Qwen (social)</td>
-            <td>Qwen3-32b modo conversacional</td>
-            <td><span class="cost-badge cb-var">Variável</span></td>
-            <td>R$1–3 /mês</td>
-          </tr>
-          <tr>
-            <td>EC2 (runtime local + fallback)</td>
-            <td>t3.medium / c5.xlarge por cluster</td>
-            <td><span class="cost-badge cb-fixed">Fixo</span></td>
-            <td>R$2–4 /usuário (diluído)</td>
-          </tr>
-          <tr>
-            <td>Neon (DB serverless)</td>
-            <td>Compute + storage + WAL</td>
-            <td><span class="cost-badge cb-var">Variável</span></td>
-            <td>R$0,5–2 /usuário</td>
-          </tr>
-          <tr>
-            <td>Centrifugo (realtime)</td>
-            <td>SSE/WS connections ativas</td>
-            <td><span class="cost-badge cb-fixed">Fixo</span></td>
-            <td>R$0,5–1 /usuário</td>
-          </tr>
-          <tr>
-            <td>Equipe (Rafael + Mari + futuras contratações)</td>
-            <td>Tempo de engenharia + produto</td>
-            <td><span class="cost-badge cb-crit">Crítico</span></td>
-            <td>Maior custo absoluto inicial</td>
-          </tr>
-          <tr>
-            <td>Domínio / CDN / SSL / CI</td>
-            <td>Vercel, GitHub Actions, Registro.br</td>
-            <td><span class="cost-badge cb-fixed">Fixo</span></td>
-            <td>Negligível (&lt;R$200/mês)</td>
-          </tr>
-          <tr class="total">
-            <td colspan="3"><strong>Total estimado / usuário ativo</strong></td>
-            <td>R$15–30 /mês</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="font-size:.72rem;color:var(--muted);margin-top:.5rem;">
-        ⚡ Margem bruta estimada Pro: <strong style="color:var(--green)">~70–85%</strong> com roteamento Qwen para social. Ponto de equilíbrio operacional: ~50 usuários Pro ativos.
-      </p>
-    </div>
-
-    <!-- ⑨ Revenue Streams -->
-    <div class="block b-rev">
-      <div class="block-label"><span class="dot"></span>⑨ Revenue Streams</div>
-      <div class="rev-grid">
-        <div class="rev-card">
-          <div class="rc-title">MRR Pro</div>
-          <div class="rc-amount">R$99 <span style="font-size:.7rem;font-weight:400;color:var(--text2)">/usuário</span></div>
-          <div class="rc-desc">Assinatura mensal recorrente. Churn target &lt;5%/mês. Upsell Free→Pro via uso.</div>
+      <div class="ue-grid">
+        <div class="ue-metric accent-green">
+          <div class="ue-metric-label">Revenue / conta</div>
+          <div class="ue-metric-val">R$99</div>
+          <div class="ue-metric-note">Por mês, recorrente</div>
         </div>
-        <div class="rev-card">
-          <div class="rc-title">Expansão Team</div>
-          <div class="rc-amount">R$119 <span style="font-size:.7rem;font-weight:400;color:var(--text2)">/assento</span></div>
-          <div class="rc-desc">Net Revenue Expansion por org: cada novo dev no time adiciona R$119 recorrente. RBAC incentiva adoção.</div>
+        <div class="ue-metric accent-red">
+          <div class="ue-metric-label">COGS estimado</div>
+          <div class="ue-metric-val">R$15–25</div>
+          <div class="ue-metric-note">Infra + API (estimado)</div>
         </div>
-        <div class="rev-card">
-          <div class="rc-title">Uso além da janela</div>
-          <div class="rc-amount" style="font-size:.9rem;">Pay-as-you-go</div>
-          <div class="rc-desc">Tokens além da cota do plano (ex: +1k tokens = R$X). Garante margem em heavy users.</div>
+        <div class="ue-metric accent-green">
+          <div class="ue-metric-label">Gross Margin</div>
+          <div class="ue-metric-val">~75–85%</div>
+          <div class="ue-metric-note">Alta — SaaS puro</div>
+        </div>
+        <div class="ue-metric accent-amber">
+          <div class="ue-metric-label">CAC M1–M3</div>
+          <div class="ue-metric-val">R$0–500</div>
+          <div class="ue-metric-note">Founder-led outbound</div>
+        </div>
+        <div class="ue-metric accent-blue">
+          <div class="ue-metric-label">Payback Period</div>
+          <div class="ue-metric-val">1–6 meses</div>
+          <div class="ue-metric-note">Depende da fase de aquisição</div>
+        </div>
+        <div class="ue-metric accent-green">
+          <div class="ue-metric-label">LTV estimado (12 mo)</div>
+          <div class="ue-metric-val">R$1.188</div>
+          <div class="ue-metric-note">Com 100% retenção atual</div>
         </div>
       </div>
-      <ul class="items" style="margin-top:.7rem;">
-        <li>Free tier como funil: zero custo de aquisição <span class="tag tag-green">PLG</span></li>
-        <li>Futuro: marketplace de agentes / plugins <span class="tag tag-orange">30% rev share</span></li>
-        <li>Futuro: plano Enterprise (SLA, on-premise, LGPD) <span class="tag tag-cyan">R$X00/assento</span></li>
-        <li>Futuro: API pública (usage-based billing) <span class="tag tag-purple">AaaS puro</span></li>
-      </ul>
     </div>
-
-  </div><!-- /canvas -->
-</div><!-- /wrapper -->
-
-<!-- ── WAR ROOM ── -->
-<div class="war-room">
-  <div class="wr-title">⚔️ War Room Notes — Gaia × Afrodite</div>
-
-  <div class="debate">
-
-    <div class="msg">
-      <div class="avatar av-gaia">G</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-gaia">Gaia · Estratégia</div>
-        O diferencial real do Forja não é ter 15 agentes — é <strong>eliminar o problema do zero</strong>. Todo dev que tenta construir um orquestrador próprio acaba replicando a Ayla de forma inferior. A nossa jogada é: entre na plataforma, já está funcionando. O BMC precisa refletir que o canal principal de aquisição é o PLG via CLI — o dev instala, usa, converte. Sem vendedor.
-      </div>
-    </div>
-
-    <div class="msg right">
-      <div class="avatar av-afrodite">A</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-afrodite">Afrodite · Validação Financeira</div>
-        Concordo no PLG, mas vou jogar o número duro: <strong>custo marginal de R$15–30 por usuário ativo com Pro em R$99 dá margem bruta de ~70–85%</strong>. Isso só se sustenta se o roteamento Qwen↔Claude funcionar. Se todo usuário Pro usar só Claude Opus em invoke_agent pesado, o custo pode chegar a R$50–60 e a margem vira negativa. O BMC precisa deixar explícito o <strong>roteamento como ativo estratégico</strong>, não só feature técnica.
-      </div>
-    </div>
-
-    <div class="msg">
-      <div class="avatar av-gaia">G</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-gaia">Gaia · Estratégia</div>
-        Ponto válido. A estratégia de monetização via <strong>expansão de seats no Team</strong> é o motor de NRE (Net Revenue Expansion). Uma org que começa com 2 devs e cresce para 10 já gera R$1.190/mês recorrente. O CAC é praticamente zero nesses casos — o próprio dev converte o time. O risco estratégico maior é o <strong>churn por latência</strong>: se a Ayla demorar 30s pra responder, o dev vai embora. Latência é CRO.
-      </div>
-    </div>
-
-    <div class="msg right">
-      <div class="avatar av-afrodite">A</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-afrodite">Afrodite · Validação Financeira</div>
-        Ponto de equilíbrio operacional que calculei: <strong>~50 usuários Pro ativos</strong> pagam as contas de infra (EC2 + Neon + Centrifugo ~R$2.500/mês fixo). O ponto de equilíbrio incluindo equipe (Rafael + Mari) está em torno de <strong>150–200 usuários Pro</strong> — assumindo custo total de ~R$15k/mês. É atingível em 6–12 meses com PLG + comunidade. Risco: Free tier subsidiar heavy users sem conversão. Recomendo <strong>cota de tokens no Free</strong> e hard-limit que force o upsell.
-      </div>
-    </div>
-
-    <div class="msg">
-      <div class="avatar av-gaia">G</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-gaia">Gaia · Estratégia</div>
-        A <strong>moat estratégica</strong> que nenhum concorrente replica facilmente é o corpus Laura + vault + memória de longo prazo. Isso é diferenciação qualitativa — o dev não quer perder o contexto que a Ayla acumulou sobre o projeto dele. Switching cost alto = churn baixo. No longo prazo, o marketplace de agentes com revenue share de 30% pode ser uma fonte secundária expressiva sem custo marginal adicional de infra.
-      </div>
-    </div>
-
-    <div class="msg right">
-      <div class="avatar av-afrodite">A</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-afrodite">Afrodite · Validação Financeira</div>
-        Alerta de risco financeiro para o BMC: <strong>dependência crítica de AWS Bedrock</strong>. Se a Anthropic mudar pricing (já fez isso antes) ou a AWS tiver outage, o custo variável pode dobrar em 30 dias. Recomendo no Key Partnerships deixar explícito que precisamos de <strong>multi-cloud fallback</strong> como hedge (Azure OpenAI, Vertex). A estrutura de custo atual é exposição concentrada. Hedge de 20% do volume em modelo alternativo reduz risco sem degradar UX.
-      </div>
-    </div>
-
-    <div class="msg">
-      <div class="avatar av-gaia">G</div>
-      <div class="bubble">
-        <div class="speaker-tag tag-gaia">Gaia · Estratégia</div>
-        Consenso para o canvas: Revenue Streams deve priorizar a sequência <strong>Free→Pro→Team→Enterprise→API pública</strong> como escalada natural. Cada tier resolve um job-to-be-done diferente: Free = discovery, Pro = produtividade individual, Team = colaboração, Enterprise = compliance+SLA, API = builders construindo em cima do Forja. Esse último nível fecha o loop AaaS puro — somos infraestrutura de inteligência, não só app.
-      </div>
-    </div>
-
   </div>
 
-  <div class="verdict">
-    <strong>Veredito Gaia × Afrodite:</strong> O modelo é viável com margem bruta de 70–85% se o roteamento inteligente Claude↔Qwen for mantido e monitorado. O ponto crítico de execução é o <strong>Free→Pro funnel</strong>: converter heavy users do tier gratuito antes de 30 dias de uso. Recomendação conjunta: (1) implementar cota de tokens no Free com hard-limit claro; (2) instrumentar custo por sessão em tempo real (alert se &gt;R$40/usuário/mês); (3) priorizar latência como métrica de CRO antes de novas features; (4) hedge multi-cloud de 20% no médio prazo para reduzir exposição Bedrock.
-  </div>
-</div>
-
-<footer style="text-align:center;margin-top:2rem;font-size:.72rem;color:var(--muted);">
-  Forja · Business Model Canvas · War Room Gaia × Afrodite · 2026-06-17 · Ecossistema Olimpo v0.5.0
-</footer>
+  <footer>
+    <span>LavitaCode</span> · <span>Forja</span> · Business Model Canvas · 2026 · AaaS — Agent as a Service
+  </footer>
 
 </body>
 </html>
